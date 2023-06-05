@@ -1,0 +1,7 @@
+int : integer, entiers positifs et negatifs
+uint : unsigned integer, entiers positifs
+
+En Solidity utilisation exclusive de uint
+Dans le cas où l'on assigne une valeur avec une fonction dans un contrat et que l'on redeploye le contrat, la valeur par defaut de la variable est 0 et non un undefined
+
+
