@@ -2,6 +2,26 @@ int : integer, entiers positifs et negatifs
 uint : unsigned integer, entiers positifs
 
 En Solidity utilisation exclusive de uint
-Dans le cas où l'on assigne une valeur avec une fonction dans un contrat et que l'on redeploye le contrat, la valeur par defaut de la variable est 0 et non un undefined
+La valeur par defaut d'une variable est 0 et non un undefined
+
+uint8 indique que la valeur maxime est 255 (2**8 = 255)
+Par defaut uint = uint256
+Les uint fonctionnent par paliers de 8
+
+bool pour les booléens, même fonctionnement des setters et getters que pour les uints
+address , variable de type addresse, represente une valeur de 20 octets, un utilisateur de la blockchain
+string; lorsque specification dans un fonction du type string, rajouter 'memory'
+
+Envoyer de l'ether sur le contrat:
+Mettre le montant souhaité dans VALUE
+Choisir Ether
+Cliquer sur 'Transact'
+Actualiser la balance
+
+Mappings, mieux que des tableaux car demandent moins de gaz. Ils n'ont pas de longueur et c'est l'assignation de clés qui permet de les faire grandir
+
+Arrays : Deux types de tableaux en Solidity
+Un ttype storage, stocké dans la Blockchain. Hors d'une fonction
+Un type memory, temporaire dans une fonction
 
 
