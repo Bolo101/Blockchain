@@ -8,7 +8,7 @@ contract Owner{
     bool paused;
     uint nombre;
 
-    constructor(){
+    constructor(){//constructor is a special function executed only when the contract is being deployed
         owner=msg.sender;//owner is the address who deployed the contract
     }
 
