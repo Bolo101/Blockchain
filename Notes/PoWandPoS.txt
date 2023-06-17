@@ -1,0 +1,16 @@
+Transaction validations can be realised through different consensus mechanisms
+Here are only two mechanisms, we can also find PoH (Proof of History), PoA (Proof Of Activity),...
+
+PoW (Proof of Work):
+This consensus mechanism use computers (miners) to solve complex puzzles. The problem is hard to solve but the result is easy to verify. The first miner who find the solution (a pseudo-random number called nonce), combine the solution with the data provided by the block and then hash it.
+Then the others competitors miners will check the solution, if it is correct the winning miner will earn a network reward.
+It is impossible to add a block to the main network without the nonce as the hash obtained corresponds to the blockhash.
+The method requires a huge energy consumptions and specific electronic devices to be run.
+The difficulty of the computational puzzle increases with the amount of miners.
+This process is slow and less scalable.
+
+PoS (Proof of Stake):
+In PoS the validation of new blocks depends of the number of stacked coins.
+The more stacked coins you holds, the higher your chances of being picked as a validator are. 
+It may conduct to a much more centralized blockchain as the wealthiest have more power and chances of being picked.
+Save an enormous amount of energy from calculating consumption compare to PoW.
