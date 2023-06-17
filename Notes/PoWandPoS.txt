@@ -7,6 +7,7 @@ Then the others competitors miners will check the solution, if it is correct the
 It is impossible to add a block to the main network without the nonce as the hash obtained corresponds to the blockhash.
 The method requires a huge energy consumptions and specific electronic devices to be run.
 The difficulty of the computational puzzle increases with the amount of miners.
+The blockhash is calculated using the block's header containing the Merkle Root (AN:see Merkle Tree notes), the timestamp, the block's version and the nonce. 
 This process is slow and less scalable.
 
 PoS (Proof of Stake):

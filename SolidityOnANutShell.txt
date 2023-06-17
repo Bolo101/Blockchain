@@ -22,6 +22,7 @@ Mappings, mieux que des tableaux car demandent moins de gaz. Ils n'ont pas de lo
 
 Arrays : Deux types de tableaux en Solidity
 Un ttype storage, stocké dans la Blockchain. Hors d'une fonction
-Un type memory, temporaire dans une fonction
+Un type memory, temporaire dans une fonction, stockage en mémoire
+memory utilisé avec les données complexes comme les tableaux (arrays), les strings et les structs
 
 
