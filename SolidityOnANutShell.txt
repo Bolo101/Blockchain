@@ -25,4 +25,7 @@ Un ttype storage, stocké dans la Blockchain. Hors d'une fonction
 Un type memory, temporaire dans une fonction, stockage en mémoire
 memory utilisé avec les données complexes comme les tableaux (arrays), les strings et les structs
 
+Incompatibilité type string memory et string memory avec l'operateur == pour verifier une concordance de string dans une structure et d'un argument de function:
+Utilisation d'une fonction de hachage après une conversion de bytes : if(keccak256(bytes(properties[i].name)) == keccak256(bytes(_name)))
+
 
