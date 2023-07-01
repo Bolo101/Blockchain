@@ -28,4 +28,9 @@ memory utilisé avec les données complexes comme les tableaux (arrays), les str
 Incompatibilité type string memory et string memory avec l'operateur == pour verifier une concordance de string dans une structure et d'un argument de function:
 Utilisation d'une fonction de hachage après une conversion de bytes : if(keccak256(bytes(properties[i].name)) == keccak256(bytes(_name)))
 
+Pure/view keyword 
+Keyword view enables to get a value in the blokchain. We just read it and it is not modified
+Pure is used to in a function that aims to realise calculus.
+Pure and view functions are represented by a blue button while a function that changes data in the blockchain is orange.
+
 
