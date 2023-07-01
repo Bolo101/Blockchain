@@ -38,8 +38,8 @@ contract FlatManagement is Owner{
         return Assets[_owner];
     }
 
-    function getPropertiesByName(uint _index, address _owner) public view isOwner returns(property memory){//return data for a specific ID
-        property[] memory properties = Assets[_owner];//get data in memory struct properties
+    function getPropertiesByID(uint _index, address _owner) public view isOwner returns(property memory){//return data for a specific ID
+        property[] memory properties = Assets[_owner];//get data in memory struct 'properties'
         for(uint i = 0; i < properties.length; i++){//read data
             if(properties[i].id == _index){//check condition
                 return properties[i];// if condition matched, result is returned
@@ -50,7 +50,7 @@ contract FlatManagement is Owner{
     function getPropertiesByName(string memory _name, address _owner) public view isOwner returns(property memory){
         property[] memory properties = Assets[_owner];
         for(uint i = 0; i < properties.length; i++){
-            if(keccak256(bytes(properties[i].name)) == keccak256(bytes(_name))){//can not check strings with == ; type string memory and string memory incompatible, byte error returned so converted data in bytes before hash function to check the output 
+            if(keccak256(bytes(properties[i].name)) == keccak256(bytes(_name))){//can not check strings with == ; can not compare string with == operator, byte error returned so converted data in bytes before hash function to check the output 
                 return properties[i];
             }
         } 
