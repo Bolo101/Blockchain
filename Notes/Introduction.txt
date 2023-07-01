@@ -25,3 +25,9 @@ Du bytecode stocké directement dans la Blockchain
 Langage de très haut niveau : Solidity
 Code compilé pour obtenir le bytecode et exécuté dans l'Ethereum Virutal Machine (EVM)
 Impossible de le modifier ou supprimer le contrat une fois déployé sur la Blockchain
+
+Gateway
+ENS(Ehtereum Name Service:works as a DNS. It is an open-source, distributed and extensible naming system based on the Ethereum blockchain. ENS’s job is to map human-readable names like ‘alice.eth’ to machine-readable identifiers such as Ethereum addresses, other cryptocurrency addresses, content hashes, and metadata. ENS also supports ‘reverse resolution’, making it possible to associate metadata such as canonical names or interface descriptions with Ethereum addresses.
+Pod: pods are a lightweight permissions wrapper around a Safe multi-sig wallet.Pods manage signers through membership NFTs. When an address holds a membership NFT, that address is automatically given signer capabilities on the pod's underlying multi-sig. When you create a pod or podify an existing Safe, you give it a name appended with ".pod.xyz". As an example the Safe "test" podified is test.pod.xyz. As your pod interacts with various web3 apps, your pod will be labeled by its human-readable ENS name (instead of a Safe address).
+Safe (Gnosis Safe multi-sigs):A Gnosis Safe multi-sig wallet is a smart contract wallet that requires multiple people to approve a transaction, before it can be executed on-chain.
+
