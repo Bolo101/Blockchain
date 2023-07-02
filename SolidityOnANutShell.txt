@@ -33,4 +33,14 @@ Keyword view enables to get a value in the blokchain. We just read it and it is 
 Pure is used to in a function that aims to realise calculus.
 Pure and view functions are represented by a blue button while a function that changes data in the blockchain is orange.
 
+Private/internal/external/public (visibility keywords)/for functions but also variables
+Private:can only call the function from the interior of the program. We add an underscore in the private function name
+Internal:can only can the function from the interior of the program as a private but can also access the function from contract inheriting this function from another contract
+External:can only call function from the exterior of a contract
+Public: most permissive visibility keyword
+
+By default a declared variable without visibility keyword is private. That is why we need a getter to read it.
+If you declare a variable as public, it will automatically create a getter with the same name as your variable
+
+
 
