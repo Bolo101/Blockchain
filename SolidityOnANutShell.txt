@@ -42,5 +42,18 @@ Public: most permissive visibility keyword
 By default a declared variable without visibility keyword is private. That is why we need a getter to read it.
 If you declare a variable as public, it will automatically create a getter with the same name as your variable
 
+Storage/Memory/Stack/Calldata
+Storage: variable is stored on the blockchain. Default mode for variable out of a function
 
+contract Test{
+    uint[] public array;
+
+    function fill() external{
+        array.push(2);
+        array.push(3);
+        
+        uint[] storage newarray = array; //storage establish a link between newarray and array. newarray points to array
+        newarraytorage[0] = 0; //modify index 0 of array[]. To get a new independant array we use memory
+      } 
+  }
 
