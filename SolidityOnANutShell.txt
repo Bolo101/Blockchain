@@ -56,4 +56,9 @@ contract Test{
         newarraytorage[0] = 0; //modify index 0 of array[]. To get a new independant array we use memory
       } 
   }
+Memory: data is stored in the tmp memory. We can see it as the RAM. You can modify data
+Stack:data from memory are pushed to the stack for execution by the EVM. Limited capacity. 
+Calldata: data stored only during function execution. It is the argument given to a function. Erased right after execution is completed. Less gas than memory.
 
+EVENTS
+It is possible to return data from a solidity function but it is not possible to read it from the exterior such as front-end. We are going to use the events to read the data to return data and read them from the exterior.
