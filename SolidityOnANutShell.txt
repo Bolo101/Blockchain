@@ -62,3 +62,11 @@ Calldata: data stored only during function execution. It is the argument given t
 
 EVENTS
 It is possible to return data from a solidity function but it is not possible to read it from the exterior such as front-end. We are going to use the events to read the data to return data and read them from the exterior.
+
+Typecast:
+uint8 a = 5;
+uint b = 6;
+// throws an error because a * b returns a uint, not uint8:
+uint8 c = a * b;
+// we have to typecast b as a uint8 to make it work:
+uint8 c = a * uint8(b);
