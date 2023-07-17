@@ -1,2 +1,3 @@
 SK-SNARKS rollups are transactions off-chain computed for Ethereum. Once computed, several transactions are gathered in a single one that is going to be added on Ethereum Blockchain. A validity proof is provided to ensure the transactions are not fraudulent.
 Optimistic rollups assume the transaction is legit. They are computed and wrapped in  a single trasaction to be sent on Ethereum Blockchain. As Ethereum stack people's money it is assumed that people are going to check this transaction. If a fraudulent transaction is validated the transaction is reverted and the block validator is slashed(lose money). If a someone thinks a transaction in a rollup looks fishy he has to proove that it is fraudulent
+Optimistic rollups can run transactions and smart contracts.
