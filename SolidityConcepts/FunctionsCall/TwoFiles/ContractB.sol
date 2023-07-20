@@ -8,6 +8,13 @@ Then we will import contractB in contractA and point to contract B via the inter
 interface interfaceB {
     function getNumber() external view returns(uint);
     function setNumber(uint _number) external;
+/*
+The interface enable to ensure the security of the contract, only public functions can be called and you cannot access private variables as example.
+It is also easier to read and understand than just importing a targetted contract. 
+It is also more scalable if you need to update your main contract.
+Using a common interface is also a way to improve interoperability with contract developped by other developpers.
+Less gas consumption
+*/
 }
 
 contract B{
