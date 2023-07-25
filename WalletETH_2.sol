@@ -57,7 +57,7 @@ contract WalletETH2{
         return amountInWei;
     }
 
-    function withdrawSpecificAmount(uint _amount) public{//user wants to withdraw a specific amount from the contract
+    function withdrawSpecificAmount(uint _amount) external{//user wants to withdraw a specific amount from the contract
         uint amountF = convertEtherToWei(_amount);//convert amount to withdraw in ether
         require(amountF <= Wallets[msg.sender].balance,"Please enter a lower amount to withdraw");//check balance
         require(payable(msg.sender).send(amountF),"Transfer failed");//send funds back to the user's address
