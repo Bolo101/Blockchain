@@ -1,0 +1,14 @@
+Init Node Package Manager
+$npm init
+=> Creation of 'package.json' to know what are the libraries used in the project
+
+Add web3.js
+$npm install --save web3
+
+Use Node console:
+$node
+
+Create Web3 object with web3.js library properties
+let Web3 = require('web3');
+
+Connect to Ganache using 
