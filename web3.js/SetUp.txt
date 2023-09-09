@@ -20,5 +20,4 @@ You can access the wei amount from an address located on your local node by usin
 The result is a Javascript promise. To get the result from the resolve operation you need to add a '.then' and print the output 
 web3.eth.getBalance('address').then(console.log);
 //Result in way => convert into ethers
-web3.eth.getBalance('address').then(function(result){console.log(web3.utils.fromWei(result))};
- 
+web3.eth.getBalance('address').then(function(result){console.log(web3.utils.fromWei(result,"ether"))});
