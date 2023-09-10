@@ -21,3 +21,13 @@ The result is a Javascript promise. To get the result from the resolve operation
 web3.eth.getBalance('address').then(console.log);
 //Result in way => convert into ethers
 web3.eth.getBalance('address').then(function(result){console.log(web3.utils.fromWei(result,"ether"))});
+
+Execute a transaction:
+web3.eth.sendTransaction({from : 'sender' , to : 'receiver' , value : web3.utils.toWei(5,"ether")});
+
+After connecting Remix IDE to Ganache you cann functions using the following syntax:
+web3.eth.call({from : '0xD89440089fFE6B8B150ef8711660d6D57CA50013', to : '0xb2C550762f10294a765D3111AD4022A771Cd9f07', data : '0x717a21cf'}).then(console.log);
+from is the address of the account you want the transaction to be performed from.
+Data is know as the "input field" from the smart contract. You can access this value from Remix after you made a transaction in the input label.
+
+
