@@ -9,25 +9,30 @@ Use Node console:
 $node
 
 Create Web3 object with web3.js library properties
-const Web3lib = require('web3');//Import module web3 into Web3 to use it for instance creation
+$const Web3lib = require('web3');//Import module web3 into Web3 to use it for instance creation
 
 Connect to Ganache using web3.js:
-const web3 = new Web3lib.Web3(new Web3lib.providers.http.HttpProvider("http://localhost:7545"));
+$const web3 = new Web3lib.Web3(new Web3lib.providers.http.HttpProvider("http://localhost:7545"));
 //create an instance connected to the local Ethereum node set up by Ganache
 
 Acces wei amount:
 You can access the wei amount from an address located on your local node by using the .getBalance(address) and giving it the address as an argument between single quotes''.
 The result is a Javascript promise. To get the result from the resolve operation you need to add a '.then' and print the output 
-web3.eth.getBalance('address').then(console.log);
+$web3.eth.getBalance('address').then(console.log);
 //Result in way => convert into ethers
-web3.eth.getBalance('address').then(function(result){console.log(web3.utils.fromWei(result,"ether"))});
+$web3.eth.getBalance('address').then(function(result){console.log(web3.utils.fromWei(result,"ether"))});
 
 Execute a transaction:
-web3.eth.sendTransaction({from : 'sender' , to : 'receiver' , value : web3.utils.toWei(5,"ether")});
+$web3.eth.sendTransaction({from : 'sender' , to : 'receiver' , value : web3.utils.toWei(5,"ether")});
 
 After connecting Remix IDE to Ganache you cann functions using the following syntax:
-web3.eth.call({from : '0xD89440089fFE6B8B150ef8711660d6D57CA50013', to : '0xb2C550762f10294a765D3111AD4022A771Cd9f07', data : '0x717a21cf'}).then(console.log);
+$web3.eth.call({from : '0xD89440089fFE6B8B150ef8711660d6D57CA50013', to : '0xb2C550762f10294a765D3111AD4022A771Cd9f07', data : '0x717a21cf'}).then(console.log);
 from is the address of the account you want the transaction to be performed from.
 Data is know as the "input field" from the smart contract. You can access this value from Remix after you made a transaction in the input label.
+
+You can use the name of the function instead of the hash input section from a contract call
+$web3.eth.call({ from : 'account calling', to : 'address of the contract', data : 'web3.utils.sha3('name_of_the_function'.substring(0,10) });
+The use of the sha3 function hash the function's name and the .subtring() call cut the hash to keep the first 10 characters out of the full hash.
+
 
 
