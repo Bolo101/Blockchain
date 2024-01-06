@@ -28,7 +28,7 @@ contract Exercice2{
         Students[_student].lastName = _lastName;
     }
     function addGrade(address _student,uint _grade,string memory _subject) public{
-         require(owner ==msg.sender,"Not the owner");
+        require(owner ==msg.sender,"Not the owner");
         bytes memory firstNameAddress = bytes(Students[_student].firstName);
         require(firstNameAddress.length > 0, "Student does not exists");
         Students[_student].Grades[Students[_student].numberOfGrades].grades = _grade;
