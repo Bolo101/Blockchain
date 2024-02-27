@@ -1,5 +1,5 @@
-/**
-ETH wallet with automatic global withdrawal returning all ethers to each senders
+// SPDX-License-Identifier: GPL-3.0-only
+/*ETH wallet with automatic global withdrawal returning all ethers to each senders
 User's balance can only be accessed by him 
 Owner can destruct the contract and return all funds to sending addresses
 Credit:Bolo101
