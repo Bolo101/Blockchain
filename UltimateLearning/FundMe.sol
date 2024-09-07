@@ -7,15 +7,15 @@ import {PriceConverter} from "./PriceConverter.sol";
 contract FundMe{
     using PriceConverter for uint256; //can use every function from the library as a method on any uint256 variable in our main contract code
     
-    uint256 public minimumUsd = 5e18;
+    uint256 public constant minimumUsd = 5e18;   //add constant to limit gas fees because it no longer takes a storage spot. Only if the value is not modified
 
     address[] public funders;
     mapping(address funder => uint256 amountFunded) public addressToAmountFunded;
 
-    address public owner;
+    address public immutable i_owner; //immutable as this value is not going to be modified. More gas efficient
 
     constructor() {
-        owner = msg.sender;
+        i_owner = msg.sender;
     }
 
     function fund() public payable{//payable means we can transfer funds
@@ -37,7 +37,7 @@ contract FundMe{
     }
 
     modifier onlyOwner(){
-        require(msg.sender == owner, "Not the owner");
+        require(msg.sender == i_owner, "Not the owner");
         _;
     }
     // msg.sender = address and payable(msg;sender) = payable address
