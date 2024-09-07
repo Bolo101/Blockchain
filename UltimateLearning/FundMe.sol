@@ -4,6 +4,8 @@ pragma solidity 0.8.19;
 //import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import {PriceConverter} from "./PriceConverter.sol";
 
+error NotOwner();
+
 contract FundMe{
     using PriceConverter for uint256; //can use every function from the library as a method on any uint256 variable in our main contract code
     
@@ -13,6 +15,14 @@ contract FundMe{
     mapping(address funder => uint256 amountFunded) public addressToAmountFunded;
 
     address public immutable i_owner; //immutable as this value is not going to be modified. More gas efficient
+
+    receive() external payable { //in case fund function is not used correctly
+        fund();
+    }
+                                     
+    fallback() external payable {//in case fund function is not used correctly
+        fund();
+    }
 
     constructor() {
         i_owner = msg.sender;
@@ -34,10 +44,13 @@ contract FundMe{
         funders = new address[](0);//reset funder array with initial length of zero
         (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Call failed");
+        revert();   
     }
 
     modifier onlyOwner(){
-        require(msg.sender == i_owner, "Not the owner");
+        //require(msg.sender == i_owner, "Not the owner");
+        // to be more gas efficient we can use custom error instead of require
+        if(msg.sender != i_owner) { revert NotOwner();}
         _;
     }
     // msg.sender = address and payable(msg;sender) = payable address
