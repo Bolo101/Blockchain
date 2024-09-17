@@ -62,8 +62,8 @@ contract FundMe{
 //call
 // payable(msg.sender).call{value: address(this).balance)("") call("") is for calling a function, we live it empty here. 
 // call returns two variables
-// (bool callSuccess, bytes memory dataReturned) = payable(msg.sender).call{value: address(this).balance)("")
+// (bool callSuccess, bytes memory dataReturned) = payable(msg.sender).call{value: address(this).balance}("")
 //dataReturned is useful if we call a function
-// (bool callSuccess, bytes memory dataReturned) = payable(msg.sender).call{value: address(this).balance)("")
+// (bool callSuccess, bytes memory dataReturned) = payable(msg.sender).call{value: address(this).balance}("")
 // require(callSuccess, "Call failed");
 }
