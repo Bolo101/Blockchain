@@ -9,7 +9,7 @@ error NotOwner();
 contract FundMe{
     using PriceConverter for uint256; //can use every function from the library as a method on any uint256 variable in our main contract code
     
-    uint256 public constant minimumUsd = 5e18;   //add constant to limit gas fees because it no longer takes a storage spot. Only if the value is not modified
+    uint256 public constant MINIMUM_USD = 5e18;   //add constant to limit gas fees because it no longer takes a storage spot. Only if the value is not modified
 
     address[] public funders;
     mapping(address funder => uint256 amountFunded) public addressToAmountFunded;
@@ -31,7 +31,7 @@ contract FundMe{
     function fund() public payable{//payable means we can transfer funds
         //allow  users to send funds
         //set a minimum amount to pay
-        require(msg.value.getConversionRate() >= minimumUsd,"Not enough eth to send"); // at leats one ether
+        require(msg.value.getConversionRate() >= MINIMUM_USD,"Not enough eth to send"); // at leats one ether
         funders.push(msg.sender);
         addressToAmountFunded[msg.sender] += msg.value;
     }
