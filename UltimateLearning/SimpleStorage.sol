@@ -19,7 +19,7 @@ contract SimpleStorage{
 
     mapping(string => uint) public nameTofavoriteNumber;
 
-    //Person public myFriend = Person(7,"Pat");
+    // Person public myFriend = Person(7,"Pat");
     // Person public myFriend = Person({favoriteNumber: 7,name: "Pat"});
     // Person public Vin = Person({favoriteNumber: 7,name: "vin"});
     // Person public pati = Person({favoriteNumber: 7,name: "pati"});
