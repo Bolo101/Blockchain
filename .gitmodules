@@ -1,0 +1,3 @@
+[submodule "UltimateLearning/FoundryFundamentals/lib/forge-std"]
+	path = UltimateLearning/FoundryFundamentals/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
