@@ -3,8 +3,23 @@
 # pragma version 0.4.0
 # @license MIT
 
+struct Person:
+    favorite_number: uint256
+    name: String[100]
+
+my_name: public(String[100])
 my_favorite_number: public(uint256) # 0
 
+list_of_number: public(uint256[5]) #[0,0,0,0,0]
+list_of_people: public(Person[5])
+index: uint256
+
+# Constructor
+@deploy
+def __init__():
+    self.my_favorite_number = 7
+    self.index = 0
+    self.my_name = "Bolo"
 
 @external #decorator implies how the function can be called
 def store(new_number: uint256):
@@ -14,3 +29,11 @@ def store(new_number: uint256):
 @view #specify to not send a transaction
 def retrieve() -> uint256: #execution cost only applied if called by the contract and not the user
     return self.my_favorite_number
+
+@external
+def add_person(_name:String[100], _favorite_number: uint256):
+    # Add favorite number to numbers list
+    self.list_of_number[self.index] = _favorite_number
+    new_person: Person = Person(favorite_number = _favorite_number, name = _name)
+    self.list_of_people[self.index] = new_person
+    self.index = self.index + 1
