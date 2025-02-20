@@ -12,7 +12,9 @@ my_favorite_number: public(uint256) # 0
 
 list_of_number: public(uint256[5]) #[0,0,0,0,0]
 list_of_people: public(Person[5])
-index: uint256
+index: public(uint256)
+
+name_to_favorite_number: public( HashMap[String[100], uint256])
 
 # Constructor
 @deploy
@@ -34,6 +36,11 @@ def retrieve() -> uint256: #execution cost only applied if called by the contrac
 def add_person(_name:String[100], _favorite_number: uint256):
     # Add favorite number to numbers list
     self.list_of_number[self.index] = _favorite_number
+
+    # Add the person to the person's list
     new_person: Person = Person(favorite_number = _favorite_number, name = _name)
     self.list_of_people[self.index] = new_person
+
+    # Add person to the hashmap
+    self.name_to_favorite_number[_name] = _favorite_number
     self.index = self.index + 1
