@@ -34,8 +34,8 @@ Welcome to my **Blockchain Development** repository! 🚀 This repo serves as a 
 
 ### 1️⃣ Clone the Repo
 ```bash
-git clone https://github.com/yourusername/blockchain-dev-notes.git
-cd blockchain-dev-notes
+git clone https://github.com/Bolo101/Blockchain.git
+cd Blockchain
 ```
 
 ### 2️⃣ Install Dependencies
