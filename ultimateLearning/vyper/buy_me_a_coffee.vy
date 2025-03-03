@@ -20,6 +20,14 @@ interface AggregatorV3Interface:
 
 minimum_usd: uint256
 price_feed : AggregatorV3Interface
+owner: address
+funders: public(DynArray[address, 1000])
+funders_to_amount: public(HashMap[address, uint256])
+
+# Keep track of people who funded us
+# keep track of amount sent
+
+
 
 
 #Sepolia ETH/USD : 0x694AA1769357215DE4FAC081bf1f309aDC325306
@@ -28,6 +36,7 @@ def __init__(price_feed_address: address):
     #Need to add 10*18 zeros to match eth_amount_in_usd precision. Can do by converting as ether using convert to add those zeros
     self.minimum_usd = as_wei_value(5, "ether")
     self.price_feed = AggregatorV3Interface(price_feed_address)
+    self.owner = msg.sender
 
 @external
 @payable
@@ -38,12 +47,19 @@ def fund():
     """
     usd_value_of_eth: uint256 = self._get_eth_to_usd_rate(msg.value)
     assert usd_value_of_eth >= self.minimum_usd, "Not a valid amount of ETH"
-    
+    self.funders.append(msg.sender)
+    self.funders_to_amount[msg.sender] += msg.value
 
 
 @external
 def withdraw():
-    pass
+    """
+    Take the money out of the contract
+    """
+    assert msg.sender == self.owner, "Not the contract owner"
+    send(self.owner, self.balance)
+    self.funders = [] #Reset funders record at every withdraw function call
+    
 
 @internal
 @view
