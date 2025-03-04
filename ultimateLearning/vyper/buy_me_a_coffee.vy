@@ -58,6 +58,8 @@ def withdraw():
     """
     assert msg.sender == self.owner, "Not the contract owner"
     send(self.owner, self.balance)
+    for funder: address in self.funders: #Mapping must be reseted manually using for loop
+        self.funders_to_amount[funder] = 0
     self.funders = [] #Reset funders record at every withdraw function call
     
 
