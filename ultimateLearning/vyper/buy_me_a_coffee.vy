@@ -1,8 +1,10 @@
 # pragma version 0.4.0
-# @license: MIT
-# @author: Bolo101
 
 """
+@ license: MIT
+@ author: Bolo101
+
+
 This smart contract implements a crowdfunding mechanism with minimum USD threshold.
 It uses Chainlink price feeds to convert ETH to USD in real-time.
 Key features:
@@ -18,9 +20,12 @@ interface AggregatorV3Interface:
     def version() -> uint256: view
     def latestAnswer() -> int256: view
 
-minimum_usd: uint256
-price_feed : AggregatorV3Interface
-owner: address
+
+MINIMUM_USD: constant(uint256) = as_wei_value(5, "ether")
+PRICE_FEED : public(immutable(AggregatorV3Interface))
+OWNER: public(immutable(address))
+
+#Storage variables
 funders: public(DynArray[address, 1000])
 funders_to_amount: public(HashMap[address, uint256])
 
@@ -34,9 +39,8 @@ funders_to_amount: public(HashMap[address, uint256])
 @deploy
 def __init__(price_feed_address: address):
     #Need to add 10*18 zeros to match eth_amount_in_usd precision. Can do by converting as ether using convert to add those zeros
-    self.minimum_usd = as_wei_value(5, "ether")
-    self.price_feed = AggregatorV3Interface(price_feed_address)
-    self.owner = msg.sender
+    PRICE_FEED = AggregatorV3Interface(price_feed_address)
+    OWNER = msg.sender
 
 @external
 @payable
@@ -46,7 +50,7 @@ def fund():
     Have a minimum $ amount send
     """
     usd_value_of_eth: uint256 = self._get_eth_to_usd_rate(msg.value)
-    assert usd_value_of_eth >= self.minimum_usd, "Not a valid amount of ETH"
+    assert usd_value_of_eth >= MINIMUM_USD, "Not a valid amount of ETH"
     self.funders.append(msg.sender)
     self.funders_to_amount[msg.sender] += msg.value
 
@@ -56,8 +60,8 @@ def withdraw():
     """
     Take the money out of the contract
     """
-    assert msg.sender == self.owner, "Not the contract owner"
-    send(self.owner, self.balance)
+    assert msg.sender == OWNER, "Not the contract owner"
+    send(OWNER, self.balance)
     for funder: address in self.funders: #Mapping must be reseted manually using for loop
         self.funders_to_amount[funder] = 0
     self.funders = [] #Reset funders record at every withdraw function call
@@ -69,7 +73,7 @@ def _get_eth_to_usd_rate(eth_amount : uint256) -> uint256:
     """
     Amount sent to us in ETH is enough to buy us a coffee ?
     """
-    price : int256 = staticcall self.price_feed.latestAnswer()
+    price : int256 = staticcall PRICE_FEED.latestAnswer()
     # Multiply by 10**10 to adjust the price feed's 8 decimal places to match Ethereum's 18 decimal places standard
     # This scaling ensures accurate conversion between ETH and USD values
     eth_price: uint256 = convert(price, uint256) * (10 ** 10)
