@@ -67,7 +67,7 @@ def withdraw():
     Take the money out of the contract
     """
     assert msg.sender == OWNER, "Not the contract owner"
-    send(OWNER, self.balance)
+    raw_call(OWNER, b"", value = self.balance)
     for funder: address in self.funders: #Mapping must be reseted manually using for loop
         self.funders_to_amount[funder] = 0
     self.funders = [] #Reset funders record at every withdraw function call
