@@ -24,6 +24,7 @@ interface AggregatorV3Interface:
 MINIMUM_USD: constant(uint256) = as_wei_value(5, "ether")
 PRICE_FEED : public(immutable(AggregatorV3Interface))
 OWNER: public(immutable(address))
+PRECISION: constant(uint256) = (1 * (10 ** 18))
 
 #Storage variables
 funders: public(DynArray[address, 1000])
@@ -45,6 +46,11 @@ def __init__(price_feed_address: address):
 @external
 @payable
 def fund():
+    self._fund()
+
+@internal
+@payable
+def _fund():
     """
     Allows users to send money to this contract
     Have a minimum $ amount send
@@ -82,10 +88,15 @@ def _get_eth_to_usd_rate(eth_amount : uint256) -> uint256:
     # ETH amount (in wei) * ETH/USD price (scaled to 18 decimals) / 10^18
     # Division by 10^18 normalizes the result after multiplying two 18-decimal values
     # Result is USD value with proper decimal precision
-    eth_amount_in_usd: uint256 = (eth_amount * eth_price) // (1 * (10 ** 18))
+    eth_amount_in_usd: uint256 = (eth_amount * eth_price) // PRECISION
     return eth_amount_in_usd
 
 @external
 @view
 def get_eth_to_usd_rate(eth_amount: uint256) -> uint256:
     return self._get_eth_to_usd_rate(eth_amount)
+
+@external
+@payable
+def __default__():
+    self._fund()
