@@ -56,10 +56,15 @@ anvil
 ### Basic Deployment
 
 ```bash
+forge create SimpleStorage --interactive --broadcast
+```
+
+```bash
 forge create --rpc-url http://localhost:8545 \
   --private-key  \
   src/Counter.sol:Counter \
-  --constructor-args 42
+  --constructor-args 42 \
+  --broadcast
 ```
 
 - `--constructor-args`: Pass initial value 42 to constructor
@@ -88,17 +93,33 @@ import {Counter} from "../src/Counter.sol";
 
 contract DeployCounter is Script {
     function run() external {
-        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
-        new Counter(42);
+        vm.startBroadcast();
+        Counter counter = new Counter(42);
         vm.stopBroadcast();
+        return counter
     }
 }
 ```
 
+The .s.sol is a Foundry convention.
+
+**About the `vm` keyword:**
+- `vm` is a special object provided by Foundry's testing framework (`forge-std`)
+- It provides access to Foundry's cheatcodes and utilities that simplify testing and deployment
+- `vm.startBroadcast()`: Begins recording transactions for later broadcast to the network
+- `vm.stopBroadcast()`: Stops recording transactions
+- All contract interactions between these calls are batched together and executed with the provided private key
+- This allows for atomic deployment of multiple contracts or performing multiple operations in a single script
+
 Execute with:
 
 ```bash
-forge script script/Deploy.s.sol:DeployCounter \
+forge script script/DeploySimpleStorage.s.sol
+```
+If no RPC url is specified, the code is deployed on a temporary anvil instance.
+
+```bash
+forge script script/DeploySimpleStorage.s.sol \
   --rpc-url http://localhost:8545 \
   --broadcast \
   --private-key 
@@ -118,4 +139,3 @@ forge script script/Deploy.s.sol:DeployCounter \
 | Send Transaction | `cast send  "function()" --rpc-url ...` |
 
 ---
-Answer from Perplexity: pplx.ai/share
