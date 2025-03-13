@@ -127,7 +127,43 @@ forge script script/DeploySimpleStorage.s.sol \
 
 - Automatically detects running Anvil instance if no RPC specified
 
-## 6. Key Commands Cheatsheet
+
+## 6. Manage your private key
+
+Securely manage your private key implies to not have it stored or used in plaintext.
+Do not use copy/paste it in your shell, do not use a .env file to store you key.
+
+Inteads use `cast wallet`:
+
+* Create keystore
+
+```bash
+cast wallet import defaultKey --interactive
+```
+
+A password will have to be set to access your keystore.
+
+* List existing keystores:
+
+```bash
+cast wallet list
+```
+
+* Use keystore when deploying contract:
+
+```bash
+forge script script/DeploySimpleStorage.s.sol \
+--rpc-url http://127.0.0.1:8545 \
+--account defaultKey \
+--sender address_of_sender \
+--broadcast \
+-vvvv
+```
+
+(-vvvv): Print execution traces for all tests, and setup traces for failing tests.
+
+
+## 7. Key Commands Cheatsheet
 
 | Task | Command |
 |------|---------|
@@ -137,5 +173,7 @@ forge script script/DeploySimpleStorage.s.sol \
 | Run Deployment Script | `forge script --broadcast ...` |
 | Get Contract Value | `cast call  "function()" --rpc-url ...` |
 | Send Transaction | `cast send  "function()" --rpc-url ...` |
+| Convert hex gas value to decimal | `cast --to-base hex_gas_value dec` |
+| Store private key in keystore | `cast wallet import defaultKey --interactive`
 
 ---
