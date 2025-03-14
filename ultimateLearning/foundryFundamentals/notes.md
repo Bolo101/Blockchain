@@ -162,6 +162,19 @@ forge script script/DeploySimpleStorage.s.sol \
 
 (-vvvv): Print execution traces for all tests, and setup traces for failing tests.
 
+## Interact with contract using cast
+
+```bash
+cast send SimpleStorage_contract_address "store(uint256)" 123 --rppc-url $RPC_URL --private-key $PRIVATE_KEY
+```
+
+Only use environment variables for testing and using test keys without real funds
+
+## Read data from contract
+
+```bash
+cast call SimplsimpleStorage_contract_address "retrieve()"
+```
 
 ## 7. Key Commands Cheatsheet
 
