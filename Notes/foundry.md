@@ -3,6 +3,14 @@
 ## Introduction to Foundry 🌟
 Foundry is a blazing fast, portable, and modular toolkit for Ethereum application development. It's written in Rust and designed to make smart contract development, testing, and deployment more efficient.
 
+## Install
+
+Run :
+
+```bash
+curl -L https://foundry.paradigm.xyz | bash
+```
+
 ## Core Components 🧩
 
 ### Forge 🔨

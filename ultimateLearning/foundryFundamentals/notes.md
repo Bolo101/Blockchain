@@ -1,5 +1,12 @@
 # Forge and Anvil: Compiling and Deploying Smart Contracts
 
+Install using :
+
+```bash
+curl -L https://foundry.paradigm.xyz | bash
+```
+
+
 ## 1. Project Setup
 
 Initialize a new Foundry project:
