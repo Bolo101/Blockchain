@@ -187,6 +187,7 @@ cast call SimplsimpleStorage_contract_address "retrieve()"
 | Get Contract Value | `cast call  "function()" --rpc-url ...` |
 | Send Transaction | `cast send  "function()" --rpc-url ...` |
 | Convert hex gas value to decimal | `cast --to-base hex_gas_value dec` |
-| Store private key in keystore | `cast wallet import defaultKey --interactive`
+| Store private key in keystore | `cast wallet import defaultKey --interactive`|
+| Format code | `forge fmt`|
 
 ---
