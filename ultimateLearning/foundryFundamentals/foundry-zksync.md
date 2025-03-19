@@ -23,3 +23,24 @@ To switch back to zkSync Foundry:
 ```bash
 foundryup-zksync
 ```
+
+## Build on zksync
+
+Compile contract for zksync deploying:
+```bash
+forge build --zksync
+```
+
+## Launch anvil on zksync:
+
+Run anvil for zksync node:
+```bash
+anvil-zksync
+```
+
+## Deploy on zksync:
+
+Deploy smart contract on zksync locally running node:
+```bash
+foundry create scr/SimpleStorage.sol:SimpleStorage --rpc-url zksync-rpc-url --private-key $PRIVATE_KEY --zksync --legacy
+```
