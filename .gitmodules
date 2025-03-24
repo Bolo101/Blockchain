@@ -7,3 +7,6 @@
 [submodule "ultimateLearning/foundryFundamentals/foundryFundMe/forge/lib/forge-std"]
 	path = ultimateLearning/foundryFundamentals/foundryFundMe/forge/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "ultimateLearning/foundryFundamentals/foundryFundMe/forge/lib/chainlink-brownie-contracts"]
+	path = ultimateLearning/foundryFundamentals/foundryFundMe/forge/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
