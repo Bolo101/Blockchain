@@ -14,7 +14,7 @@ The contracts being on [Chainlink Github repo](https://github.com/smartcontractk
 Once downloaded, we need to create a remapping in the foundry.toml to replace the online import ressources call by local code downloaded.
 
 ```toml
-remappings = ["@chailink/contracts/=lib/chainlink-brownie-contracts/contracts/"]
+remappings = ["@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/"]
 ```
 
 ## Foundry testing
