@@ -1,29 +1,32 @@
 # Foundry FundMe
 
-## Foundry imports
+## Foundry Imports
 
-Contrary to Remix, Foundry cannot import code from online ressources.
-To get the AggregatorV3 Interface we have to download the file from Github using forge:
+### Chainlink Contracts Import
+Unlike Remix, Foundry cannot directly import code from online resources. To integrate Chainlink's AggregatorV3 Interface, you need to:
 
+1. Download the contracts using Forge:
 ```bash
 forge install smartcontractkit/chainlink-brownie-contracts@1.1.0 --no-commit
 ```
 
-The contracts being on [Chainlink Github repo](https://github.com/smartcontractkit/chainlink-brownie-contracts) 
-
-Once downloaded, we need to create a remapping in the foundry.toml to replace the online import ressources call by local code downloaded.
-
+2. Create a remapping in `foundry.toml` to resolve local import paths:
 ```toml
 remappings = ["@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/"]
 ```
 
-## Foundry testing
+**Key Points:**
+- Source: [Chainlink GitHub Repository](https://github.com/smartcontractkit/chainlink-brownie-contracts)
+- The `--no-commit` flag prevents adding the installed library to your git repository
+- Remappings allow you to use local copies of external contracts seamlessly
 
-Here is a basic test 
+## Foundry Testing
+
+### Basic Test Structure
+Here's a basic test contract demonstrating Foundry testing principles:
 
 ```solidity
 // SPDX-License-Identifier: MIT
-
 pragma solidity 0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
@@ -33,19 +36,58 @@ contract FundMeTest is Test {
     uint number = 1;
 
     function setUp() external {
+        // This function runs before each test
+        // Used for test setup and initialization
         number++;
     }
 
     function testDemo() public view {
+        // Logging and assertions
         console.log(number);
         console.log("Hello");
         assertEq(number, 2);
     }
 }
 ```
-The display of logs is made using option **-vv**
 
+### Test Execution Commands
+
+#### Running Tests
+- Display logs with verbosity levels:
 ```bash
-forge test --vv
+# Different verbosity levels
+forge test -v      # Minimal output
+forge test -vv     # More details
+forge test -vvv    # Maximum verbosity
 ```
 
+#### Running Specific Tests
+Target specific test functions:
+```bash
+# Both commands are equivalent
+forge test -mt testFunctionToExecute -vvv
+forge test --match-test testFunctionToExecute -vvv
+```
+
+### Advanced Testing Techniques
+
+#### Chain Forking
+When testing contracts that interact with external protocols, use chain forking to simulate real-world environments:
+
+```bash
+# Fork Sepolia testnet for accurate testing
+forge test -mt testPriceFeedVersionIsAccurate -vvv --fork-url $SEPOLIA_AL
+```
+
+**Benefits of Chain Forking:**
+- Test interactions with live contracts
+- Simulate real network conditions
+- Validate contract behavior without deploying to mainnet
+
+#### Test Coverage Analysis
+Measure the extent of code covered by your tests:
+
+```bash
+# Generate test coverage report
+forge coverage --fork-url $SEPOLIA_AL
+```
