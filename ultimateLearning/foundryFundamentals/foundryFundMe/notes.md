@@ -33,7 +33,7 @@ import {Test, console} from "forge-std/Test.sol";
 import {FundMe} from "../src/FundMe.sol";
 
 contract FundMeTest is Test {
-    uint number = 1;
+    uint256 number = 1;
 
     function setUp() external {
         // This function runs before each test
@@ -55,10 +55,9 @@ contract FundMeTest is Test {
 #### Running Tests
 - Display logs with verbosity levels:
 ```bash
-# Different verbosity levels
-forge test -v      # Minimal output
-forge test -vv     # More details
-forge test -vvv    # Maximum verbosity
+forge test -v    # Basic output
+forge test -vv   # Detailed output with function calls
+forge test -vvv  # Maximum verbosity with state changes
 ```
 
 #### Running Specific Tests
