@@ -91,3 +91,16 @@ Measure the extent of code covered by your tests:
 # Generate test coverage report
 forge coverage --fork-url $SEPOLIA_AL
 ```
+
+## Refactoring code
+
+Remove all hardcoded price feed address to specify price feed to use as a constructor parameter
+
+As we have to change both our test and script contract to specify the price feed to use when deploying, we modify our test contract to import our deploy script which is reshaped to return the FundMe contract.
+This way we only have to change hardcoded value in a single file and not two.
+
+## Mock contract
+
+We create on anvil our own mock contract (price feed) to avoid hardcoding an address in deploy script
+
+This is going to be our HelperConfig.s.sol
