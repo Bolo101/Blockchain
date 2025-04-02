@@ -15,7 +15,7 @@ contract FundMe {
 
     address public immutable i_owner;
     uint256 public constant MINIMUM_USD = 5 * 10 ** 18;
-    AggregatorV3Interface private s_priceFeed;
+    AggregatorV3Interface private s_priceFeed; //0x694AA1769357215DE4FAC081bf1f309aDC325306
 
     constructor(address priceFeed) {
         i_owner = msg.sender;
