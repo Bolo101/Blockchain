@@ -75,7 +75,7 @@ When testing contracts that interact with external protocols, use chain forking 
 
 ```bash
 # Fork Sepolia testnet for accurate testing
-forge test -mt testPriceFeedVersionIsAccurate -vvv --fork-url $SEPOLIA_AL
+forge test --match-test testPriceFeedVersionIsAccurate -vvv --fork-url $SEPOLIA_AL
 ```
 
 **Benefits of Chain Forking:**
@@ -103,3 +103,33 @@ This way we only have to change hardcoded value in a single file and not two.
 We create on anvil our own mock contract (price feed) to avoid hardcoding an address in deploy script
 
 This is going to be our HelperConfig.s.sol
+
+In our mock contract we refer to Eth Sepolia and Eth mainnet addresses to get data feeds.
+On our anvil no contract/data feed is deployed. We need to deploy the mock and return its address.
+
+## Cheatcodes
+
+### makeAddr
+
+Create a new address called USER. User account is blank.
+
+```solidity
+address USER = makeAddr("user");
+```
+
+### vm.prank
+
+Specify next transaction must be realised as USER
+
+```solidity
+vm.prank(USER);
+```
+
+### vm.expectRevert()
+
+Specify that next transaction sould revert.
+
+```solidity
+vm.expectRevert(); // indicates next line sould revert
+fundMe.fund(); //no value is passed otherwiser fundMe.fund{}()
+```
