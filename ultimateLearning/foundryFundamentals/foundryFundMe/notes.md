@@ -133,3 +133,10 @@ Specify that next transaction sould revert.
 vm.expectRevert(); // indicates next line sould revert
 fundMe.fund(); //no value is passed otherwiser fundMe.fund{}()
 ```
+### vm.deal
+
+Send STARTING_BALANCE amount ETH to USER.
+
+```solidity
+vm.deal(USER, STARTING_BALANCE);
+```
