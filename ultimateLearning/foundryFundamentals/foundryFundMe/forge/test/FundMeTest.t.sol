@@ -25,11 +25,11 @@ contract FundMeTest is Test {
     }
 
     function testOwnerIsMsgSender() public view {
-        console.log(fundMe.i_owner());
+        console.log(fundMe.getOwner());
         console.log(msg.sender);
         //assertEq(fundMe.i_owner(), address(this)); //right when we used hardcoded value without using the deploy script
         // as test contract was the one deploying the contract
-        assertEq(fundMe.i_owner(), msg.sender); //back to msg.sender as deploy script use vm.startBroadcast
+        assertEq(fundMe.getOwner(), msg.sender); //back to msg.sender as deploy script use vm.startBroadcast
     }
 
     function testPriceFeedVersionIsAccurate() public view {
@@ -64,5 +64,47 @@ contract FundMeTest is Test {
         vm.prank(USER);
         vm.expectRevert();
         fundMe.withdraw();
+    }
+
+    function testWithdrawWithASingleFunder() public funded {
+        //Arrange
+        uint256 startingOwnerBalance = fundMe.getOwner().balance;
+        uint256 startingFundMeBalance = address(fundMe).balance;
+        //Act
+        vm.prank(fundMe.getOwner());
+        fundMe.withdraw();
+        //Assert
+        uint256 endingOwnerBalance = fundMe.getOwner().balance;
+        uint256 endingFundMeBalance = address(fundMe).balance;
+        assertEq(endingFundMeBalance, 0);
+        assertEq(
+            startingFundMeBalance + startingOwnerBalance,
+            endingOwnerBalance
+        );
+    }
+
+    function testWithdrawnFromMultipleFunders() public funded {
+        //Arrange
+        uint160 numberOfFunders = 10;
+        uint160 startingFunderIndex = 1;
+        for (uint160 i = startingFunderIndex; i < numberOfFunders; i++) {
+            hoax(address(i), SEND_VALUE);
+            fundMe.fund{value: SEND_VALUE}();
+        }
+
+        uint256 startingOwnerBalance = fundMe.getOwner().balance;
+        uint256 startingFundMeBalance = address(fundMe).balance;
+
+        //Act
+        vm.startPrank(fundMe.getOwner());
+        fundMe.withdraw();
+        vm.stopPrank();
+
+        //Assert
+        assert(address(fundMe).balance == 0);
+        assert(
+            startingOwnerBalance + startingFundMeBalance ==
+                fundMe.getOwner().balance
+        );
     }
 }
