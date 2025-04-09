@@ -140,3 +140,15 @@ Send STARTING_BALANCE amount ETH to USER.
 ```solidity
 vm.deal(USER, STARTING_BALANCE);
 ```
+
+### hoax
+
+Both prank and deal at the same time
+
+```solidity
+hoax(address(1), SEND_VALUE);
+```
+Next transaction will be initiated by address(1) and send SEND_VALUE amount in eth
+
+If you want a number to generate addresses you need to use uint160
+It has the same amount of bytes than an address
