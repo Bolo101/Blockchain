@@ -13,7 +13,7 @@ contract FundMe {
     mapping(address => uint256) private s_addressToAmountFunded;
     address[] public s_funders;
 
-    address public immutable i_owner;
+    address private immutable i_owner;
     uint256 public constant MINIMUM_USD = 5 * 10 ** 18;
     AggregatorV3Interface private s_priceFeed; //0x694AA1769357215DE4FAC081bf1f309aDC325306
 
@@ -94,5 +94,9 @@ contract FundMe {
 
     function getFunder(uint256 index) external view returns (address) {
         return s_funders[index];
+    }
+
+    function getOwner() external view returns (address) {
+        return i_owner;
     }
 }
