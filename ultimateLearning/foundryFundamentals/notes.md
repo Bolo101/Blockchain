@@ -353,3 +353,35 @@ Next transaction will be initiated by address(1) and send SEND_VALUE amount in e
 
 If you want a number to generate addresses you need to use uint160
 It has the same amount of bytes than an address
+
+## Chisel
+
+Write and test solidity directly in terminal.
+
+```solidity
+➜ uint256 cat = 1;
+➜ cat
+Type: uint256
+├ Hex: 0x1
+├ Hex (full word): 0x0000000000000000000000000000000000000000000000000000000000000001
+└ Decimal: 1
+```
+
+## Estimate gas cost
+
+Use **forge coverage**
+
+```solidity
+forge snapshot --m
+atch-test testWithdrawnFromMultipleFunders
+```
+On anvil the default gas price is set to zero.
+
+### txGasPrice
+If we want to simulate the transaction with actual gas price we use **txGasPrice** cheatcode
+
+### gasleft()
+
+To calculate the amount of gas required to execute a transaction or run a function we use **gasleft** function in solidity
+
+We need to determine **gasleft** amount before and after running the function.
