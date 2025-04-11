@@ -385,3 +385,17 @@ If we want to simulate the transaction with actual gas price we use **txGasPrice
 To calculate the amount of gas required to execute a transaction or run a function we use **gasleft** function in solidity
 
 We need to determine **gasleft** amount before and after running the function.
+
+## Storage 
+
+Visualize storage loyout spots
+
+```bash
+forge inspect FundMe storageLayout
+```
+
+Alternatively
+
+```bash
+cast storage CONTRACT_ADDRESS SLOT
+```
