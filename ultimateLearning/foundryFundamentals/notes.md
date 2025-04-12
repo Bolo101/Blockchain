@@ -172,7 +172,7 @@ forge script script/DeploySimpleStorage.s.sol \
 ## Interact with contract using cast
 
 ```bash
-cast send SimpleStorage_contract_address "store(uint256)" 123 --rppc-url $RPC_URL --private-key $PRIVATE_KEY
+cast send SimpleStorage_contract_address "store(uint256)" 123 --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 ```
 
 Only use environment variables for testing and using test keys without real funds
