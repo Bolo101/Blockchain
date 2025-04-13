@@ -175,6 +175,11 @@ forge script script/DeploySimpleStorage.s.sol \
 cast send SimpleStorage_contract_address "store(uint256)" 123 --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 ```
 
+## Send eth to contract
+
+```bash
+cast send CONTRACT_ADDRESS "receive()" --value 0.5ether --rpc-url $RPC_URL --private_key $PRIVATE_KEY
+
 Only use environment variables for testing and using test keys without real funds
 
 ## Read data from contract
