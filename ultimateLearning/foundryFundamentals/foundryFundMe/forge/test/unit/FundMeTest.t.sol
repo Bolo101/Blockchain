@@ -51,6 +51,9 @@ contract FundMeTest is Test {
     }
 
     function testAddsFunderToArrayOfFunders() public funded {
+        vm.prank(USER);
+        fundMe.fund{value: SEND_VALUE};
+
         address funder = fundMe.getFunder(0);
         assertEq(funder, USER);
     }
