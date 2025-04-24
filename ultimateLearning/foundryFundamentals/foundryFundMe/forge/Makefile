@@ -6,6 +6,8 @@ snapshot :; forge snapshot
 
 format :; forge fmt
 
+anvil :; anvil
+
 test :; forge test
 
 clean  :; forge clean
