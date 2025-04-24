@@ -404,3 +404,21 @@ Alternatively
 ```bash
 cast storage CONTRACT_ADDRESS SLOT
 ```
+
+# FundMe Frontend
+
+When connecting Metamask to website, Metamask injecte **window.ethereum** object.
+Metamask signs transactions for us. The private key stays on Metamask.
+
+## Function selector
+
+All functions in Solidity are transformed into bytecode, EVM low-level code.
+Metamask convert function such as "fund" into its function selector.
+
+We can get a function signature using cast
+```bash
+cast sig "fund()
+```
+
+When calling "fund()" function we can check for hex value and state it's the same.
+Function signature can be used to highligth call of malicious function instead of legit one.
