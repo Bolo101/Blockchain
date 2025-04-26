@@ -16,3 +16,6 @@
 [submodule "ultimateLearning/foundryFundamentals/foundryFundMe/forge/lib/foundry-devops"]
 	path = ultimateLearning/foundryFundamentals/foundryFundMe/forge/lib/foundry-devops
 	url = https://github.com/Cyfrin/foundry-devops
+[submodule "ultimateLearning/foundryFundamentals/foundryLottery/lib/forge-std"]
+	path = ultimateLearning/foundryFundamentals/foundryLottery/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
