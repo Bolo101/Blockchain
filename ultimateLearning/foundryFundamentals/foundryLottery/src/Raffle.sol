@@ -33,6 +33,10 @@ contract Raffle {
     error Raffle_SendMoreToEnterRaffle(); //good practice is to include contract name in error code
 
     uint256 private immutable i_entranceFee;
+    address payable[] private s_players;
+
+    /** Events */
+    event RaffleEntered(address indexed player);
 
     constructor(uint256 entranceFee) {
         i_entranceFee = entranceFee;
@@ -42,8 +46,10 @@ contract Raffle {
         //require(msg.value >= i_entranceFee, "Not enough ETH sent!")
         // require(msg.value >= i_entranceFee, SendMoreToEnterRaffle()); since 0.8.26 but less gas efficient
         if (msg.value < i_entranceFee) {
-            revert SendMoreToEnterRaffle();
+            revert Raffle_SendMoreToEnterRaffle();
         }
+        s_players.push(payable(msg.sender));
+        emit RaffleEntered(msg.sender);
     }
 
     function pickWinner() public {}

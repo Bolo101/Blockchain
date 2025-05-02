@@ -431,3 +431,19 @@ Custom errors reverting with if condition are less gas consumming than using a s
 Require use a stored string, causing high gas usage.
 New version of Solidity since 0.8.26 enables to raise an error instead of a string in require.
 Good practice is to include contract name in error code.
+
+## Events
+
+EVM can emit logs.
+Events allows to print information to the logging structure in a more gas efficient way than writing it into a storage variable.
+
+Events are used to "filter" request based on the event being listened.
+
+Events include a new keyword for its parameters : **indexed**
+Indexed paramaters (also called topics) are easier to query
+
+Not indexed parameters are harder to search as they are ABI encoded, you need to decode them to search
+
+Non indexed parameters cost less gas to print into the logs and are less searchable
+
+Everytime we update a storage we want to emit an event
