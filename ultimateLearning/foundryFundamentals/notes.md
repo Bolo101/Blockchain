@@ -422,3 +422,12 @@ cast sig "fund()
 
 When calling "fund()" function we can check for hex value and state it's the same.
 Function signature can be used to highligth call of malicious function instead of legit one.
+
+# Lottery Raffle
+
+## Custom error
+
+Custom errors reverting with if condition are less gas consumming than using a standart require.
+Require use a stored string, causing high gas usage.
+New version of Solidity since 0.8.26 enables to raise an error instead of a string in require.
+Good practice is to include contract name in error code.

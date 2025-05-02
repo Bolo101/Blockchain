@@ -30,7 +30,7 @@ pragma solidity 0.8.19;
  * @dev Implements Chainlink VRFv2.5
  */
 contract Raffle {
-    error SendMoreToEnterRaffle();
+    error Raffle_SendMoreToEnterRaffle(); //good practice is to include contract name in error code
 
     uint256 private immutable i_entranceFee;
 
@@ -40,7 +40,7 @@ contract Raffle {
 
     function enterRaffle() public payable {
         //require(msg.value >= i_entranceFee, "Not enough ETH sent!")
-        // require(msg.value >= i_entranceFee, SendMoreToEnterRaffle()); since 0.8.26
+        // require(msg.value >= i_entranceFee, SendMoreToEnterRaffle()); since 0.8.26 but less gas efficient
         if (msg.value < i_entranceFee) {
             revert SendMoreToEnterRaffle();
         }
