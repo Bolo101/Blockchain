@@ -33,13 +33,18 @@ contract Raffle {
     error Raffle_SendMoreToEnterRaffle(); //good practice is to include contract name in error code
 
     uint256 private immutable i_entranceFee;
+    // @dev The duration of the lottery in seconds
+    uint256 private immutable i_interval;
     address payable[] private s_players;
+    uint256 private s_lastTimeStamp;
 
     /** Events */
     event RaffleEntered(address indexed player);
 
-    constructor(uint256 entranceFee) {
+    constructor(uint256 entranceFee, uint256 interval) {
         i_entranceFee = entranceFee;
+        i_interval = interval;
+        s_lastTimeStamp = block.timestamp;
     }
 
     function enterRaffle() public payable {
@@ -52,10 +57,18 @@ contract Raffle {
         emit RaffleEntered(msg.sender);
     }
 
-    function pickWinner() public {}
+    // Get random winner
+    // Use random number to pick a player
+    // Be automatically called
+    function pickWinner() public {
+        // chec to see if enough time has passed
+        if ((block.timestamp - s_lastTimeStamp) < i_interval) {
+            revert();
+        }
+    }
 
     /**
-     * Getters
+     * Getter functions
      */
     function getEntranceFee() external view returns (uint256) {
         return i_entranceFee;

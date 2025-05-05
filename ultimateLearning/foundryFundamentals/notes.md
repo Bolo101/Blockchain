@@ -447,3 +447,6 @@ Not indexed parameters are harder to search as they are ABI encoded, you need to
 Non indexed parameters cost less gas to print into the logs and are less searchable
 
 Everytime we update a storage we want to emit an event
+
+## Block.timestamp
+
