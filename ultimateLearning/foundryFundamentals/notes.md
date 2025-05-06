@@ -448,5 +448,23 @@ Non indexed parameters cost less gas to print into the logs and are less searcha
 
 Everytime we update a storage we want to emit an event
 
-## Block.timestamp
+## block.timestamp
 
+
+## VRF
+
+### Chainlink VRF 2.5 Explained
+
+Chainlink VRF (Verifiable Random Function) 2.5 is an upgraded version of Chainlink's random number generation service for blockchain applications. Here's a brief explanation:
+
+Chainlink VRF 2.5 provides cryptographically secure, tamper-proof random numbers for smart contracts. The key improvements in version 2.5 include:
+
+1. Enhanced subscription model that allows developers to fund VRF requests for multiple contracts from a single subscription
+2. Significantly reduced gas costs compared to previous versions
+3. Faster response times for random number delivery
+4. Higher throughput capacity for applications requiring frequent randomness
+5. Improved security through enhanced cryptographic proofs that verify the randomness is both unpredictable and unbiased
+
+This random number generation is crucial for applications like NFT distribution, gaming mechanics, randomized rewards in DeFi, fair selection processes, and any blockchain use case requiring provably fair randomness.
+
+The system works by combining on-chain user-provided seed data with off-chain cryptographic operations, then delivering verifiable proofs along with the random values to ensure transparency and security.

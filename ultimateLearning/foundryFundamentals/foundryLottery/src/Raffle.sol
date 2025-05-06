@@ -23,6 +23,8 @@
 
 pragma solidity 0.8.19;
 
+import {VRFConsumerBaseV2Plus} from "@chainlink/contracts@1.3.0/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+
 /**
  * @title A simple Raffle contract
  * @author zkBolo
@@ -65,6 +67,22 @@ contract Raffle {
         if ((block.timestamp - s_lastTimeStamp) < i_interval) {
             revert();
         }
+        // Get random number
+        // 1. Request RNG
+        requestId = s_vrfCoordinator.requestRandomWords(
+            VRFV2PlusClient.RandomWordsRequest({
+                keyHash: s_keyHash,
+                subId: s_subscriptionId,
+                requestConfirmations: requestConfirmations,
+                callbackGasLimit: callbackGasLimit,
+                numWords: numWords,
+                extraArgs: VRFV2PlusClient._argsToBytes(
+                    // Set nativePayment to true to pay for VRF requests with Sepolia ETH instead of LINK
+                    VRFV2PlusClient.ExtraArgsV1({nativePayment: false})
+                )
+            })
+        );
+        // 2. Get RNG
     }
 
     /**
