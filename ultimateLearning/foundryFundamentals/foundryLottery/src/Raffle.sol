@@ -89,11 +89,11 @@ contract Raffle is VRFConsumerBaseV2Plus {
         // 1. Request RNG
         VRFV2PlusClient.RandomWordsRequest memory request = VRFV2PlusClient
             .RandomWordsRequest({
-                keyHash: i_keyHash,
-                subId: i_subscriptionId,
-                requestConfirmations: REQUEST_CONFIRMATON,
-                callbackGasLimit: i_callbackGasLimit,
-                numWords: NUM_WORDS,
+                keyHash: i_keyHash, // gas length / gas price to interact with Chainlink node
+                subId: i_subscriptionId, // how we fund the oracle for working with Chainlink VRF
+                requestConfirmations: REQUEST_CONFIRMATON, // how many blocks we must wait for the Chainlink node to give us a random number
+                callbackGasLimit: i_callbackGasLimit, // Gas limit to limit gas on the callback
+                numWords: NUM_WORDS, // how many random number that we want
                 extraArgs: VRFV2PlusClient._argsToBytes(
                     // Set nativePayment to true to pay for VRF requests with Sepolia ETH instead of LINK
                     VRFV2PlusClient.ExtraArgsV1({nativePayment: false})
