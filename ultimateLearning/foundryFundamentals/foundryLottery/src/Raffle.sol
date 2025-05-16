@@ -34,6 +34,7 @@ import {VRFV2PlusClient} from "@chainlink/contracts@1.3.0/src/v0.8/vrf/dev/libra
  */
 contract Raffle is VRFConsumerBaseV2Plus {
     error Raffle_SendMoreToEnterRaffle(); //good practice is to include contract name in error code
+    error Raffle__TransferFailed();
 
     uint16 private constant REQUEST_CONFIRMATON = 3;
     uint32 private constant NUM_WORDS = 1;
@@ -45,6 +46,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
     uint32 private immutable i_callbackGasLimit;
     address payable[] private s_players;
     uint256 private s_lastTimeStamp;
+    address private s_recentWinner;
 
     /**
      * Events
@@ -86,7 +88,6 @@ contract Raffle is VRFConsumerBaseV2Plus {
             revert();
         }
         // Get random number
-        // 1. Request RNG
         VRFV2PlusClient.RandomWordsRequest memory request = VRFV2PlusClient
             .RandomWordsRequest({
                 keyHash: i_keyHash, // gas length / gas price to interact with Chainlink node
@@ -100,13 +101,20 @@ contract Raffle is VRFConsumerBaseV2Plus {
                 )
             });
         uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
-        // 2. Get RNG
     }
 
     function fulfillRandomWords(
         uint256 requestId,
         uint256[] calldata randomWords
-    ) internal override {}
+    ) internal override {
+        uint256 indexOfWinner = randomWords[0] % s_players.length;
+        address payable recentWinner = s_players[indexOfWinner];
+        s_recentWinner = recentWinner;
+        (bool success, ) = recentWinner.call{value: address(this).balance}("");
+        if (!success) {
+            revert Raffle__TransferFailed();
+        }
+    }
 
     /**
      * Getter functions
