@@ -35,7 +35,15 @@ import {VRFV2PlusClient} from "@chainlink/contracts@1.3.0/src/v0.8/vrf/dev/libra
 contract Raffle is VRFConsumerBaseV2Plus {
     error Raffle_SendMoreToEnterRaffle(); //good practice is to include contract name in error code
     error Raffle__TransferFailed();
+    error Raffle__RaffleNotOpen();
 
+    /* Type Declarations */
+    enum RaffleState {
+        OPEN, //0
+        CALCULATING //1
+    }
+
+    /* State Variables */
     uint16 private constant REQUEST_CONFIRMATON = 3;
     uint32 private constant NUM_WORDS = 1;
     uint256 private immutable i_entranceFee;
@@ -47,6 +55,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
     address payable[] private s_players;
     uint256 private s_lastTimeStamp;
     address private s_recentWinner;
+    RaffleState private s_raffleState;
 
     /**
      * Events
@@ -67,6 +76,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
         i_keyHash = gasLane;
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
+
+        s_raffleState = RaffleState.OPEN;
     }
 
     function enterRaffle() public payable {
@@ -74,6 +85,9 @@ contract Raffle is VRFConsumerBaseV2Plus {
         // require(msg.value >= i_entranceFee, SendMoreToEnterRaffle()); since 0.8.26 but less gas efficient
         if (msg.value < i_entranceFee) {
             revert Raffle_SendMoreToEnterRaffle();
+        }
+        if (s_raffleState != RaffleState.OPEN) {
+            revert Raffle__RaffleNotOpen();
         }
         s_players.push(payable(msg.sender));
         emit RaffleEntered(msg.sender);
@@ -87,6 +101,9 @@ contract Raffle is VRFConsumerBaseV2Plus {
         if ((block.timestamp - s_lastTimeStamp) < i_interval) {
             revert();
         }
+
+        s_raffleState = RaffleState.CALCULATING;
+
         // Get random number
         VRFV2PlusClient.RandomWordsRequest memory request = VRFV2PlusClient
             .RandomWordsRequest({
@@ -110,6 +127,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
         uint256 indexOfWinner = randomWords[0] % s_players.length;
         address payable recentWinner = s_players[indexOfWinner];
         s_recentWinner = recentWinner;
+        s_raffleState = RaffleState.OPEN;
         (bool success, ) = recentWinner.call{value: address(this).balance}("");
         if (!success) {
             revert Raffle__TransferFailed();
