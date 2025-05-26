@@ -36,6 +36,11 @@ contract Raffle is VRFConsumerBaseV2Plus {
     error Raffle_SendMoreToEnterRaffle(); //good practice is to include contract name in error code
     error Raffle__TransferFailed();
     error Raffle__RaffleNotOpen();
+    error Raffle__UpkeepNotNeeded(
+        uint256 balance,
+        uint256 playersLength,
+        uint256 raffleState
+    ); // Could also use RaffleState raffleState
 
     /* Type Declarations */
     enum RaffleState {
@@ -124,7 +129,11 @@ contract Raffle is VRFConsumerBaseV2Plus {
         // Check
         (bool upkeepNeeded, ) = checkUpkeep("");
         if (!upkeepNeeded) {
-            revert();
+            revert Raffle__UpkeepNotNeeded(
+                address(this).balance,
+                s_players.length,
+                uint256(s_raffleState)
+            );
         }
 
         // Effect
@@ -145,12 +154,12 @@ contract Raffle is VRFConsumerBaseV2Plus {
             });
 
         // Interactions
-        uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
+        s_vrfCoordinator.requestRandomWords(request);
     }
 
     // CEI : Check, Effects, Interactions Pattern
     function fulfillRandomWords(
-        uint256 requestId,
+        uint256 /* requestId */,
         uint256[] calldata randomWords
     ) internal override {
         //Checks
