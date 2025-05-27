@@ -417,7 +417,7 @@ Metamask convert function such as "fund" into its function selector.
 
 We can get a function signature using cast
 ```bash
-cast sig "fund()
+cast sig "fund()"
 ```
 
 When calling "fund()" function we can check for hex value and state it's the same.
