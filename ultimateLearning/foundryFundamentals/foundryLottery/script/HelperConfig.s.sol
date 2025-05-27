@@ -3,6 +3,7 @@
 pragma solidity 0.8.19;
 
 import {Script} from "forge-std/Script.sol";
+import {VRFCoordinatorV2_5Mock} from "@chainlink/contracts@1.3.0/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 
 abstract contract CodeConstants {
     uint256 public constant ETH_SEPOLIA_CHAIN_ID = 1115511;
@@ -24,7 +25,7 @@ contract HelperConfig is Script, CodeConstants {
     NetworkConfig public localNetworkConfig;
     mapping(uint256 chainId => NetworkConfig) public networkConfigs;
 
-    contructor () {
+    constructor() {
         networkConfigs[ETH_SEPOLIA_CHAIN_ID] = getSepoliaEthConfig();
     }
 
@@ -32,7 +33,7 @@ contract HelperConfig is Script, CodeConstants {
         if(networkConfigs[chainId].vrfCoordinator != address(0)){
             return networkConfigs[chainId];
         } else if (chainId == LOCAL_CHAIN_ID){
-
+            return getOrCreateAnvilEthConfig;
         } else {
             revert HelperConfig__InvalidChainId();
         }
@@ -53,5 +54,6 @@ contract HelperConfig is Script, CodeConstants {
         if (localNetworkConfig.vrfCoordinator != address(0)){
             return localNetworkConfig;
         }
+        // Deploy mocks
     }
 }
