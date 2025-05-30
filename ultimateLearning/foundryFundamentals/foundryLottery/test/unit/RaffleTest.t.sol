@@ -36,4 +36,10 @@ contract RaffleTest is Test {
     function testRaffleInitializedInOpenState() public view {
         assert(raffle.getRaffleState() == Raffle.RaffleState.OPEN);
     }
+
+    function testRaffleRevertsWhenYouDontPayEnough() public {
+        vm.prank(PLAYER);
+        vm.expectRevert(Raffle.Raffle_SendMoreToEnterRaffle.selector);
+        raffle.enterRaffle();
+    }
 }
