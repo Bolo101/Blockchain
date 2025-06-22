@@ -468,3 +468,15 @@ Chainlink VRF 2.5 provides cryptographically secure, tamper-proof random numbers
 This random number generation is crucial for applications like NFT distribution, gaming mechanics, randomized rewards in DeFi, fair selection processes, and any blockchain use case requiring provably fair randomness.
 
 The system works by combining on-chain user-provided seed data with off-chain cryptographic operations, then delivering verifiable proofs along with the random values to ensure transparency and security.
+
+### Create Subscription
+
+To be able to test our perforUpkeepk function we need to have a valid subscription ID.
+To do so we can use the UI on vrf.chain.link or create a deploy script to automate process.
+vrfCoordinator have a subscription ID creation function. We connect to the UI to create a subscription.
+
+When verifying signatures we can use openchain.xyz to give hex and check in database if function is know. 
+Otherwise from function name to hex we use **cast sig**
+
+To create a signature we use the **createSubsription** function from **SubscriptionAPI.sol** imported in mock.
+ 
