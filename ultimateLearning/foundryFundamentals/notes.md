@@ -479,4 +479,12 @@ When verifying signatures we can use openchain.xyz to give hex and check in data
 Otherwise from function name to hex we use **cast sig**
 
 To create a signature we use the **createSubsription** function from **SubscriptionAPI.sol** imported in mock.
- 
+
+### Fund Subscription
+
+On Sepolia testnet chain we are using will fund our subscription using link token.
+
+- For Sepolia chain : We retrieve token contract address from [chainlink documentation](https://docs.chain.link/resources/link-token-contracts#sepolia-testnet)
+- For local chain : we create a mock contract of chainlink token to func subscription
+
+
