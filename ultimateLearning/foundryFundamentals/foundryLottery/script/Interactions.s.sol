@@ -50,17 +50,17 @@ contract FundSubscription is Script, CodeConstants {
 
     function fundSubscription(
         address vrfCoordinator,
-        uint256 susbcriptionId,
+        uint256 subscriptionId,
         address linkToken
     ) public {
-        console.log("Funding subscription: ", susbcriptionId);
+        console.log("Funding subscription: ", subscriptionId);
         console.log("Using vrfCoordinator: ", vrfCoordinator);
         console.log("On ChainId: ", block.chainid);
 
         if (block.chainid == LOCAL_CHAIN_ID) {
             vm.startBroadcast();
             VRFCoordinatorV2_5Mock(vrfCoordinator).fundSubscription(
-                susbcriptionId,
+                subscriptionId,
                 FUND_AMOUNT
             );
             vm.stopBroadcast();
@@ -69,7 +69,7 @@ contract FundSubscription is Script, CodeConstants {
             LinkToken(linkToken).transferAndCall(
                 vrfCoordinator,
                 FUND_AMOUNT,
-                abi.encode(susbcriptionId)
+                abi.encode(subscriptionId)
             );
             vm.stopBroadcast();
         }
