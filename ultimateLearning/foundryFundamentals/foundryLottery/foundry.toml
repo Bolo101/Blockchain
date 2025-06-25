@@ -8,4 +8,10 @@ remappings = [
     "@solmate=lib/solmate/src",
 ]
 
+# Update foundry.toml to have read permissions on the broadcast folder
+fs_permissions = [
+    { access = "read", path = "./broadcast" },
+    { access = "read", path = "./reports" },
+]
+
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
