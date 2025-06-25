@@ -99,6 +99,7 @@ contract AddConsumer is Script {
             subId,
             contractToAddToVrf
         );
+        vm.stopBroadcast();
     }
 
     function run() external {
