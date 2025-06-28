@@ -487,4 +487,11 @@ On Sepolia testnet chain we are using will fund our subscription using link toke
 - For Sepolia chain : We retrieve token contract address from [chainlink documentation](https://docs.chain.link/resources/link-token-contracts#sepolia-testnet)
 - For local chain : we create a mock contract of chainlink token to fund subscription
 
+### Forge coverage
 
+To get details about uncovered lines:
+```bash
+forge coverage --report debug
+```
+
+This way we can see what tests need to be crafted
