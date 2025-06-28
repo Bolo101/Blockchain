@@ -57,6 +57,7 @@ contract RaffleTest is Test {
 
     function testEnterRaffleEmitsEvent() public {
         vm.prank(PLAYER);
+        // true is do to indexed event. Without indexed if would be false. No data are transmetted so fourth is false
         vm.expectEmit(true, false, false, false, address(raffle));
         emit RaffleEntered(PLAYER);
         raffle.enterRaffle{value: entranceFee}();
