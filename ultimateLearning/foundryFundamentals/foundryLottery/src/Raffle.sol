@@ -64,6 +64,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
      */
     event RaffleEntered(address indexed player);
     event WinnerPicked(address indexed winner);
+    event RequestedRaffleWinner(uint256 indexed requestId);
 
     constructor(
         uint256 entranceFee,
@@ -147,7 +148,9 @@ contract Raffle is VRFConsumerBaseV2Plus {
         });
 
         // Interactions
-        s_vrfCoordinator.requestRandomWords(request);
+        uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
+        // Redundant, done by vrfCoordinator
+        emit RequestedRaffleWinner(requestId);
     }
 
     // CEI : Check, Effects, Interactions Pattern
