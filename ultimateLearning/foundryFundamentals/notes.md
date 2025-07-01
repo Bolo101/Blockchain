@@ -495,3 +495,18 @@ forge coverage --report debug
 ```
 
 This way we can see what tests need to be crafted
+
+### Vm.Logs
+
+After catching logs using **vm.recordLogs** we use Vm.Logs to get through the result.
+
+The entries[0] is for events emitted by requestRandomWords from vrfCoordinator.
+So entries[1] is for our event. topics[0] is a reserved slot, our topic starts at index 1.
+Do not forget to import Vm from forge std library
+
+## Fuzz testting
+
+Use fuzzing instead of repeting manual incrementation
+
+To do so add an uint256 argument to your test.
+By adding this the test will be run 256 times by default (can be changed in toml file under **runs**)
