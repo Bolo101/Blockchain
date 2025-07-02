@@ -109,7 +109,18 @@ contract RaffleTest is Test {
 
     // Challenge
 
-    // testCheckUpkeepReturnsFalseIfEnoughTimeHasntPassed
+    function testCheckUpkeepReturnsFalseIfEnoughTimeHasntPassed() public {
+        // Arrange
+        vm.prank(PLAYER);
+        raffle.enterRaffle{value: entranceFee}();
+
+        // Act
+        (bool upkeepNeeded, ) = raffle.checkUpkeep("");
+
+        // Assert
+        assert(!upkeepNeeded);
+    }
+
     // testCheckUpkeepReturnsTrueWhenParametersAreGood
 
     /*//////////////////////////////////////////////////////////////
