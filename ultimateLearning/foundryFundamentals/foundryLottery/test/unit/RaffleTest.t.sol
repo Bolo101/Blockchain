@@ -107,7 +107,9 @@ contract RaffleTest is Test {
         assert(!upkeepNeeded);
     }
 
-    // Challenge
+    /*//////////////////////////////////////////////////////////////
+                            CHALLENGE TESTS
+    //////////////////////////////////////////////////////////////*/
 
     function testCheckUpkeepReturnsFalseIfEnoughTimeHasntPassed() public {
         // Arrange
@@ -121,7 +123,19 @@ contract RaffleTest is Test {
         assert(!upkeepNeeded);
     }
 
-    // testCheckUpkeepReturnsTrueWhenParametersAreGood
+    function testCheckUpkeepReturnsTrueWhenParametersAreGood() public {
+        // Arrange
+        vm.prank(PLAYER);
+        raffle.enterRaffle{value: entranceFee}();
+        vm.warp(block.timestamp + interval + 1);
+        vm.roll(block.number + 1);
+
+        // Act
+        (bool upkeepNeeded, ) = raffle.checkUpkeep("");
+
+        // Assert
+        assert(upkeepNeeded);
+    }
 
     /*//////////////////////////////////////////////////////////////
                              PERFORM UPKEEP
