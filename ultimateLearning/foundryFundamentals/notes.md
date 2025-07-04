@@ -510,3 +510,9 @@ Use fuzzing instead of repeting manual incrementation
 
 To do so add an uint256 argument to your test.
 By adding this the test will be run 256 times by default (can be changed in toml file under **runs**)
+
+## Forked test environment and private key
+
+When trying to deploy smart contract on Sepolia testnet we receive a **MustBeSubOwner**
+We can use **vm.startBroadcast()** and provide a private key
+To do so we add a **address account** in our HelperConfig file. It is the address of our private key from test account. From **Base.sol** file we use default tx.origin address for local instance
