@@ -516,3 +516,32 @@ By adding this the test will be run 256 times by default (can be changed in toml
 When trying to deploy smart contract on Sepolia testnet we receive a **MustBeSubOwner**
 We can use **vm.startBroadcast()** and provide a private key
 To do so we add a **address account** in our HelperConfig file. It is the address of our private key from test account. From **Base.sol** file we use default tx.origin address for local instance
+
+## fundSubcription using script
+
+```bash
+forge script script/Interactions.s.sol:FundSubscription --rpc-url $SEPOLIA_AL --account metamask --broadcast
+```
+
+## Deploy contract
+
+```bash
+forge script script/DeployRaffle.s.sol:DeployRaffle --rpc-url $(SEPOLIA_AL) --account metamask --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
+```
+
+### Verify contract
+
+```bash
+forge verify-contract CONTRACT_ADDRESS src/Raffle.sol:Raffle --etherscan-api-key $ETHERSCAN_API_KEY --rpc-url $SEPOLIA_AL --show-standard-json-input > json.json
+```
+
+Once run we go on Etherscan and verify contract by providing the output file
+
+## Interact using Etherscan
+
+On contract tab go to Contract > Read Contract > Connect - Web3 
+Connect your wallet to read contract state
+For *checkUpkeep*: insert 0x00
+
+To interact and participate to the raffle switch to **Write Contract**
+
