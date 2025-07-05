@@ -79,7 +79,9 @@ contract FundSubscription is Script, CodeConstants {
         }
     }
 
-    function run() public {}
+    function run() public {
+        fundSubscriptionUsingConfig();
+    }
 }
 
 contract AddConsumer is Script {
