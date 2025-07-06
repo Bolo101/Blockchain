@@ -545,3 +545,12 @@ For *checkUpkeep*: insert 0x00
 
 To interact and participate to the raffle switch to **Write Contract**
 
+## Logging
+
+Remerber to remove debug logging when deploying contract as it costs extra gas
+
+## Debug using forge test
+
+```bash
+forge test --debug TEST_TO_RUN
+```

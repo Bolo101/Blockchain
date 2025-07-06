@@ -25,6 +25,7 @@ pragma solidity 0.8.19;
 
 import {VRFConsumerBaseV2Plus} from "@chainlink/contracts@1.3.0/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
 import {VRFV2PlusClient} from "@chainlink/contracts@1.3.0/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
+import {console} from "forge-std/console.sol";
 
 /**
  * @title A simple Raffle contract
@@ -88,6 +89,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
     }
 
     function enterRaffle() public payable {
+        //console.log("Entering raffle");
+        //console.log(msg.value);
         //require(msg.value >= i_entranceFee, "Not enough ETH sent!")
         // require(msg.value >= i_entranceFee, SendMoreToEnterRaffle()); since 0.8.26 but less gas efficient
         if (msg.value < i_entranceFee) {
