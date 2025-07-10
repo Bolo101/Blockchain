@@ -14,3 +14,14 @@ To be valid a SKP should be :
 - Zero-Knowledge : The verifier must learn nothing except the provers's statement is true
 
 The key benefit of using Zero-knowledge Proofs in ZK-Rollups is to improve scalability by bunding transactions and verifying them with a single proof
+
+## Interactive vs Non-Interactive ZKPs
+
+Ali Baba cave puzzle
+Interactive is for multiple rounds of communication where you have to repeat a challenge several times. By repeting the challenge (with some changes but still same result expected) correctly several times the odds of guessing decreases.
+
+Interactive ZKPs are not suitable for blockchain purposes as you need to maintain a state between rounds and store all that data.
+
+With non-interactive ZKPs you can prove a secret to all people in a single round.
+
+## ZK Terminology
