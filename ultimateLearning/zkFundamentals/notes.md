@@ -25,3 +25,19 @@ Interactive ZKPs are not suitable for blockchain purposes as you need to maintai
 With non-interactive ZKPs you can prove a secret to all people in a single round.
 
 ## ZK Terminology
+
+- Claim / Statement : an assertion that something is true. In ZKPs it refers to the property being proven without being revealed
+
+- Private and public inputs : 
+1. Private inputs are inputs to the system which are only known to the prover and not the verifier
+2. Public inputs are inputs known to both the prover and the verifier
+
+- Constraint : Mathematical condition which must be satisfied in order for the claim to be valid. It defines the rules the inputs must follow
+
+- Circuit : A system of constraints makes up the circuit. The circuit defines how the contraints work together
+
+- Witness : The set of private values that allow a prover to demonstrate that their claim is valid. The witness must satisfy the contraints of the circuit and can integrate intermediary calculation
+
+- Prover : Entity that generates the proof of computation to demonstrate knowledge of the witness while satisfying the circuit constraints
+
+- Verifier : Entity that checks whether the proof is valid or not
