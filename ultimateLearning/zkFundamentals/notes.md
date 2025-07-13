@@ -41,3 +41,17 @@ With non-interactive ZKPs you can prove a secret to all people in a single round
 - Prover : Entity that generates the proof of computation to demonstrate knowledge of the witness while satisfying the circuit constraints
 
 - Verifier : Entity that checks whether the proof is valid or not
+
+- Trusted Setup : It is a procedure that is done once to generate data that must be used every time some cryptographic protocol is run
+
+- Toxic waste : leaked secret that can be used bu attacker to forge fake proofs
+
+- Common reference string : A set of public parameters that both the prover and the verifier use in the proof generation and verification processes
+
+- Structured Reference String : Structured data (can be a point on an elliptic curve)
+
+- Multi-Party Computation : Use of several parties to compute to get final secret
+
+- Powers of Tau : "Powers of Tau" refers to a specific type of trusted setup ceremony (and the resulting SRS) commonly used in SNARKs like Groth16 and PLONK. The SRS generated contains a series of elliptic curve points representing successive powers of the secret tau, such as G, τ·G, τ²·G, ..., τᵏ·G, where G is a generator point of an elliptic curve.
+
+- Polynomial Commitment Schemes : A polynomial commitment scheme is a cryptographic tool that allows a prover to commit to a polynomial P(x) in a way that hides its coefficients, yet allows them to later prove certain properties about P(x) (like its evaluation at a specific point) without revealing the entire polynomial.
