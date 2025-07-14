@@ -55,3 +55,11 @@ With non-interactive ZKPs you can prove a secret to all people in a single round
 - Powers of Tau : "Powers of Tau" refers to a specific type of trusted setup ceremony (and the resulting SRS) commonly used in SNARKs like Groth16 and PLONK. The SRS generated contains a series of elliptic curve points representing successive powers of the secret tau, such as G, τ·G, τ²·G, ..., τᵏ·G, where G is a generator point of an elliptic curve.
 
 - Polynomial Commitment Schemes : A polynomial commitment scheme is a cryptographic tool that allows a prover to commit to a polynomial P(x) in a way that hides its coefficients, yet allows them to later prove certain properties about P(x) (like its evaluation at a specific point) without revealing the entire polynomial.
+
+- SNARK : A SNARK in the context of zero-knowledge proofs stands for Succinct Non-interactive ARgument of Knowledge. It is a cryptographic protocol that lets one party (the prover) convince another party (the verifier) that they know a secret or that a computation was performed correctly—without revealing any details about the secret itself.
+
+## Proof of computation
+
+More than just proving a knowledge, ZKPs can be used to prove a computation.
+
+Proof of compuation implies proof of knowledge of the private inputs 
