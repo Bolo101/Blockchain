@@ -50,7 +50,7 @@ With non-interactive ZKPs you can prove a secret to all people in a single round
 
 - Structured Reference String : Structured data (can be a point on an elliptic curve)
 
-- Multi-Party Computation : Use of several parties to compute to get final secret
+- Multi-Party Computation : Use of several parties to compute to get final secret. The overall secret (τ) remains secure and unrecoverable as long as at least one participant acts honestly and destroys their secret contribution.
 
 - Powers of Tau : "Powers of Tau" refers to a specific type of trusted setup ceremony (and the resulting SRS) commonly used in SNARKs like Groth16 and PLONK. The SRS generated contains a series of elliptic curve points representing successive powers of the secret tau, such as G, τ·G, τ²·G, ..., τᵏ·G, where G is a generator point of an elliptic curve.
 
