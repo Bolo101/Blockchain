@@ -62,4 +62,12 @@ With non-interactive ZKPs you can prove a secret to all people in a single round
 
 More than just proving a knowledge, ZKPs can be used to prove a computation.
 
-Proof of compuation implies proof of knowledge of the private inputs 
+Proof of compuation implies proof of knowledge of the private inputs
+
+## Requirements of zeo-knowledge
+
+- Completeness : if a statement is valid, a prover must always be able to convince a verifier if they have knowledge of the witness
+
+- Soundness : it must be practically impossible for a dishonest prover to convince an honest verifier with an invalid witness
+
+- Zero-Knowledge : the verifier must learn nothing other than the provers knowledge of a witness to the statement
