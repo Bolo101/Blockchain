@@ -71,3 +71,9 @@ Proof of compuation implies proof of knowledge of the private inputs
 - Soundness : it must be practically impossible for a dishonest prover to convince an honest verifier with an invalid witness
 
 - Zero-Knowledge : the verifier must learn nothing other than the provers knowledge of a witness to the statement
+
+## Create a ZKP
+
+- Front-End : Arithmetization & contraint system written in a language like Noir in ACIR. Code is compiled to generate the witness
+
+- Back-End : Proof generation using the ACIR and create a proof of execution. It demonstrates knowledge of the correct solution to the circuit without revealing the secret. The verifier checks the proof against to prover as a verification
