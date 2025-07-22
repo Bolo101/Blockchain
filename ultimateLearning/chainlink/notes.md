@@ -57,3 +57,27 @@ It describes, using structured data, exactly what functions and data types are a
 - Functions/variables: camelCase (like balanceOf)
 
 - Private/internal state variables: prefix with _ (like _owner)
+
+## Libraries and Inheritance
+
+- Library : Libraries are reusable pieces of code that you can share across multiple contracts. Think of them as toolboxes containing helpful functions that your contracts can use.
+
+1. Embedded Libraries: Use internal functions that get copied into your contract's code
+
+2. Linked Libraries: Use external and public functions. These functions don't get copied into your contract's bytecode - instead, your contract makes calls to the deployed library
+
+- Inheritance : Inheritance lets one contract build upon another. Think of it like building with blocks—you start with a foundation and add more features.
+
+In Inheritance we can override functions or extend them using **super**
+
+```solidity
+contract ExtendedToken is BaseToken {
+    function getTokenName() public override pure returns (string memory) {
+        // Call the parent function and add to it using the super keyword
+        return string.concat(super.getTokenName(), " Plus");
+        // Returns "BaseToken Plus"
+    }
+}
+```
+
+When using inheritance parent contracts import order is important. If two contracts contain a function with the same name and child contract uses of super with the function name, then it will use function from first inherited contract
