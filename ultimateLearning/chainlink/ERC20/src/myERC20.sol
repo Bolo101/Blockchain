@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.19;
 
-import {ERC20} from "@openzeppelin/contracts@5.2.0/token/ERC20/ERC20.sol";
+import {ERC20} from "@openzeppelin/contracts@5.4.0/token/ERC20/ERC20.sol";
 
 contract MyERC20 is ERC20 {
     constructor() ERC20("Bolo Token", "BOL") {}
