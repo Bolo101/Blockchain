@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v5.4.0) (token/ERC20/ERC20.sol)
+// OpenZeppelin Contracts (last updated v5.2.0) (token/ERC20/ERC20.sol)
 
 pragma solidity ^0.8.20;
 
@@ -39,7 +39,8 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
     /**
      * @dev Sets the values for {name} and {symbol}.
      *
-     * Both values are immutable: they can only be set once during construction.
+     * All two of these values are immutable: they can only be set once during
+     * construction.
      */
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
@@ -78,12 +79,16 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
         return 18;
     }
 
-    /// @inheritdoc IERC20
+    /**
+     * @dev See {IERC20-totalSupply}.
+     */
     function totalSupply() public view virtual returns (uint256) {
         return _totalSupply;
     }
 
-    /// @inheritdoc IERC20
+    /**
+     * @dev See {IERC20-balanceOf}.
+     */
     function balanceOf(address account) public view virtual returns (uint256) {
         return _balances[account];
     }
@@ -102,7 +107,9 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
         return true;
     }
 
-    /// @inheritdoc IERC20
+    /**
+     * @dev See {IERC20-allowance}.
+     */
     function allowance(address owner, address spender) public view virtual returns (uint256) {
         return _allowances[owner][spender];
     }
@@ -234,7 +241,7 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
     }
 
     /**
-     * @dev Sets `value` as the allowance of `spender` over the `owner`'s tokens.
+     * @dev Sets `value` as the allowance of `spender` over the `owner` s tokens.
      *
      * This internal function is equivalent to `approve`, and can be used to
      * e.g. set automatic allowances for certain subsystems, etc.
@@ -284,7 +291,7 @@ abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors {
     }
 
     /**
-     * @dev Updates `owner`'s allowance for `spender` based on spent `value`.
+     * @dev Updates `owner` s allowance for `spender` based on spent `value`.
      *
      * Does not update the allowance value in case of infinite allowance.
      * Revert if not enough allowance is available.

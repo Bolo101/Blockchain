@@ -96,7 +96,7 @@ describe('Governor', function () {
         );
       });
 
-      shouldSupportInterfaces(['ERC1155Receiver', 'Governor', 'Governor_5_3']);
+      shouldSupportInterfaces(['ERC1155Receiver', 'Governor']);
       shouldBehaveLikeERC6372(mode);
 
       it('deployment check', async function () {
@@ -198,35 +198,31 @@ describe('Governor', function () {
       });
 
       describe('vote with signature', function () {
-        it('votes with an EOA signature on two proposals', async function () {
+        it('votes with an EOA signature', async function () {
           await this.token.connect(this.voter1).delegate(this.userEOA);
 
-          for (let i = 0; i < 2; i++) {
-            const nonce = await this.mock.nonces(this.userEOA);
+          const nonce = await this.mock.nonces(this.userEOA);
 
-            // Run proposal
-            await this.helper.propose();
-            await this.helper.waitForSnapshot();
-            await expect(
-              this.helper.vote({
-                support: VoteType.For,
-                voter: this.userEOA.address,
-                nonce,
-                signature: signBallot(this.userEOA),
-              }),
-            )
-              .to.emit(this.mock, 'VoteCast')
-              .withArgs(this.userEOA, this.proposal.id, VoteType.For, ethers.parseEther('10'), '');
+          // Run proposal
+          await this.helper.propose();
+          await this.helper.waitForSnapshot();
+          await expect(
+            this.helper.vote({
+              support: VoteType.For,
+              voter: this.userEOA.address,
+              nonce,
+              signature: signBallot(this.userEOA),
+            }),
+          )
+            .to.emit(this.mock, 'VoteCast')
+            .withArgs(this.userEOA, this.proposal.id, VoteType.For, ethers.parseEther('10'), '');
 
-            // After
-            expect(await this.mock.hasVoted(this.proposal.id, this.userEOA)).to.be.true;
-            expect(await this.mock.nonces(this.userEOA)).to.equal(nonce + 1n);
+          await this.helper.waitForDeadline();
+          await this.helper.execute();
 
-            // Update proposal to allow for re-propose
-            this.helper.description += ' - updated';
-          }
-
-          await expect(this.mock.nonces(this.userEOA)).to.eventually.equal(2n);
+          // After
+          expect(await this.mock.hasVoted(this.proposal.id, this.userEOA)).to.be.true;
+          expect(await this.mock.nonces(this.userEOA)).to.equal(nonce + 1n);
         });
 
         it('votes with a valid EIP-1271 signature', async function () {
@@ -628,8 +624,8 @@ describe('Governor', function () {
             await this.helper.connect(this.proposer).propose();
 
             await expect(this.helper.connect(this.owner).cancel('external'))
-              .to.be.revertedWithCustomError(this.mock, 'GovernorUnableToCancel')
-              .withArgs(this.proposal.id, this.owner);
+              .to.be.revertedWithCustomError(this.mock, 'GovernorOnlyProposer')
+              .withArgs(this.owner);
           });
 
           it('after vote started', async function () {
@@ -637,8 +633,12 @@ describe('Governor', function () {
             await this.helper.waitForSnapshot(1n); // snapshot + 1 block
 
             await expect(this.helper.cancel('external'))
-              .to.be.revertedWithCustomError(this.mock, 'GovernorUnableToCancel')
-              .withArgs(this.proposal.id, this.owner);
+              .to.be.revertedWithCustomError(this.mock, 'GovernorUnexpectedProposalState')
+              .withArgs(
+                this.proposal.id,
+                ProposalState.Active,
+                GovernorHelper.proposalStatesToBitMap([ProposalState.Pending]),
+              );
           });
 
           it('after vote', async function () {
@@ -647,8 +647,12 @@ describe('Governor', function () {
             await this.helper.connect(this.voter1).vote({ support: VoteType.For });
 
             await expect(this.helper.cancel('external'))
-              .to.be.revertedWithCustomError(this.mock, 'GovernorUnableToCancel')
-              .withArgs(this.proposal.id, this.voter1);
+              .to.be.revertedWithCustomError(this.mock, 'GovernorUnexpectedProposalState')
+              .withArgs(
+                this.proposal.id,
+                ProposalState.Active,
+                GovernorHelper.proposalStatesToBitMap([ProposalState.Pending]),
+              );
           });
 
           it('after deadline', async function () {
@@ -658,8 +662,12 @@ describe('Governor', function () {
             await this.helper.waitForDeadline();
 
             await expect(this.helper.cancel('external'))
-              .to.be.revertedWithCustomError(this.mock, 'GovernorUnableToCancel')
-              .withArgs(this.proposal.id, this.voter1);
+              .to.be.revertedWithCustomError(this.mock, 'GovernorUnexpectedProposalState')
+              .withArgs(
+                this.proposal.id,
+                ProposalState.Succeeded,
+                GovernorHelper.proposalStatesToBitMap([ProposalState.Pending]),
+              );
           });
 
           it('after execution', async function () {
@@ -670,8 +678,12 @@ describe('Governor', function () {
             await this.helper.execute();
 
             await expect(this.helper.cancel('external'))
-              .to.be.revertedWithCustomError(this.mock, 'GovernorUnableToCancel')
-              .withArgs(this.proposal.id, this.voter1);
+              .to.be.revertedWithCustomError(this.mock, 'GovernorUnexpectedProposalState')
+              .withArgs(
+                this.proposal.id,
+                ProposalState.Executed,
+                GovernorHelper.proposalStatesToBitMap([ProposalState.Pending]),
+              );
           });
         });
       });

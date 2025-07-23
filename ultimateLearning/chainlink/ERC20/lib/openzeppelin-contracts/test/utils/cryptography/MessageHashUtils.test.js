@@ -19,16 +19,14 @@ describe('MessageHashUtils', function () {
       const message = ethers.randomBytes(32);
       const expectedHash = ethers.hashMessage(message);
 
-      await expect(this.mock.getFunction('$toEthSignedMessageHash(bytes32)')(message)).to.eventually.equal(
-        expectedHash,
-      );
+      expect(await this.mock.getFunction('$toEthSignedMessageHash(bytes32)')(message)).to.equal(expectedHash);
     });
 
     it('prefixes dynamic length data correctly', async function () {
       const message = ethers.randomBytes(128);
       const expectedHash = ethers.hashMessage(message);
 
-      await expect(this.mock.getFunction('$toEthSignedMessageHash(bytes)')(message)).to.eventually.equal(expectedHash);
+      expect(await this.mock.getFunction('$toEthSignedMessageHash(bytes)')(message)).to.equal(expectedHash);
     });
 
     it('version match for bytes32', async function () {
@@ -41,20 +39,7 @@ describe('MessageHashUtils', function () {
   });
 
   describe('toDataWithIntendedValidatorHash', function () {
-    it('returns the digest of `bytes32 messageHash` correctly', async function () {
-      const verifier = ethers.Wallet.createRandom().address;
-      const message = ethers.randomBytes(32);
-      const expectedHash = ethers.solidityPackedKeccak256(
-        ['string', 'address', 'bytes32'],
-        ['\x19\x00', verifier, message],
-      );
-
-      await expect(
-        this.mock.getFunction('$toDataWithIntendedValidatorHash(address,bytes32)')(verifier, message),
-      ).to.eventually.equal(expectedHash);
-    });
-
-    it('returns the digest of `bytes memory message` correctly', async function () {
+    it('returns the digest correctly', async function () {
       const verifier = ethers.Wallet.createRandom().address;
       const message = ethers.randomBytes(128);
       const expectedHash = ethers.solidityPackedKeccak256(
@@ -62,21 +47,7 @@ describe('MessageHashUtils', function () {
         ['\x19\x00', verifier, message],
       );
 
-      await expect(
-        this.mock.getFunction('$toDataWithIntendedValidatorHash(address,bytes)')(verifier, message),
-      ).to.eventually.equal(expectedHash);
-    });
-
-    it('version match for bytes32', async function () {
-      const verifier = ethers.Wallet.createRandom().address;
-      const message = ethers.randomBytes(32);
-      const fixed = await this.mock.getFunction('$toDataWithIntendedValidatorHash(address,bytes)')(verifier, message);
-      const dynamic = await this.mock.getFunction('$toDataWithIntendedValidatorHash(address,bytes32)')(
-        verifier,
-        message,
-      );
-
-      expect(fixed).to.equal(dynamic);
+      expect(await this.mock.$toDataWithIntendedValidatorHash(verifier, message)).to.equal(expectedHash);
     });
   });
 
@@ -91,7 +62,7 @@ describe('MessageHashUtils', function () {
       const structhash = ethers.randomBytes(32);
       const expectedHash = hashTypedData(domain, structhash);
 
-      await expect(this.mock.$toTypedDataHash(domainSeparator(domain), structhash)).to.eventually.equal(expectedHash);
+      expect(await this.mock.$toTypedDataHash(domainSeparator(domain), structhash)).to.equal(expectedHash);
     });
   });
 });

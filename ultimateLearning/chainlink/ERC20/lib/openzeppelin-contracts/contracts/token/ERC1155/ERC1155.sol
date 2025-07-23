@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v5.4.0) (token/ERC1155/ERC1155.sol)
+// OpenZeppelin Contracts (last updated v5.1.0) (token/ERC1155/ERC1155.sol)
 
 pragma solidity ^0.8.20;
 
@@ -34,7 +34,9 @@ abstract contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI, IER
         _setURI(uri_);
     }
 
-    /// @inheritdoc IERC165
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {
         return
             interfaceId == type(IERC1155).interfaceId ||
@@ -56,7 +58,9 @@ abstract contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI, IER
         return _uri;
     }
 
-    /// @inheritdoc IERC1155
+    /**
+     * @dev See {IERC1155-balanceOf}.
+     */
     function balanceOf(address account, uint256 id) public view virtual returns (uint256) {
         return _balances[id][account];
     }
@@ -85,17 +89,23 @@ abstract contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI, IER
         return batchBalances;
     }
 
-    /// @inheritdoc IERC1155
+    /**
+     * @dev See {IERC1155-setApprovalForAll}.
+     */
     function setApprovalForAll(address operator, bool approved) public virtual {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
 
-    /// @inheritdoc IERC1155
+    /**
+     * @dev See {IERC1155-isApprovedForAll}.
+     */
     function isApprovedForAll(address account, address operator) public view virtual returns (bool) {
         return _operatorApprovals[account][operator];
     }
 
-    /// @inheritdoc IERC1155
+    /**
+     * @dev See {IERC1155-safeTransferFrom}.
+     */
     function safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes memory data) public virtual {
         address sender = _msgSender();
         if (from != sender && !isApprovedForAll(from, sender)) {
@@ -104,7 +114,9 @@ abstract contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI, IER
         _safeTransferFrom(from, to, id, value, data);
     }
 
-    /// @inheritdoc IERC1155
+    /**
+     * @dev See {IERC1155-safeBatchTransferFrom}.
+     */
     function safeBatchTransferFrom(
         address from,
         address to,
