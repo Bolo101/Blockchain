@@ -81,3 +81,18 @@ contract ExtendedToken is BaseToken {
 ```
 
 When using inheritance parent contracts import order is important. If two contracts contain a function with the same name and child contract uses of super with the function name, then it will use function from first inherited contract
+
+## Introduction to Oracles
+
+Blockchains are deterministic system, meaning that given the same input the system will produce the same output. Due blockchain isolated nature, blockchains cannot directly access off-chain data. Blockchains process transactions with higher latency than traditional computing systems due to their need for global consensus. Blockchains cannot fetch real-world data independently, limiting smart contracts functionalities => Oracle problem
+
+A blockchain oracle is an infrastructure component that enables secure data exchange between blockchains and external systems. Decentralized oracles provide a trust-minimizing mechanism for bringing off-chain data onto the blockchain and allow smart contracts to be executed based on real-world events or off-chain computation.
+
+### Types of Blockchain Oracles
+- Inbound Oracles: These oracles bring external data to the blockchain. For example, they deliver information such as weather conditions, sports scores, or stock prices into a smart contract.
+
+- Outbound Oracles: These oracles send data from the blockchain to external systems. They enable smart contracts to communicate and interact with off-chain systems.
+
+- Consensus Oracles: These oracles aggregate data from multiple sources and provide a single source of truth to the smart contract. This is done to improve the reliability and accuracy of the data.
+
+- Cross-Chain Oracles: These oracles facilitate communication and data exchange between different blockchain networks (each of which is like an isolated “island”). Cross-chain oracles are essential for interoperability between different blockchains.
