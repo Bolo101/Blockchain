@@ -96,3 +96,30 @@ A blockchain oracle is an infrastructure component that enables secure data exch
 - Consensus Oracles: These oracles aggregate data from multiple sources and provide a single source of truth to the smart contract. This is done to improve the reliability and accuracy of the data.
 
 - Cross-Chain Oracles: These oracles facilitate communication and data exchange between different blockchain networks (each of which is like an isolated “island”). Cross-chain oracles are essential for interoperability between different blockchains.
+
+## Chainlink
+
+Chainlink is a decentralized oracle network (DON) that provides smart contracts with off-chain and cross-chain data and computations in a reliable, secure, and decentralized manner.
+
+### Chainlink services
+
+Here's a concise resume of Chainlink's key services:
+
+**Chainlink Services Overview**
+
+Chainlink provides essential infrastructure services that connect blockchains to real-world data and enable advanced smart contract functionality:
+
+**Core Data Services**
+- **Price Feeds**: Deliver reliable cryptocurrency, commodity, and forex pricing data to DeFi platforms by aggregating information from multiple exchanges
+- **Data Streams**: Provide high-frequency, low-latency market data on-demand for time-sensitive applications like prediction markets
+
+**Automation & Computation**
+- **Automation**: Automatically triggers smart contract functions when predefined conditions are met, such as liquidating under-collateralized loans
+- **Chainlink Functions**: Executes custom off-chain computations and delivers verified results to smart contracts, handling calculations too expensive for on-chain processing
+
+**Cross-Chain & Security**
+- **CCIP (Cross-Chain Interoperability Protocol)**: Enables secure communication and token transfers between different blockchains
+- **VRF (Verifiable Random Function)**: Generates provably fair random numbers for applications like NFT trait distribution and fair giveaways
+- **Proof of Reserve**: Verifies that tokenized assets like stablecoins are backed by actual reserves
+
+These services collectively solve the "oracle problem" by providing secure, decentralized ways for smart contracts to access external data, automate processes, and interact across different blockchain networks.
