@@ -123,3 +123,22 @@ Chainlink provides essential infrastructure services that connect blockchains to
 - **Proof of Reserve**: Verifies that tokenized assets like stablecoins are backed by actual reserves
 
 These services collectively solve the "oracle problem" by providing secure, decentralized ways for smart contracts to access external data, automate processes, and interact across different blockchain networks.
+
+#### Chainlink Data Feeds
+
+Chainlink Data Feeds enable smart contracts to access real-world data like asset prices, reserve balances, and Layer 2 sequencer health status.
+
+**Types of Data Available:**
+- **Price Feeds**: Aggregated cryptocurrency asset prices
+- **SmartData Feeds**: Onchain data for tokenized real-world assets (RWAs)
+- **Rate and Volatility Feeds**: Interest rates, rate curves, and asset volatility data
+- **L2 Sequencer Uptime Feeds**: Layer 2 sequencer availability status
+
+**Key Components:**
+1. **Consumer**: Your smart contract that uses Chainlink services via the AggregatorV3Interface to retrieve data from Data Feeds
+
+2. **Proxy Contract**: Acts as a pointer to the correct aggregator contract, enabling seamless upgrades without disrupting consuming contracts (example: EACAggregatorProxy.sol)
+
+3. **Aggregator Contract**: Chainlink-managed smart contract that receives periodic updates from the decentralized oracle network, stores aggregated data onchain, and makes it publicly accessible and verifiable
+
+The system is designed to provide reliable, transparent access to external data while maintaining upgradeability and uninterrupted service for applications that depend on this information.
