@@ -142,3 +142,5 @@ Chainlink Data Feeds enable smart contracts to access real-world data like asset
 3. **Aggregator Contract**: Chainlink-managed smart contract that receives periodic updates from the decentralized oracle network, stores aggregated data onchain, and makes it publicly accessible and verifiable
 
 The system is designed to provide reliable, transparent access to external data while maintaining upgradeability and uninterrupted service for applications that depend on this information.
+
+Price feeds are a specific type of data feeds. They only relay price data for assets such as cryptocurrencies, commodities and so on.
