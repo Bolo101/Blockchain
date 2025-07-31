@@ -26,3 +26,6 @@ mintSepo :
 
 deploynft :
 	forge script DeployCrazyBolo --rpc-url $(LOCAL_RPC_URL)
+
+deploybt :
+	forge script DeployBoloToken --rpc-url $(LOCAL_RPC_URL) --broadcast --account myaccount
