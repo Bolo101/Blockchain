@@ -2,7 +2,7 @@
 pragma solidity 0.8.20;
 
 import "forge-std/Script.sol";
-import "../src/myERC721.sol";
+import "../src/MyERC721.sol";
 
 contract DeployCrazyBolo is Script {
     function run() external {
