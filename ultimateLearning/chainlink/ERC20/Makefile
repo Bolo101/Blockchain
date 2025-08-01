@@ -12,7 +12,7 @@ test :
 	forge test
 
 install :
-	forge install https://github.com/OpenZeppelin/openzeppelin-contracts@v5.2.0 --no-git
+	forge install https://github.com/OpenZeppelin/openzeppelin-contracts@v5.2.0 --no-git && forge install smartcontractkit/chainlink-brownie-contracts@1.1.1 --no-git
 
 deployLocal :; forge create MyERC20 --account myaccount --rpc-url $(LOCAL_RPC_URL) --broadcast
 
