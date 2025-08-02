@@ -144,3 +144,37 @@ Chainlink Data Feeds enable smart contracts to access real-world data like asset
 The system is designed to provide reliable, transparent access to external data while maintaining upgradeability and uninterrupted service for applications that depend on this information.
 
 Price feeds are a specific type of data feeds. They only relay price data for assets such as cryptocurrencies, commodities and so on.
+
+## Token Shop
+
+This tutorial walks through building a **TokenShop smart contract** that allows users to purchase custom ERC-20 tokens using ETH, with pricing calculated via Chainlink's ETH/USD price feeds.
+
+### Key Components
+
+**Core Functionality:**
+- Users send ETH directly to the contract and automatically receive tokens
+- Uses Chainlink Data Feeds to get real-time ETH/USD exchange rates
+- Calculates token amounts based on a fixed USD price ($2 per token)
+- Mints tokens directly to the buyer's wallet
+
+**Technical Implementation:**
+- **Imports**: Chainlink's `AggregatorV3Interface`, OpenZeppelin's `Ownable`, and custom `MyERC20` contract
+- **Access Control**: Uses OpenZeppelin's `Ownable` for contract ownership and role-based permissions
+- **Price Integration**: Connects to Sepolia's ETH/USD price feed at address `0x694AA1769357215DE4FAC081bf1f309aDC325306`
+- **Automatic Processing**: Uses a `receive()` function to handle direct ETH transfers
+
+### Deployment Process
+
+1. **Deploy TokenShop** with your MyERC20 contract address as constructor parameter
+2. **Grant Permissions** by giving the TokenShop contract the `MINTER_ROLE` on your ERC-20 token
+3. **Verify Setup** using the `hasRole()` function to confirm permissions
+
+### Price Calculation Flow
+
+1. User sends ETH → Contract receives it via `receive()` function
+2. `amountToMint()` calls `getChainlinkDataFeedLatestAnswer()` for current ETH/USD price
+3. Converts ETH amount to USD value using the price feed (8 decimal precision)
+4. Calculates tokens to mint based on $2 USD token price
+5. Mints and transfers tokens to buyer
+
+The contract also includes an owner-only `withdraw()` function to extract accumulated ETH. This creates a simple, automated token sale system with real-world price integration.
