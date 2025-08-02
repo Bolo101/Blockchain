@@ -7,8 +7,8 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {BoloToken} from "./MyERC20.sol";
 
 contract TokenShop is Ownable {
-    AggregatorV3Interface internal immutable i_priceFeed;
     BoloToken public immutable i_token;
+    AggregatorV3Interface internal immutable i_priceFeed;
 
     uint256 public constant TOKEN_DECIMALS = 18;
     uint256 public constant TOKEN_USD_PRICE = 2 * 10 ** TOKEN_DECIMALS; //USD price with 18 decimals
@@ -18,16 +18,14 @@ contract TokenShop is Ownable {
     error TokenShop__ZeroETHSent();
     error TokenShop__CouldNotWithdraw();
 
-    constructor(address tokenAddress) Ownable(msg.sender) {
+    constructor(address tokenAddress, address priceFeed) Ownable(msg.sender) {
         i_token = BoloToken(tokenAddress);
         /**
          * Network: Sepolia
          * Aggregator: ETH/USD
          * Address: 0x694AA1769357215DE4FAC081bf1f309aDC325306
          */
-        i_priceFeed = AggregatorV3Interface(
-            0x694AA1769357215DE4FAC081bf1f309aDC325306
-        );
+        i_priceFeed = AggregatorV3Interface(priceFeed);
     }
 
     receive() external payable {
@@ -44,8 +42,13 @@ contract TokenShop is Ownable {
     }
 
     function getChainlinkDataFeedLatestAnswer() public view returns (int) {
-        (, /*uint80 roundID*/ int price, , , ) = /*uint startedAt*/ /*uint timeStamp*/ /*uint80 answeredInRound*/
-        i_priceFeed.latestRoundData();
+        (
+            ,
+            /*uint80 roundID*/ int price /*uint startedAt*/ /*uint timeStamp*/ /*uint80 answeredInRound*/,
+            ,
+            ,
+
+        ) = i_priceFeed.latestRoundData();
         return price;
     }
 }
