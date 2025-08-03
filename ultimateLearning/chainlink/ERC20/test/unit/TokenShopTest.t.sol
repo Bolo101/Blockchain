@@ -19,9 +19,23 @@ contract TokenShopTest is Test, AccessControl {
         vm.deal(USER, STARTING_BALANCE);
     }
 
+    function testBoloTokenDeploy() public view {
+        assertFalse(address(token) == address(0));
+    }
+
+    function testTokenShopDeploy() public view {
+        assertFalse(address(tokenShop) == address(0));
+    }
+
     function testMinterRoleAttribution() public view {
         // Test that TokenShop has the MINTER_ROLE using hasRole
         bool hasRole = token.hasRole(token.MINTER_ROLE(), address(tokenShop));
         assertTrue(hasRole);
     }
+
+    function testPriceFeedAttribution() public view {
+        assertFalse(address(tokenShop.getPriceFeedAddress()) == address(0));
+    }
+
+    function testReceiveRevertNotETH() public view {}
 }
