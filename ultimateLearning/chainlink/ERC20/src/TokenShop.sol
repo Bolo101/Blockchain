@@ -51,4 +51,8 @@ contract TokenShop is Ownable {
         ) = i_priceFeed.latestRoundData();
         return price;
     }
+
+    function getPriceFeedAddress() public view returns (address) {
+        return address(i_priceFeed);
+    }
 }
