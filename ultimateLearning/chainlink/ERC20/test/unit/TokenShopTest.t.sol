@@ -13,6 +13,8 @@ contract TokenShopTest is Test, AccessControl {
     address USER = makeAddr("user");
     uint256 constant STARTING_BALANCE = 10 ether;
 
+    error TokenShop__TransfertFailed();
+
     function setUp() external {
         DeployTokenShop deployTokenShop = new DeployTokenShop();
         (token, tokenShop) = deployTokenShop.run();
@@ -37,5 +39,17 @@ contract TokenShopTest is Test, AccessControl {
         assertFalse(address(tokenShop.getPriceFeedAddress()) == address(0));
     }
 
-    function testReceiveRevertNotETH() public view {}
+    function testSendOneEthToContract() public {
+        vm.deal(USER, 1 ether);
+
+        vm.prank(USER);
+        (bool success, ) = address(tokenShop).call{value: 1 ether}("");
+        if (!success) {
+            revert TokenShop__TransfertFailed();
+        }
+
+        // Assert USER received tokens (should be greater than zero)
+        uint256 tokenBalance = token.balanceOf(USER);
+        assert(tokenBalance > 0);
+    }
 }
