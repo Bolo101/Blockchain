@@ -30,5 +30,5 @@ deploynft :
 deploybt :
 	forge script DeployBoloToken --rpc-url $(LOCAL_RPC_URL) --broadcast --account myaccount
 
-deployTokenShop :
+deployShop :
 	forge script DeployTokenShop --rpc-url $(LOCAL_RPC_URL) --broadcast --account myaccount
