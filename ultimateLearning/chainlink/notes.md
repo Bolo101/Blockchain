@@ -145,7 +145,7 @@ The system is designed to provide reliable, transparent access to external data 
 
 Price feeds are a specific type of data feeds. They only relay price data for assets such as cryptocurrencies, commodities and so on.
 
-## Token Shop
+## Token Shop / Price Feeds
 
 This tutorial walks through building a **TokenShop smart contract** that allows users to purchase custom ERC-20 tokens using ETH, with pricing calculated via Chainlink's ETH/USD price feeds.
 
@@ -178,3 +178,31 @@ This tutorial walks through building a **TokenShop smart contract** that allows 
 5. Mints and transfers tokens to buyer
 
 The contract also includes an owner-only `withdraw()` function to extract accumulated ETH. This creates a simple, automated token sale system with real-world price integration.
+
+## Automation
+
+### What is Chainlink Automation?
+Chainlink Automation is a decentralized service that automatically executes smart contract functions based on predefined conditions or scheduled intervals, operating continuously without manual intervention.
+
+### The Core Problem
+Smart contracts have a fundamental limitation: they cannot trigger their own functions and require external stimuli to execute. Manual monitoring and triggering is inefficient, unreliable, and cannot provide 24/7 coverage.
+
+### The Solution
+Chainlink Automation acts as a "vigilant operator" that continuously monitors smart contracts and automatically executes designated functions when specified conditions are met, providing reliable and precise automation that operates around the clock.
+
+### Key Concept: Upkeeps
+An "upkeep" is a registered job that tells the Automation network to monitor specific conditions (called "triggers") and execute a particular contract function when those conditions occur.
+
+### Three Types of Automation Triggers
+
+**Time-based triggers** execute functions on a schedule using cron expressions (e.g., daily at midnight or weekly).
+
+**Custom logic triggers** use developer-defined logic through the `AutomationCompatibleInterface`, where contracts implement a `checkUpkeep` function to determine when execution should occur.
+
+**Log triggers** monitor blockchain events and execute functions when specified events are emitted by smart contracts, enabling event-driven automation.
+
+### Network Architecture
+The system consists of specialized Automation nodes coordinated by the Automation Registry smart contract, which manages upkeep registrations and node compensation. The network operates using Chainlink's OCR3 protocol in a peer-to-peer system where nodes continuously scan for eligible upkeeps, reach consensus, generate cryptographically signed reports, and have those reports validated before execution.
+
+### Key Benefits
+The architecture provides cryptographic execution guarantees, built-in redundancy across multiple nodes, resistance to network congestion through sophisticated gas management, and reliable performance during gas price spikes or blockchain reorganizations. Internal monitoring and alerting mechanisms ensure high network reliability and performance.
