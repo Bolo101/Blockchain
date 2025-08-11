@@ -195,7 +195,7 @@ An "upkeep" is a registered job that tells the Automation network to monitor spe
 
 ### Three Types of Automation Triggers
 
-**Time-based triggers** execute functions on a schedule using cron expressions (e.g., daily at midnight or weekly).
+**Time-based triggers** execute functions on a schedule using cron expressions (e.g., daily at midnight or weekly). [Automation APP](https://automation.chain.link/)
 
 **Custom logic triggers** use developer-defined logic through the `AutomationCompatibleInterface`, where contracts implement a `checkUpkeep` function to determine when execution should occur.
 
@@ -206,3 +206,5 @@ The system consists of specialized Automation nodes coordinated by the Automatio
 
 ### Key Benefits
 The architecture provides cryptographic execution guarantees, built-in redundancy across multiple nodes, resistance to network congestion through sophisticated gas management, and reliable performance during gas price spikes or blockchain reorganizations. Internal monitoring and alerting mechanisms ensure high network reliability and performance.
+
+
