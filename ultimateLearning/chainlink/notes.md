@@ -197,7 +197,9 @@ An "upkeep" is a registered job that tells the Automation network to monitor spe
 
 **Time-based triggers** execute functions on a schedule using cron expressions (e.g., daily at midnight or weekly). [Automation APP](https://automation.chain.link/)
 
-**Custom logic triggers** use developer-defined logic through the `AutomationCompatibleInterface`, where contracts implement a `checkUpkeep` function to determine when execution should occur.
+**Custom logic triggers** use developer-defined logic through the `AutomationCompatibleInterface`, where contracts implement a `checkUpkeep` function to determine when execution should occur. In our example code with use external interface to ensure automation compatibility. When verifying contrat on Etherscan we need to provide a flattened contract include those external libraries [Hardhat flatten](https://hardhat.org/hardhat-runner/docs/advanced/flattening#flattening-your-contracts). You can also directly flatten contract from RemixIDE
+
+For *checkUpkeep*: insert 0x00 on Etherscan
 
 **Log triggers** monitor blockchain events and execute functions when specified events are emitted by smart contracts, enabling event-driven automation.
 
