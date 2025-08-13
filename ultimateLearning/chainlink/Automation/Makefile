@@ -20,3 +20,6 @@ deploySepo :; forge create TimeBased --account metamask --rpc-url $(SEPOLIA_AL) 
 
 deployShop :
 	forge script DeployTimeBased --rpc-url $(LOCAL_RPC_URL) --broadcast --account myaccount
+
+deployCustomLogic :
+	forge script DeployCustomLogic --rpc-url $(LOCAL_RPC_URL) --broadcast --account myaccount
