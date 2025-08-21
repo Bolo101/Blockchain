@@ -203,6 +203,37 @@ For *checkUpkeep*: insert 0x00 on Etherscan
 
 **Log triggers** monitor blockchain events and execute functions when specified events are emitted by smart contracts, enabling event-driven automation.
 
+# Log Trigger Automation Resume
+
+## Overview
+Log trigger automation in Chainlink allows smart contracts to automatically execute functions in response to on-chain events. This creates an event-driven automation system where emitted logs serve as triggers for automated contract interactions.
+
+## Course Project Structure
+The course demonstrates a two-contract system:
+
+1. **EventEmitter Contract**: Emits a `WantsToCount` event when `emitCountLog()` is called
+2. **LogTrigger Contract**: Contains an automated counter that increments when triggered by the event
+
+**Interface Implementation**
+The LogTrigger contract must inherit `ILogAutomation` interface, implementing two critical functions:
+
+- **`checkLog()`**: A view function that Chainlink nodes simulate off-chain to determine if automation should execute. It receives log data and returns `performData` containing information needed for execution.
+
+- **`performUpkeep()`**: The actual function executed on-chain by Chainlink Automation. It receives the `performData` from `checkLog()` and performs the desired automation logic.
+
+**Event Detection Process**
+```
+Event Emission → Chainlink Nodes Detect → checkLog() Simulation → performUpkeep() Execution
+```
+
+**Automation Flow**
+- EventEmitter emits `WantsToCount` event
+- Chainlink nodes detect the specific log/event
+- Nodes simulate `checkLog()` to validate automation should occur
+- If validation passes, nodes call `performUpkeep()` on-chain
+- Counter increments and confirmation event is emitted
+
+
 ### Network Architecture
 The system consists of specialized Automation nodes coordinated by the Automation Registry smart contract, which manages upkeep registrations and node compensation. The network operates using Chainlink's OCR3 protocol in a peer-to-peer system where nodes continuously scan for eligible upkeeps, reach consensus, generate cryptographically signed reports, and have those reports validated before execution.
 
