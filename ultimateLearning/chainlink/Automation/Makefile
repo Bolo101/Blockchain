@@ -24,3 +24,9 @@ deployCustomLogic :
 
 deployCustomSepo :
 	forge script DeployCustomLogic --rpc-url $(SEPOLIA_AL) --broadcast --account metamask
+
+deployLogTrigger :
+	forge script DeployLogTrigger --rpc-url $(LOCAL_RPC_URL) --broadcast --account myaccount
+
+deployLogSepo :
+	forge script DeployLogTrigger --rpc-url $(SEPOLIA_AL) --broadcast --account metamask
