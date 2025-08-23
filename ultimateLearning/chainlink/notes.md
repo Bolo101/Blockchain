@@ -203,13 +203,7 @@ For *checkUpkeep*: insert 0x00 on Etherscan
 
 **Log triggers** monitor blockchain events and execute functions when specified events are emitted by smart contracts, enabling event-driven automation.
 
-# Log Trigger Automation Resume
-
-## Overview
 Log trigger automation in Chainlink allows smart contracts to automatically execute functions in response to on-chain events. This creates an event-driven automation system where emitted logs serve as triggers for automated contract interactions.
-
-## Course Project Structure
-The course demonstrates a two-contract system:
 
 1. **EventEmitter Contract**: Emits a `WantsToCount` event when `emitCountLog()` is called
 2. **LogTrigger Contract**: Contains an automated counter that increments when triggered by the event
@@ -240,4 +234,48 @@ The system consists of specialized Automation nodes coordinated by the Automatio
 ### Key Benefits
 The architecture provides cryptographic execution guarantees, built-in redundancy across multiple nodes, resistance to network congestion through sophisticated gas management, and reliable performance during gas price spikes or blockchain reorganizations. Internal monitoring and alerting mechanisms ensure high network reliability and performance.
 
+## CCIP
 
+
+### Blockchain Interoperability
+- Enables separate blockchain networks to communicate and interact
+- Powered by cross-chain messaging protocols
+- Supports cross-chain dApps with state awareness across multiple blockchains
+
+### Token Bridging
+Allows assets to move across blockchains to increase utility and enable cross-chain liquidity.
+
+#### Four Main Mechanisms:
+
+1. **Lock and Mint**
+   - Source: Lock tokens in smart contract
+   - Destination: Mint wrapped tokens (1:1 backed representations)
+   - Return: Burn wrapped tokens, unlock originals
+
+2. **Burn and Mint**
+   - Source: Permanently destroy tokens
+   - Destination: Mint equivalent new tokens
+   - Ideal for native tokens with minting authority
+
+3. **Lock and Unlock**
+   - Source: Lock tokens in smart contract
+   - Destination: Release from existing liquidity pool
+   - Requires sufficient liquidity and incentivized providers
+
+4. **Burn and Unlock**
+   - Source: Permanently burn tokens
+   - Destination: Unlock from reserve pool
+   - Combines finality with pre-existing liquidity requirements
+
+### Cross-chain Messaging
+- Enables complex interactions beyond token transfers
+- Functions: State synchronization, function triggering, governance decisions
+- Handles message verification, delivery confirmation, and execution
+
+### Security Considerations
+Cross-chain systems face unique security challenges requiring tradeoffs between:
+- **Security**: Resistance to attacks
+- **Trust assumptions**: Reliance on external validators/oracles
+- **Configuration flexibility**: Adaptability to different blockchain architectures
+
+Cross-chain applications require more rigorous security design than single-chain systems.
