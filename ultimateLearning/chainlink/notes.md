@@ -234,18 +234,105 @@ The system consists of specialized Automation nodes coordinated by the Automatio
 ### Key Benefits
 The architecture provides cryptographic execution guarantees, built-in redundancy across multiple nodes, resistance to network congestion through sophisticated gas management, and reliable performance during gas price spikes or blockchain reorganizations. Internal monitoring and alerting mechanisms ensure high network reliability and performance.
 
-## CCIP
+## CCIP (Chainlink Cross-Chain Interoperability Protocol)
 
+### Overview
+CCIP is a cross-chain messaging solution that enables developers to build secure cross-chain applications capable of transferring tokens, sending arbitrary messages (data), or executing programmable token transfers between different blockchains. It implements a defense-in-depth security approach powered by Chainlink's decentralized oracle networks (DONs), which have securely facilitated over $15 trillion in transaction value.
 
-### Blockchain Interoperability
-- Enables separate blockchain networks to communicate and interact
-- Powered by cross-chain messaging protocols
-- Supports cross-chain dApps with state awareness across multiple blockchains
+### Core Capabilities
 
-### Token Bridging
-Allows assets to move across blockchains to increase utility and enable cross-chain liquidity.
+**1. Arbitrary Messaging**
+- Send any data to smart contracts on different blockchains
+- Encode custom instructions or parameters as needed
+- Trigger specific actions on receiving contracts (rebalancing indices, minting NFTs, etc.)
+- Bundle multiple instructions within a single message to orchestrate complex multi-chain tasks
 
-#### Four Main Mechanisms:
+**2. Token Transfers**
+- Move tokens securely across blockchain networks
+- Transfer to smart contracts or directly to user wallets (EOAs)
+- Benefit from configurable rate-limiting for enhanced risk management
+- Improve token composability with dApps and bridges using CCIP's standardized interface
+
+**3. Programmable Token Transfers**
+- Combine token transfers with execution instructions in a single transaction
+- Send tokens with specific instructions on how they should be used
+- Create cross-chain DeFi interactions (lending, swapping, staking)
+- Execute complex financial operations in a unified transaction
+
+### Core Security Features
+- Multiple independent nodes run by independent key holders
+- Three decentralized oracle networks (DONs) commit, execute, and verify cross-chain transactions
+- Separation of responsibilities via distinct Chainlink node operators (nodes not shared between transactional DONs and Risk Management Network)
+- Increased decentralization with two separate codebases in different languages for software client diversity
+- Novel risk management system with level-5 security that adapts to emergent risks or attacks
+
+### CCIP Architecture Components
+
+**Router**
+- Primary user-facing smart contract deployed on each blockchain
+- Initiates cross-chain interactions
+- Manages token approvals for transfers
+- Routes instructions to appropriate destination-specific OnRamp
+- Delivers tokens to user accounts or messages to receiver contracts
+
+**Sender**
+- EOA (externally owned account) or smart contract that initiates CCIP transaction
+- Can send tokens, messages, or both
+
+**Receiver**
+- EOA or smart contract that receives the cross-chain transaction
+- May differ from sender depending on use case
+- Only smart contracts can receive data
+
+### Fee Structure
+
+CCIP uses a single fee on the source chain and handles destination chain execution automatically.
+
+**Total Fee Formula:**
+```
+fee = blockchain fee + network fee
+```
+
+**Blockchain Fee Components:**
+```
+blockchain fee = execution cost + data availability cost
+execution cost = gas price × gas usage × gas multiplier
+```
+
+**Gas Usage Calculation:**
+```
+gas usage = gas limit + destination gas overhead + destination gas per payload + gas for token transfers
+```
+
+**Key Fee Notes:**
+- Fee token can be blockchain's native token (including wrapped versions) or LINK
+- Unspent gas from user-set limit is NOT refunded
+- Gas multiplier ensures reliable execution during gas spikes (Smart Execution)
+- Data availability cost applies to L2 rollups
+
+### CCIP Transaction Lifecycle
+
+1. **Message Initiation**: Sender initiates CCIP message on source blockchain (can include data, tokens, or both)
+
+2. **Source Chain Finality**: Transaction must achieve finality on source blockchain (varies by blockchain - some have deterministic finality, others require block confirmations)
+
+3. **Committing DON Actions**: DON observes finalized transaction, aggregates multiple transactions into batch, computes Merkle root, records it on CommitStore contract
+
+4. **Risk Management Network Blessing**: RMN reviews committed Merkle root, "blesses" it upon verification to signal authentication
+
+5. **Execution on Destination Chain**: Executing DON initiates transaction execution, delivers message to receiver, handles token minting/unlocking
+
+6. **Smart Execution and Gas Management**: Monitors network conditions, adjusts gas prices, ensures delivery within ~8 hours (manual execution may be required for extreme congestion)
+
+### Token Pool Contracts
+- Each token on each chain has its own associated Token Pool contract
+- Responsible for managing token supply across source and destination chains
+- Controls token transfer regardless of bridging mechanism (mint/burn or lock/unlock)
+- Acts as vault for locked tokens or manages custody for bridging
+
+### Blockchain Interoperability Overview
+
+**Token Bridging Mechanisms:**
 
 1. **Lock and Mint**
    - Source: Lock tokens in smart contract
@@ -279,3 +366,10 @@ Cross-chain systems face unique security challenges requiring tradeoffs between:
 - **Configuration flexibility**: Adaptability to different blockchain architectures
 
 Cross-chain applications require more rigorous security design than single-chain systems.
+
+### Importance of Finality
+Finality determines when a transaction is irreversible and permanently recorded. Different blockchains have varying finality concepts:
+- Some achieve deterministic finality quickly
+- Others require multiple block confirmations
+- CCIP waits for appropriate finality on source blockchain before proceeding
+- Ensures integrity and reliability of the protocol
