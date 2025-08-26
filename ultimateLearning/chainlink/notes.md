@@ -373,3 +373,72 @@ Finality determines when a transaction is irreversible and permanently recorded.
 - Others require multiple block confirmations
 - CCIP waits for appropriate finality on source blockchain before proceeding
 - Ensures integrity and reliability of the protocol
+
+## Transporter (Cross-Chain Bridging with CCIP)
+
+### What is Transporter?
+Transporter is an application built on **Chainlink’s Cross-Chain Interoperability Protocol (CCIP)** that allows users to bridge tokens and messages across different blockchains.  
+It was developed with support from the Chainlink Foundation and Chainlink Labs to simplify access to the cross-chain economy.
+
+**Key Features:**
+- Intuitive interface for bridging assets
+- Powered by CCIP for highest-level cross-chain security  
+- 24/7 global support  
+- [Visual tracker](https://ccip.chain.link/) to monitor progress of asset transfers across every step
+
+CCIP secures Transporter by leveraging:
+- Chainlink’s decentralized oracle networks (over $15 trillion secured in transaction value)
+- A separate **Risk Management Network (RMN)**
+- A *defense-in-depth security model*, mitigating risks in cross-chain transfers
+
+When bridging **USDC**, Transporter uses CCIP in combination with **Circle’s Cross-chain Transfer Protocol (CCTP)** under the hood, giving an extra layer of reliability for stablecoin bridging.
+
+---
+
+### Using Transporter to Bridge USDC from Sepolia → Base Sepolia
+
+**Prerequisites:**
+- Have LINK funds on Sepolia for CCIP fees  
+- Add LINK and USDC tokens to your MetaMask wallet (both on Sepolia & Base Sepolia)  
+- Acquire test USDC on Sepolia via the [Circle USDC faucet](https://faucet.circle.com/)  
+
+---
+
+### Bridging Process
+
+1. **Connect Wallet**  
+   - Open Transporter testnet app and click **Connect Wallet**  
+   - Accept Terms of Service → choose wallet (e.g. MetaMask) → approve connection  
+
+2. **Configure Source & Destination**
+   - **From:** Ethereum Sepolia  
+   - **To:** Base Sepolia  
+   - **Token:** USDC  
+   - **Amount:** e.g. 1 USDC
+
+3. **Approve USDC**
+   - Click **Approve USDC** and select **Approve one-time only**  
+   - In MetaMask, confirm the spending cap as `1`  
+   - Confirm transaction → wait until mined  
+
+4. **Send Bridging Transaction**
+   - Click **Send** in Transporter  
+   - Sign transaction in MetaMask → this burns USDC on Sepolia  
+   - CCIP + CCTP submit cross-chain message  
+   - Once Ethereum Sepolia reaches finality (~20 minutes), USDC is minted on Base Sepolia  
+
+5. **Track Transfer**
+   - Click **View transaction** to open **CCIP Explorer**  
+   - Check:
+     - Status of message (Pending → Success)  
+     - Source & destination transaction hashes  
+     - Amount, fees, sender/receiver addresses  
+
+6. **Verify**
+   - Once status = **Success**, confirm your USDC balance on Base Sepolia → balance should increase by transferred amount (e.g. +1 USDC)  
+
+---
+
+### Summary
+Transporter provides a **secure, user-friendly way** to bridge tokens cross-chain using Chainlink’s CCIP + Circle’s CCTP (for USDC).  
+It abstracts away contract complexity and lets developers and end-users perform cross-chain operations safely with visual tracking and finality guarantees.
