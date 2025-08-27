@@ -2,8 +2,6 @@
 
 .PHONY: all test deploy
 
-.PHONY: all test deploy
-
 build :; forge build
 
 clean :; forge clean
