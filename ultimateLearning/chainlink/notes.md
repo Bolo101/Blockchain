@@ -440,5 +440,140 @@ When bridging **USDC**, Transporter uses CCIP in combination with **Circle’s C
 ---
 
 ### Summary
-Transporter provides a **secure, user-friendly way** to bridge tokens cross-chain using Chainlink’s CCIP + Circle’s CCTP (for USDC).  
+Transporter provides a **secure, user-friendly way** to bridge tokens cross-chain using Chainlinkâ€™s CCIP + Circleâ€™s CCTP (for USDC).  
 It abstracts away contract complexity and lets developers and end-users perform cross-chain operations safely with visual tracking and finality guarantees.
+
+## CCIPTokenSender Smart Contract Implementation
+
+### Overview
+The `CCIPTokenSender` contract enables cross-chain USDC transfers from Sepolia to Base Sepolia using Chainlink CCIP. It demonstrates how to implement programmatic cross-chain token bridging in a smart contract.
+
+### Contract Structure
+
+**1. Contract Declaration and Dependencies**
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import { IRouterClient } from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
+import { IERC20 } from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/token/ERC20/IERC20.sol";
+import { SafeERC20 } from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/token/ERC20/utils/SafeERC20.sol";
+import { Ownable } from "@openzeppelin/contracts@4.6.0/access/Ownable.sol";
+
+contract CCIPTokenSender is Ownable {
+    using SafeERC20 for IERC20;
+    
+    constructor() Ownable(msg.sender) {}
+}
+```
+
+**Key Dependencies:**
+- `IRouterClient`: Interface for CCIP Router handling cross-chain messaging
+- `IERC20`: Standard interface for ERC20 token interactions
+- `SafeERC20`: Enhanced functions for safer ERC20 token handling
+- `Ownable`: Access control for contract ownership
+
+**2. State Variables (Hard-coded Constants)**
+```solidity
+// Sepolia CCIP Router
+IRouterClient private constant CCIP_ROUTER = IRouterClient(0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59);
+// Sepolia LINK token for fees
+IERC20 private constant LINK_TOKEN = IERC20(0x779877A7B0D9E8603169DdbD7836e478b4624789);
+// Sepolia USDC token to transfer
+IERC20 private constant USDC_TOKEN = IERC20(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238);
+// Base Sepolia chain selector
+uint64 private constant DESTINATION_CHAIN_SELECTOR = 10344971235874465080;
+```
+
+**3. Main Transfer Function**
+```solidity
+function transferTokens(
+    address _receiver,
+    uint256 _amount
+) external returns (bytes32 messageId) {
+    
+    // 1. Balance verification
+    if (_amount > USDC_TOKEN.balanceOf(msg.sender)) {
+        revert CCIPTokenSender__InsufficientBalance(USDC_TOKEN, USDC_TOKEN.balanceOf(msg.sender), _amount);
+    }
+    
+    // 2. Prepare token information
+    Client.EVMTokenAmount[] memory tokenAmounts = new Client.EVMTokenAmount[](1);
+    Client.EVMTokenAmount memory tokenAmount = Client.EVMTokenAmount({
+        token: address(USDC_TOKEN),
+        amount: _amount
+    });
+    tokenAmounts[0] = tokenAmount;
+    
+    // 3. Build CCIP message
+    Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
+        receiver: abi.encode(_receiver),
+        data: "", // no data for token-only transfer
+        tokenAmounts: tokenAmounts,
+        extraArgs: Client._argsToBytes(
+            Client.EVMExtraArgsV1({gasLimit: 0}) // 0 for EOA transfers
+        ),
+        feeToken: address(LINK_TOKEN)
+    });
+    
+    // 4. Handle fees
+    uint256 ccipFee = CCIP_ROUTER.getFee(DESTINATION_CHAIN_SELECTOR, message);
+    
+    if (ccipFee > LINK_TOKEN.balanceOf(address(this))) {
+        revert CCIPTokenSender__InsufficientBalance(LINK_TOKEN, LINK_TOKEN.balanceOf(address(this)), ccipFee);
+    }
+    
+    LINK_TOKEN.approve(address(CCIP_ROUTER), ccipFee);
+    
+    // 5. Transfer and approve USDC
+    USDC_TOKEN.safeTransferFrom(msg.sender, address(this), _amount);
+    USDC_TOKEN.approve(address(CCIP_ROUTER), _amount);
+    
+    // 6. Send CCIP message
+    messageId = CCIP_ROUTER.ccipSend(DESTINATION_CHAIN_SELECTOR, message);
+    
+    emit USDCTransferred(messageId, DESTINATION_CHAIN_SELECTOR, _receiver, _amount, ccipFee);
+}
+```
+
+**4. Withdrawal Function**
+```solidity
+function withdrawToken(address _beneficiary) public onlyOwner {
+    uint256 amount = IERC20(USDC_TOKEN).balanceOf(address(this));
+    if (amount == 0) revert CCIPTokenSender__NothingToWithdraw();
+    IERC20(USDC_TOKEN).transfer(_beneficiary, amount);
+}
+```
+
+### Transaction Workflow
+
+1. **Deploy Contract**: CCIPTokenSender deployed on source chain (Sepolia)
+2. **Fund Contract**: Contract funded with LINK tokens for CCIP fees
+3. **User Approval**: User approves CCIPTokenSender to spend their USDC
+4. **Execute Transfer**: User calls `transferTokens()` function which:
+   - Verifies user's USDC balance
+   - Transfers USDC from user to contract
+   - Approves Router to spend USDC and LINK
+   - Calculates and pays CCIP fees
+   - Sends cross-chain message via Router
+
+### Key Concepts
+
+**EVM2AnyMessage Struct:**
+- `receiver`: ABI-encoded destination address
+- `data`: Additional cross-chain data (empty for token-only transfers)
+- `tokenAmounts`: Array of tokens and amounts to transfer
+- `extraArgs`: Gas settings (0 for EOA transfers)
+- `feeToken`: Token used to pay CCIP fees
+
+**Gas Limit Settings:**
+- Set to `0` for EOA (externally owned account) transfers
+- Only needed when receiver is a contract requiring execution
+- Contract execution on receiving end requires positive gas limit
+
+### Security Features
+- Balance checks before transfers
+- SafeERC20 for secure token operations
+- Owner-only withdrawal function
+- Fee validation before message sending
+- Approval-based token spending model

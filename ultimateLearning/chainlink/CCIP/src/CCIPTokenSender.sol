@@ -7,6 +7,8 @@ import {IERC20} from "@chainlink/contracts@1.3.0/src/v0.8/vendor/openzeppelin-so
 import {SafeERC20} from "@chainlink/contracts@1.3.0/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Ownable} from "@openzeppelin/contracts@5.2.0/access/Ownable.sol";
 
+// Read 'CCIPTokenSender Smart Contract Implementation' section in the README.md file for more details
+
 /**
  * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
  * THIS IS AN EXAMPLE CONTRACT THAT USES UN-AUDITED CODE.
