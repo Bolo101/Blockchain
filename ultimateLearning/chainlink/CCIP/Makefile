@@ -11,3 +11,6 @@ test :
 
 install :
 	forge install https://github.com/OpenZeppelin/openzeppelin-contracts@v5.2.0 --no-git && forge install smartcontractkit/chainlink-brownie-contracts@1.3.0 --no-git
+
+deploy :
+	forge script DeployCCIPTokenSender --rpc-url $(SEPOLIA_AL) --account metamask --broadcast 
