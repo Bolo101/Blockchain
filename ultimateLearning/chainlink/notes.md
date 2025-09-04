@@ -577,3 +577,51 @@ function withdrawToken(address _beneficiary) public onlyOwner {
 - Owner-only withdrawal function
 - Fee validation before message sending
 - Approval-based token spending model
+
+
+## CCIP v1.5 and the CCT Standard
+
+### Overview
+
+**Chainlink's CCIP v1.5** introduces the **Cross-Chain Token (CCT) standard**, allowing developers to autonomously enable and manage their own tokens for CCIP cross-chain transfers, without requiring manual intervention by Chainlink. This unlocks greater composability, autonomy, and speed for multi-chain token projects.[1]
+
+### Motivations
+
+- **Liquidity Fragmentation:** Enables unified liquidity across chains, reducing siloing of assets and eliminating hard choices about which network to prioritize.[1]
+- **Developer Autonomy:** Empowers token creators with a self-service process, so tokens can be enabled for cross-chain use within minutes and governed directly by their owners.[1]
+
+### Core Benefits
+
+- **Self-service Enablement:** Token creators can quickly enable new or existing ERC-20 tokens for CCIP bridging.[1]
+- **Developer Control:** Full autonomy over token contracts, pools, rate limiting, and implementation logic.[1]
+- **Enhanced Security:** Employs Chainlink’s oracle networks and adds measures like a Risk Management Network and configurable rate limits.[1]
+- **Programmable Transfers:** Supports atomic cross-chain token and message transfers in single transactions.[1]
+- **Audited Token Pools:** Provides pre-audited, easy-to-deploy contracts for secure mint/burn or lock/unlock bridging, ensuring zero-slippage where exactly the sent amount is received.[1]
+- **Integrates ERC20s:** Existing ERC-20 tokens can be upgraded for CCIP compatibility, sidestepping complex bridge code.[1]
+
+### Key Concepts
+
+- **Token Owner & CCIP Admin:** Tokens must designate either a contract owner or a CCIP admin (often via an `owner` or `getCCIPAdmin` function); these roles govern upgrades and admin assignment.[1]
+- **Token Administrator:** Entity responsible for mapping tokens to token pools in the TokenAdminRegistry; can be owner, admin, or a delegate.[1]
+- **Token Pools:** Smart contracts that orchestrate cross-chain minting, burning, locking, or unlocking for each token+chain pair—acting as coordinators, not liquidity pools.[1]
+
+### Supported Bridging Mechanisms
+
+- **Mint and burn**
+- **Mint and unlock**
+- **Burn and unlock**
+- **Lock and unlock**  
+  All bridging types use a TokenPool contract on each participating chain.[1]
+
+### Implementation Steps
+
+1. **Deploy or Upgrade Tokens:** Ensure tokens implement `owner()` or `getCCIPAdmin()` on each chain to identify the admin.[1]
+2. **Deploy Token Pools:** Use Chainlink’s audited pools or custom implementations on each chain where the token is enabled.[1]
+3. **Configure Pools:** Set rate limits and governance parameters as needed.[1]
+4. **Register Tokens:** Link admin accounts and register token–pool associations in the registry modules.[1]
+
+For in-depth guidance and sample contracts, see the [official Chainlink docs](https://docs.chain.link/ccip/concepts/cross-chain-tokens).[1]
+
+---
+
+[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/57750441/2d17366e-2e32-482e-84a3-15b3bd82dcff/notes.md)
