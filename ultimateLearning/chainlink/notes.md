@@ -624,4 +624,24 @@ For in-depth guidance and sample contracts, see the [official Chainlink docs](ht
 
 ---
 
-[1](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/57750441/2d17366e-2e32-482e-84a3-15b3bd82dcff/notes.md)
+The notes.md file has been updated with a concise summary of **Chainlink Local** and its development/testing modes, directly reflecting how developers can use this tool for local Chainlink service simulation and cross-chain contract testing.
+
+## Chainlink Local: Local Development and Testing
+
+### What is Chainlink Local?
+**Chainlink Local** is a development tool that enables running **Chainlink services**—such as CCIP messaging—directly on a local machine, with integration for major environments like **Foundry**, **Hardhat**, and **Remix**. It offers a fast, flexible way to iterate and test Chainlink-based smart contracts before deploying to testnets or mainnet.[1]
+
+### Key Features
+- **Local Simulation** of Chainlink functionality on local EVM nodes.[1]
+- **Forked Network Testing** to interact with real deployed Chainlink contracts in live-like conditions.[1]
+- **Development Integration** supporting major frameworks for seamless workflow.[1]
+- **Testnet-Ready** code, ensuring that logic works unchanged before public deployment.[1]
+
+### Development Modes
+- **Local Testing Without Forking**: Use mocks on a clean local node for rapid prototyping and validation.[1]
+- **Local Testing With Forking**: Fork existing blockchains to test against real Chainlink contracts (supported in Hardhat and Foundry, not Remix).[1]
+
+### Developer Benefits
+- Run, debug, and iterate on Chainlink smart contracts locally for faster development.[1]
+- Simulate cross-chain operations (CCIP messages, token transfers) in a controlled environment.[1]
+- Validate and verify contract behavior before progressing to live networks.[1]
