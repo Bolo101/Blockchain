@@ -645,3 +645,23 @@ The notes.md file has been updated with a concise summary of **Chainlink Local**
 - Run, debug, and iterate on Chainlink smart contracts locally for faster development.[1]
 - Simulate cross-chain operations (CCIP messages, token transfers) in a controlled environment.[1]
 - Validate and verify contract behavior before progressing to live networks.[1]
+
+
+## Using Chainlink Local for CCIP Testing
+
+**Chainlink Local** enables developers to simulate cross-chain messaging with CCIP entirely on a local EVM node, providing near-instant feedback and no network costs.[1]
+In this context, two contracts are deployed and tested:
+
+- **MessageSender**: Deploys on the source chain, dynamically receives the LINK token and router addresses from the local simulator, and sends a simple string message (e.g., "Hey there!") cross-chain using `sendMessage`. This uses a non-zero gas limit for receiver execution and encodes the string as the message payload.
+- **MessageReceiver**: Deploys on the destination chain, inherits from `CCIPReceiver`, and implements the required `_ccipReceive` function. Upon receiving a message, this contract stores the last received message's ID and string contents and emits an event. The stored message can be retrieved with a public getter.
+
+### Testing Flow
+
+1. **Deploy `CCIPLocalSimulator`** contract in Remix using the "Remix VM (Cancun)" environment.[1]
+2. **Retrieve configuration**: Use the configuration function on the simulator contract to get addresses for the LINK token, routers, and chain selectors.
+3. **Load and fund with LINK**: Attach the LinkToken instance at the provided address to fund contracts with LINK for local CCIP fees.
+4. **Deploy contracts**: Deploy `MessageSender` and `MessageReceiver` with addresses retrieved from the simulator config.
+5. **Send a CCIP message**: Call `sendMessage` on `MessageSender`, passing the destination chain selector, the receiver contract address, and a string message. Manually set the gas limit (e.g., 3000000) due to Remix gas estimation limitations.
+6. **Verify reception**: Check `getLastReceivedMessageDetails` on `MessageReceiver` to confirm receipt and decoding of the string message.
+
+Chainlink Local provides a rapid and robust workflow for iterating smart contract logic involving cross-chain communication, making it ideal for debugging and pre-testnet validation.[1]
