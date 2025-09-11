@@ -583,27 +583,27 @@ function withdrawToken(address _beneficiary) public onlyOwner {
 
 ### Overview
 
-**Chainlink's CCIP v1.5** introduces the **Cross-Chain Token (CCT) standard**, allowing developers to autonomously enable and manage their own tokens for CCIP cross-chain transfers, without requiring manual intervention by Chainlink. This unlocks greater composability, autonomy, and speed for multi-chain token projects.[1]
+**Chainlink's CCIP v1.5** introduces the **Cross-Chain Token (CCT) standard**, allowing developers to autonomously enable and manage their own tokens for CCIP cross-chain transfers, without requiring manual intervention by Chainlink. This unlocks greater composability, autonomy, and speed for multi-chain token projects.
 
 ### Motivations
 
-- **Liquidity Fragmentation:** Enables unified liquidity across chains, reducing siloing of assets and eliminating hard choices about which network to prioritize.[1]
-- **Developer Autonomy:** Empowers token creators with a self-service process, so tokens can be enabled for cross-chain use within minutes and governed directly by their owners.[1]
+- **Liquidity Fragmentation:** Enables unified liquidity across chains, reducing siloing of assets and eliminating hard choices about which network to prioritize.
+- **Developer Autonomy:** Empowers token creators with a self-service process, so tokens can be enabled for cross-chain use within minutes and governed directly by their owners.
 
 ### Core Benefits
 
-- **Self-service Enablement:** Token creators can quickly enable new or existing ERC-20 tokens for CCIP bridging.[1]
-- **Developer Control:** Full autonomy over token contracts, pools, rate limiting, and implementation logic.[1]
-- **Enhanced Security:** Employs Chainlink’s oracle networks and adds measures like a Risk Management Network and configurable rate limits.[1]
-- **Programmable Transfers:** Supports atomic cross-chain token and message transfers in single transactions.[1]
+- **Self-service Enablement:** Token creators can quickly enable new or existing ERC-20 tokens for CCIP bridging.
+- **Developer Control:** Full autonomy over token contracts, pools, rate limiting, and implementation logic.
+- **Enhanced Security:** Employs Chainlink’s oracle networks and adds measures like a Risk Management Network and configurable rate limits.
+- **Programmable Transfers:** Supports atomic cross-chain token and message transfers in single transactions.
 - **Audited Token Pools:** Provides pre-audited, easy-to-deploy contracts for secure mint/burn or lock/unlock bridging, ensuring zero-slippage where exactly the sent amount is received.[1]
-- **Integrates ERC20s:** Existing ERC-20 tokens can be upgraded for CCIP compatibility, sidestepping complex bridge code.[1]
+- **Integrates ERC20s:** Existing ERC-20 tokens can be upgraded for CCIP compatibility, sidestepping complex bridge code.
 
 ### Key Concepts
 
-- **Token Owner & CCIP Admin:** Tokens must designate either a contract owner or a CCIP admin (often via an `owner` or `getCCIPAdmin` function); these roles govern upgrades and admin assignment.[1]
-- **Token Administrator:** Entity responsible for mapping tokens to token pools in the TokenAdminRegistry; can be owner, admin, or a delegate.[1]
-- **Token Pools:** Smart contracts that orchestrate cross-chain minting, burning, locking, or unlocking for each token+chain pair—acting as coordinators, not liquidity pools.[1]
+- **Token Owner & CCIP Admin:** Tokens must designate either a contract owner or a CCIP admin (often via an `owner` or `getCCIPAdmin` function); these roles govern upgrades and admin assignment.
+- **Token Administrator:** Entity responsible for mapping tokens to token pools in the TokenAdminRegistry; can be owner, admin, or a delegate.
+- **Token Pools:** Smart contracts that orchestrate cross-chain minting, burning, locking, or unlocking for each token+chain pair—acting as coordinators, not liquidity pools.
 
 ### Supported Bridging Mechanisms
 
@@ -611,16 +611,16 @@ function withdrawToken(address _beneficiary) public onlyOwner {
 - **Mint and unlock**
 - **Burn and unlock**
 - **Lock and unlock**  
-  All bridging types use a TokenPool contract on each participating chain.[1]
+  All bridging types use a TokenPool contract on each participating chain.
 
 ### Implementation Steps
 
-1. **Deploy or Upgrade Tokens:** Ensure tokens implement `owner()` or `getCCIPAdmin()` on each chain to identify the admin.[1]
-2. **Deploy Token Pools:** Use Chainlink’s audited pools or custom implementations on each chain where the token is enabled.[1]
-3. **Configure Pools:** Set rate limits and governance parameters as needed.[1]
-4. **Register Tokens:** Link admin accounts and register token–pool associations in the registry modules.[1]
+1. **Deploy or Upgrade Tokens:** Ensure tokens implement `owner()` or `getCCIPAdmin()` on each chain to identify the admin.
+2. **Deploy Token Pools:** Use Chainlink’s audited pools or custom implementations on each chain where the token is enabled.
+3. **Configure Pools:** Set rate limits and governance parameters as needed.
+4. **Register Tokens:** Link admin accounts and register token–pool associations in the registry modules.
 
-For in-depth guidance and sample contracts, see the [official Chainlink docs](https://docs.chain.link/ccip/concepts/cross-chain-tokens).[1]
+For in-depth guidance and sample contracts, see the [official Chainlink docs](https://docs.chain.link/ccip/concepts/cross-chain-tokens).
 
 ---
 
@@ -628,23 +628,25 @@ The notes.md file has been updated with a concise summary of **Chainlink Local**
 
 ## Chainlink Local: Local Development and Testing
 
+Dedicated code to this section is in CCIP/src/chainlink-local
+
 ### What is Chainlink Local?
-**Chainlink Local** is a development tool that enables running **Chainlink services**—such as CCIP messaging—directly on a local machine, with integration for major environments like **Foundry**, **Hardhat**, and **Remix**. It offers a fast, flexible way to iterate and test Chainlink-based smart contracts before deploying to testnets or mainnet.[1]
+**Chainlink Local** is a development tool that enables running **Chainlink services**—such as CCIP messaging—directly on a local machine, with integration for major environments like **Foundry**, **Hardhat**, and **Remix**. It offers a fast, flexible way to iterate and test Chainlink-based smart contracts before deploying to testnets or mainnet.
 
 ### Key Features
-- **Local Simulation** of Chainlink functionality on local EVM nodes.[1]
-- **Forked Network Testing** to interact with real deployed Chainlink contracts in live-like conditions.[1]
-- **Development Integration** supporting major frameworks for seamless workflow.[1]
-- **Testnet-Ready** code, ensuring that logic works unchanged before public deployment.[1]
+- **Local Simulation** of Chainlink functionality on local EVM nodes.
+- **Forked Network Testing** to interact with real deployed Chainlink contracts in live-like conditions.
+- **Development Integration** supporting major frameworks for seamless workflow.
+- **Testnet-Ready** code, ensuring that logic works unchanged before public deployment.
 
 ### Development Modes
 - **Local Testing Without Forking**: Use mocks on a clean local node for rapid prototyping and validation.[1]
-- **Local Testing With Forking**: Fork existing blockchains to test against real Chainlink contracts (supported in Hardhat and Foundry, not Remix).[1]
+- **Local Testing With Forking**: Fork existing blockchains to test against real Chainlink contracts (supported in Hardhat and Foundry, not Remix).
 
 ### Developer Benefits
-- Run, debug, and iterate on Chainlink smart contracts locally for faster development.[1]
-- Simulate cross-chain operations (CCIP messages, token transfers) in a controlled environment.[1]
-- Validate and verify contract behavior before progressing to live networks.[1]
+- Run, debug, and iterate on Chainlink smart contracts locally for faster development.
+- Simulate cross-chain operations (CCIP messages, token transfers) in a controlled environment.
+- Validate and verify contract behavior before progressing to live networks.
 
 
 ## Using Chainlink Local for CCIP Testing
@@ -664,4 +666,127 @@ In this context, two contracts are deployed and tested:
 5. **Send a CCIP message**: Call `sendMessage` on `MessageSender`, passing the destination chain selector, the receiver contract address, and a string message. Manually set the gas limit (e.g., 3000000) due to Remix gas estimation limitations.
 6. **Verify reception**: Check `getLastReceivedMessageDetails` on `MessageReceiver` to confirm receipt and decoding of the string message.
 
-Chainlink Local provides a rapid and robust workflow for iterating smart contract logic involving cross-chain communication, making it ideal for debugging and pre-testnet validation.[1]
+
+## Using Chainlink Local for CCIP Testing
+
+**Chainlink Local** enables developers to simulate cross-chain messaging with CCIP entirely on a local EVM node, providing near-instant feedback and no network costs.[1]
+In this context, two contracts are deployed and tested:
+
+- **MessageSender**: Deploys on the source chain, dynamically receives the LINK token and router addresses from the local simulator, and sends a simple string message (e.g., "Hey there!") cross-chain using `sendMessage`. This uses a non-zero gas limit for receiver execution and encodes the string as the message payload.
+- **MessageReceiver**: Deploys on the destination chain, inherits from `CCIPReceiver`, and implements the required `_ccipReceive` function. Upon receiving a message, this contract stores the last received message's ID and string contents and emits an event. The stored message can be retrieved with a public getter.
+
+### Testing Flow
+
+1. **Deploy `CCIPLocalSimulator`** contract in Remix using the "Remix VM (Cancun)" environment.[1]
+2. **Retrieve configuration**: Use the configuration function on the simulator contract to get addresses for the LINK token, routers, and chain selectors.
+3. **Load and fund with LINK**: Attach the LinkToken instance at the provided address to fund contracts with LINK for local CCIP fees.
+4. **Deploy contracts**: Deploy `MessageSender` and `MessageReceiver` with addresses retrieved from the simulator config.
+5. **Send a CCIP message**: Call `sendMessage` on `MessageSender`, passing the destination chain selector, the receiver contract address, and a string message. Manually set the gas limit (e.g., 3000000) due to Remix gas estimation limitations.
+6. **Verify reception**: Check `getLastReceivedMessageDetails` on `MessageReceiver` to confirm receipt and decoding of the string message.
+
+## CCIP Cross-Chain Messages with Smart Contract Actions
+
+Dedicated code to this section is in CCIP/src/cross-chain-messages
+
+### What It Does
+Send tokens to another blockchain AND automatically execute a function when they arrive. For example: send USDC from Ethereum to Base and automatically deposit it into a vault.
+
+### Three Contracts Needed
+
+1. **Sender**: Encodes what function to call and sends tokens + instructions
+2. **Receiver**: Receives tokens and executes the function call
+3. **Vault**: The target contract that does something with the tokens (deposit, withdraw, etc.)
+
+### Vault Contract
+Simple contract on destination chain (Base Sepolia) that holds USDC:
+
+```solidity
+contract Vault {
+    IERC20 public constant USDC = IERC20(0x036CbD53842c5426634e7929541eC2318f3dCF7e);
+    mapping(address => uint256) public balances;
+
+    function deposit(address account, uint256 amount) external {
+        balances[account] += amount;
+        USDC.transferFrom(account, address(this), amount);
+    }
+
+    function withdraw(uint256 amount) external {
+        balances[msg.sender] -= amount;
+        USDC.transfer(msg.sender, amount);
+    }
+}
+```
+
+### Sender Contract
+On source chain (Sepolia), encodes function calls and sends cross-chain:
+
+**Key Constants:**
+```solidity
+IRouterClient private constant ROUTER = IRouterClient(0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59);
+IERC20 private constant LINK_TOKEN = IERC20(0x779877A7B0D9E8603169DdbD7836e478b4624789);
+IERC20 private constant USDC_TOKEN = IERC20(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238);
+uint64 private constant DESTINATION_CHAIN_SELECTOR = 10344971235874465080; // Base Sepolia
+```
+
+**Main Function:**
+```solidity
+function transferTokens(
+    address _receiver,  // Receiver contract on destination
+    uint256 _amount,    // USDC amount to send
+    address _target     // Vault contract address
+) external returns (bytes32 messageId) {
+    // Check user has enough USDC
+    if (_amount > USDC_TOKEN.balanceOf(msg.sender)) {
+        revert Sender__InsufficientBalance(USDC_TOKEN, USDC_TOKEN.balanceOf(msg.sender), _amount);
+    }
+
+    // Prepare token amount for transfer
+    Client.EVMTokenAmount[] memory tokenAmounts = new Client.EVMTokenAmount[](1);
+    tokenAmounts[0] = Client.EVMTokenAmount({
+        token: address(USDC_TOKEN),
+        amount: _amount
+    });
+
+    // Encode function call for Vault deposit
+    bytes memory depositFunctionCalldata = abi.encodeWithSelector(
+        IVault.deposit.selector,
+        msg.sender,
+        _amount
+    );
+
+    // Build CCIP message
+    Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
+        receiver: abi.encode(_receiver),
+        data: abi.encode(_target, depositFunctionCalldata), // Target contract + function call
+        tokenAmounts: tokenAmounts,
+        extraArgs: Client._argsToBytes(Client.EVMExtraArgsV1({gasLimit: 200000})),
+        feeToken: address(LINK_TOKEN)
+    });
+
+    // Calculate and pay CCIP fee
+    uint256 ccipFee = ROUTER.getFee(DESTINATION_CHAIN_SELECTOR, message);
+    LINK_TOKEN.approve(address(ROUTER), ccipFee);
+
+    // Transfer USDC from user and approve router
+    USDC_TOKEN.safeTransferFrom(msg.sender, address(this), _amount);
+    USDC_TOKEN.approve(address(ROUTER), _amount);
+
+    // Send the message
+    messageId = ROUTER.ccipSend(DESTINATION_CHAIN_SELECTOR, message);
+}
+```
+
+### Simple Example Flow
+1. Deploy Vault on Base Sepolia
+2. Deploy Sender on Sepolia  
+3. Deploy Receiver on Base Sepolia
+4. Fund Sender contract with LINK tokens
+5. User approves Sender to spend their USDC
+6. User calls `transferTokens(receiverAddress, 100, vaultAddress)`
+7. USDC transfers to Base Sepolia AND automatically deposits into vault
+
+### Key Points
+- Receiver must be a smart contract (not regular wallet)
+- Need LINK tokens to pay CCIP fees
+- Higher gas limits required for function execution
+- Sender contract needs USDC approval from user first
