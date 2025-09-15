@@ -596,7 +596,7 @@ function withdrawToken(address _beneficiary) public onlyOwner {
 - **Developer Control:** Full autonomy over token contracts, pools, rate limiting, and implementation logic.
 - **Enhanced Security:** Employs Chainlink’s oracle networks and adds measures like a Risk Management Network and configurable rate limits.
 - **Programmable Transfers:** Supports atomic cross-chain token and message transfers in single transactions.
-- **Audited Token Pools:** Provides pre-audited, easy-to-deploy contracts for secure mint/burn or lock/unlock bridging, ensuring zero-slippage where exactly the sent amount is received.[1]
+- **Audited Token Pools:** Provides pre-audited, easy-to-deploy contracts for secure mint/burn or lock/unlock bridging, ensuring zero-slippage where exactly the sent amount is received.
 - **Integrates ERC20s:** Existing ERC-20 tokens can be upgraded for CCIP compatibility, sidestepping complex bridge code.
 
 ### Key Concepts
@@ -640,7 +640,7 @@ Dedicated code to this section is in CCIP/src/chainlink-local
 - **Testnet-Ready** code, ensuring that logic works unchanged before public deployment.
 
 ### Development Modes
-- **Local Testing Without Forking**: Use mocks on a clean local node for rapid prototyping and validation.[1]
+- **Local Testing Without Forking**: Use mocks on a clean local node for rapid prototyping and validation.
 - **Local Testing With Forking**: Fork existing blockchains to test against real Chainlink contracts (supported in Hardhat and Foundry, not Remix).
 
 ### Developer Benefits
@@ -651,7 +651,7 @@ Dedicated code to this section is in CCIP/src/chainlink-local
 
 ## Using Chainlink Local for CCIP Testing
 
-**Chainlink Local** enables developers to simulate cross-chain messaging with CCIP entirely on a local EVM node, providing near-instant feedback and no network costs.[1]
+**Chainlink Local** enables developers to simulate cross-chain messaging with CCIP entirely on a local EVM node, providing near-instant feedback and no network costs.
 In this context, two contracts are deployed and tested:
 
 - **MessageSender**: Deploys on the source chain, dynamically receives the LINK token and router addresses from the local simulator, and sends a simple string message (e.g., "Hey there!") cross-chain using `sendMessage`. This uses a non-zero gas limit for receiver execution and encodes the string as the message payload.
@@ -659,7 +659,7 @@ In this context, two contracts are deployed and tested:
 
 ### Testing Flow
 
-1. **Deploy `CCIPLocalSimulator`** contract in Remix using the "Remix VM (Cancun)" environment.[1]
+1. **Deploy `CCIPLocalSimulator`** contract in Remix using the "Remix VM (Cancun)" environment.
 2. **Retrieve configuration**: Use the configuration function on the simulator contract to get addresses for the LINK token, routers, and chain selectors.
 3. **Load and fund with LINK**: Attach the LinkToken instance at the provided address to fund contracts with LINK for local CCIP fees.
 4. **Deploy contracts**: Deploy `MessageSender` and `MessageReceiver` with addresses retrieved from the simulator config.
@@ -669,7 +669,7 @@ In this context, two contracts are deployed and tested:
 
 ## Using Chainlink Local for CCIP Testing
 
-**Chainlink Local** enables developers to simulate cross-chain messaging with CCIP entirely on a local EVM node, providing near-instant feedback and no network costs.[1]
+**Chainlink Local** enables developers to simulate cross-chain messaging with CCIP entirely on a local EVM node, providing near-instant feedback and no network costs.
 In this context, two contracts are deployed and tested:
 
 - **MessageSender**: Deploys on the source chain, dynamically receives the LINK token and router addresses from the local simulator, and sends a simple string message (e.g., "Hey there!") cross-chain using `sendMessage`. This uses a non-zero gas limit for receiver execution and encodes the string as the message payload.
@@ -677,7 +677,7 @@ In this context, two contracts are deployed and tested:
 
 ### Testing Flow
 
-1. **Deploy `CCIPLocalSimulator`** contract in Remix using the "Remix VM (Cancun)" environment.[1]
+1. **Deploy `CCIPLocalSimulator`** contract in Remix using the "Remix VM (Cancun)" environment.
 2. **Retrieve configuration**: Use the configuration function on the simulator contract to get addresses for the LINK token, routers, and chain selectors.
 3. **Load and fund with LINK**: Attach the LinkToken instance at the provided address to fund contracts with LINK for local CCIP fees.
 4. **Deploy contracts**: Deploy `MessageSender` and `MessageReceiver` with addresses retrieved from the simulator config.
@@ -790,3 +790,45 @@ function transferTokens(
 - Need LINK tokens to pay CCIP fees
 - Higher gas limits required for function execution
 - Sender contract needs USDC approval from user first
+
+### Receiver Contract Overview
+
+The Receiver contract enables smart contracts to receive CCIP messages from other blockchains. It must inherit from `CCIPReceiver` and implement the `_ccipReceive` function to handle incoming cross-chain messages.
+
+#### Contract Structure
+
+**Imports Required:**
+- `IRouterClient`: Interface for CCIP router
+- `Client`: Library containing CCIP message structures
+- `CCIPReceiver`: Abstract contract for receiving messages
+- `IERC20` & `SafeERC20`: For safe token handling
+- `Ownable`: For ownership control
+
+**State Variables:**
+```solidity
+address private s_sender; // Allowed sender address
+uint64 private constant SOURCE_CHAIN_SELECTOR = 16015286601757825753; // Sepolia only
+```
+
+**Constructor:**
+- Initializes CCIPReceiver with Base Sepolia router: `0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93`
+- Sets deployer as owner
+
+**Security Features:**
+- `onlyAllowlisted` modifier restricts messages to specific source chain and sender
+- Verifies sender address is set before processing
+- Only accepts messages from configured Sepolia chain and allowlisted sender
+
+#### Core Functionality
+
+**Message Processing (`_ccipReceive`):**
+1. Validates source chain and sender using `onlyAllowlisted` modifier
+2. Decodes message data to extract target contract and function calldata
+3. Executes low-level call to target contract with decoded data
+4. Reverts if function call fails
+5. Emits `MessageReceived` event with transaction details
+
+**Admin Functions:**
+- `setSender()`: Owner-only function to set trusted sender address
+- `withdrawToken()`: Owner-only function to withdraw any ERC-20 tokens from contract
+
