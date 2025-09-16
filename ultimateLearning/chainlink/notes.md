@@ -761,3 +761,23 @@ uint64 private constant DESTINATION_CHAIN_SELECTOR = 10344971235874465080; // Ba
 #### Verify Vault Deposit
 - Call `balances()` function on Vault contract with user address
 - Should return deposited amount (1000000) if successful
+
+## Chainlink functions
+
+Chainlink Functions is a trust-minimized off-chain compute infrastructure that enables smart contracts to fetch external API data and perform custom computations outside the blockchain environment. This service bridges the gap between blockchain applications and traditional internet-based data sources.
+
+### Core Benefits
+
+The service provides four primary advantages for developers. API connectivity allows smart contracts to access any public internet API, aggregate and transform data, then return processed values on-chain - solving the fundamental limitation where smart contracts cannot access external data. Custom computation enables developers to run JavaScript code in a serverless environment, moving expensive or slow blockchain operations off-chain for improved economy and efficiency. The decentralized infrastructure utilizes Chainlink's decentralized oracle networks (DONs) to reduce vulnerability to single points of failure. Off-chain computation leverages DONs where nodes execute JavaScript code independently, with results aggregated through Chainlink's Offchain Reporting Protocol for secure, consensus-driven outcomes.
+
+### Technical Architecture
+
+Chainlink Functions operates on a request-and-receive pattern. Smart contracts initiate requests containing JavaScript source code for computation or API calls. The DON then distributes execution across multiple nodes running the code in secure serverless environments. Results from all executions are aggregated to prevent manipulation by minority nodes, and the final consensus result returns to the requesting smart contract.
+
+### Key Features
+
+The platform includes decentralized computation with DON-secured data integrity, threshold encryption for protecting sensitive information like API keys through multi-party computation, and a subscription-based payment model using LINK tokens that bills only upon request fulfillment.
+
+### Use Cases
+
+Chainlink Functions supports diverse applications including public data access for parametric insurance or dynamic NFTs, data transformation for sentiment analysis or price calculations, authenticated API access to protected data sources, decentralized storage integration with IPFS, Web2-Web3 hybrid applications, and cloud services connectivity with platforms like AWS S3 and Google Cloud Storage.
