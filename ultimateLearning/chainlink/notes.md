@@ -667,60 +667,31 @@ In this context, two contracts are deployed and tested:
 6. **Verify reception**: Check `getLastReceivedMessageDetails` on `MessageReceiver` to confirm receipt and decoding of the string message.
 
 
-## Using Chainlink Local for CCIP Testing
+## CCIP Cross-Chain Messages with Smart Contract Actions Resume
 
-**Chainlink Local** enables developers to simulate cross-chain messaging with CCIP entirely on a local EVM node, providing near-instant feedback and no network costs.
-In this context, two contracts are deployed and tested:
+### Overview
+Send tokens to another blockchain AND automatically execute a function when they arrive. Example: send USDC from Ethereum to Base and automatically deposit it into a vault.
 
-- **MessageSender**: Deploys on the source chain, dynamically receives the LINK token and router addresses from the local simulator, and sends a simple string message (e.g., "Hey there!") cross-chain using `sendMessage`. This uses a non-zero gas limit for receiver execution and encodes the string as the message payload.
-- **MessageReceiver**: Deploys on the destination chain, inherits from `CCIPReceiver`, and implements the required `_ccipReceive` function. Upon receiving a message, this contract stores the last received message's ID and string contents and emits an event. The stored message can be retrieved with a public getter.
+### Architecture
 
-### Testing Flow
+#### Three Contracts Required
 
-1. **Deploy `CCIPLocalSimulator`** contract in Remix using the "Remix VM (Cancun)" environment.
-2. **Retrieve configuration**: Use the configuration function on the simulator contract to get addresses for the LINK token, routers, and chain selectors.
-3. **Load and fund with LINK**: Attach the LinkToken instance at the provided address to fund contracts with LINK for local CCIP fees.
-4. **Deploy contracts**: Deploy `MessageSender` and `MessageReceiver` with addresses retrieved from the simulator config.
-5. **Send a CCIP message**: Call `sendMessage` on `MessageSender`, passing the destination chain selector, the receiver contract address, and a string message. Manually set the gas limit (e.g., 3000000) due to Remix gas estimation limitations.
-6. **Verify reception**: Check `getLastReceivedMessageDetails` on `MessageReceiver` to confirm receipt and decoding of the string message.
+1. **Sender Contract** (Source Chain - Sepolia)
+   - Encodes function calls and sends cross-chain messages
+   - Handles token transfers and CCIP fee payments
 
-## CCIP Cross-Chain Messages with Smart Contract Actions
+2. **Receiver Contract** (Destination Chain - Base Sepolia)
+   - Inherits from `CCIPReceiver`
+   - Receives CCIP messages and executes target contract functions
+   - Security: Only accepts messages from allowlisted sender and source chain
 
-Dedicated code to this section is in CCIP/src/cross-chain-messages
+3. **Vault Contract** (Destination Chain - Base Sepolia)
+   - Target contract that performs actions with received tokens
+   - Simple deposit/withdraw functionality
 
-### What It Does
-Send tokens to another blockchain AND automatically execute a function when they arrive. For example: send USDC from Ethereum to Base and automatically deposit it into a vault.
+### Key Contract Details
 
-### Three Contracts Needed
-
-1. **Sender**: Encodes what function to call and sends tokens + instructions
-2. **Receiver**: Receives tokens and executes the function call
-3. **Vault**: The target contract that does something with the tokens (deposit, withdraw, etc.)
-
-### Vault Contract
-Simple contract on destination chain (Base Sepolia) that holds USDC:
-
-```solidity
-contract Vault {
-    IERC20 public constant USDC = IERC20(0x036CbD53842c5426634e7929541eC2318f3dCF7e);
-    mapping(address => uint256) public balances;
-
-    function deposit(address account, uint256 amount) external {
-        balances[account] += amount;
-        USDC.transferFrom(account, address(this), amount);
-    }
-
-    function withdraw(uint256 amount) external {
-        balances[msg.sender] -= amount;
-        USDC.transfer(msg.sender, amount);
-    }
-}
-```
-
-### Sender Contract
-On source chain (Sepolia), encodes function calls and sends cross-chain:
-
-**Key Constants:**
+#### Sender Contract Constants
 ```solidity
 IRouterClient private constant ROUTER = IRouterClient(0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59);
 IERC20 private constant LINK_TOKEN = IERC20(0x779877A7B0D9E8603169DdbD7836e478b4624789);
@@ -728,107 +699,65 @@ IERC20 private constant USDC_TOKEN = IERC20(0x1c7D4B196Cb0C7B01d743Fbc6116a90237
 uint64 private constant DESTINATION_CHAIN_SELECTOR = 10344971235874465080; // Base Sepolia
 ```
 
-**Main Function:**
-```solidity
-function transferTokens(
-    address _receiver,  // Receiver contract on destination
-    uint256 _amount,    // USDC amount to send
-    address _target     // Vault contract address
-) external returns (bytes32 messageId) {
-    // Check user has enough USDC
-    if (_amount > USDC_TOKEN.balanceOf(msg.sender)) {
-        revert Sender__InsufficientBalance(USDC_TOKEN, USDC_TOKEN.balanceOf(msg.sender), _amount);
-    }
+#### Receiver Contract Router
+- Base Sepolia router: `0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93`
+- Source chain selector: `16015286601757825753` (Sepolia only)
 
-    // Prepare token amount for transfer
-    Client.EVMTokenAmount[] memory tokenAmounts = new Client.EVMTokenAmount[](1);
-    tokenAmounts[0] = Client.EVMTokenAmount({
-        token: address(USDC_TOKEN),
-        amount: _amount
-    });
+### Manual Approval Requirements
 
-    // Encode function call for Vault deposit
-    bytes memory depositFunctionCalldata = abi.encodeWithSelector(
-        IVault.deposit.selector,
-        msg.sender,
-        _amount
-    );
+🔴 Critical Manual Steps Required
 
-    // Build CCIP message
-    Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
-        receiver: abi.encode(_receiver),
-        data: abi.encode(_target, depositFunctionCalldata), // Target contract + function call
-        tokenAmounts: tokenAmounts,
-        extraArgs: Client._argsToBytes(Client.EVMExtraArgsV1({gasLimit: 200000})),
-        feeToken: address(LINK_TOKEN)
-    });
+1. Fund Sender Contract with LINK
+- **Action**: Send 3 LINK tokens to Sender contract address on Sepolia
+- **Purpose**: Pay CCIP transaction fees
+- **Method**: Direct MetaMask transfer
 
-    // Calculate and pay CCIP fee
-    uint256 ccipFee = ROUTER.getFee(DESTINATION_CHAIN_SELECTOR, message);
-    LINK_TOKEN.approve(address(ROUTER), ccipFee);
+2. Approve Sender Contract for USDC (Sepolia)
+- **Contract**: USDC on Sepolia Etherscan
+- **Action**: Call `approve()` function via "Write as Proxy" tab
+- **Parameters**:
+  - `spender`: Sender contract address
+  - `value`: 1000000 (1 USDC)
+- **Purpose**: Allow Sender to transfer USDC from user wallet
 
-    // Transfer USDC from user and approve router
-    USDC_TOKEN.safeTransferFrom(msg.sender, address(this), _amount);
-    USDC_TOKEN.approve(address(ROUTER), _amount);
+3. Approve Vault Contract for USDC (Base Sepolia)
+- **Contract**: USDC on Base Sepolia (Basescan)
+- **Action**: Call `approve()` function via "Write as Proxy" tab
+- **Parameters**:
+  - `spender`: Vault contract address
+  - `value`: 1000000 (1 USDC)
+- **Purpose**: Allow Vault to transfer USDC when calling deposit
 
-    // Send the message
-    messageId = ROUTER.ccipSend(DESTINATION_CHAIN_SELECTOR, message);
-}
-```
+4. Set Sender Address in Receiver Contract
+- **Action**: Call `setSender()` function (owner-only)
+- **Parameter**: Sender contract address
+- **Purpose**: Security allowlist for incoming messages
 
-### Simple Example Flow
-1. Deploy Vault on Base Sepolia
-2. Deploy Sender on Sepolia  
-3. Deploy Receiver on Base Sepolia
-4. Fund Sender contract with LINK tokens
-5. User approves Sender to spend their USDC
-6. User calls `transferTokens(receiverAddress, 100, vaultAddress)`
-7. USDC transfers to Base Sepolia AND automatically deposits into vault
+### Execution Flow
 
-### Key Points
-- Receiver must be a smart contract (not regular wallet)
-- Need LINK tokens to pay CCIP fees
-- Higher gas limits required for function execution
-- Sender contract needs USDC approval from user first
+1. **Deploy** Vault on Base Sepolia
+2. **Deploy** Sender on Sepolia
+3. **Deploy** Receiver on Base Sepolia
+4. **Manual**: Fund Sender with LINK tokens
+5. **Manual**: Approve Sender for USDC spending (Sepolia)
+6. **Manual**: Approve Vault for USDC spending (Base Sepolia)
+7. **Manual**: Set sender address in Receiver contract
+8. **Execute**: Call `transferTokens(receiverAddress, amount, vaultAddress)`
+9. **Automatic**: USDC transfers cross-chain and deposits into vault
 
-### Receiver Contract Overview
+### Key Technical Points
 
-The Receiver contract enables smart contracts to receive CCIP messages from other blockchains. It must inherit from `CCIPReceiver` and implement the `_ccipReceive` function to handle incoming cross-chain messages.
+- **Gas Limit**: 200,000 for function execution
+- **Fee Token**: LINK tokens required for CCIP fees
+- **Security**: Receiver validates source chain and sender address
+- **Token Handling**: Uses SafeERC20 for secure transfers
+- **Error Handling**: Reverts if insufficient balance or function call fails
 
-#### Contract Structure
+### Verification Steps
 
-**Imports Required:**
-- `IRouterClient`: Interface for CCIP router
-- `Client`: Library containing CCIP message structures
-- `CCIPReceiver`: Abstract contract for receiving messages
-- `IERC20` & `SafeERC20`: For safe token handling
-- `Ownable`: For ownership control
+#### Check Transaction Status
+- Use **CCIP Explorer** with transaction hash to monitor cross-chain message status
 
-**State Variables:**
-```solidity
-address private s_sender; // Allowed sender address
-uint64 private constant SOURCE_CHAIN_SELECTOR = 16015286601757825753; // Sepolia only
-```
-
-**Constructor:**
-- Initializes CCIPReceiver with Base Sepolia router: `0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93`
-- Sets deployer as owner
-
-**Security Features:**
-- `onlyAllowlisted` modifier restricts messages to specific source chain and sender
-- Verifies sender address is set before processing
-- Only accepts messages from configured Sepolia chain and allowlisted sender
-
-#### Core Functionality
-
-**Message Processing (`_ccipReceive`):**
-1. Validates source chain and sender using `onlyAllowlisted` modifier
-2. Decodes message data to extract target contract and function calldata
-3. Executes low-level call to target contract with decoded data
-4. Reverts if function call fails
-5. Emits `MessageReceived` event with transaction details
-
-**Admin Functions:**
-- `setSender()`: Owner-only function to set trusted sender address
-- `withdrawToken()`: Owner-only function to withdraw any ERC-20 tokens from contract
-
+#### Verify Vault Deposit
+- Call `balances()` function on Vault contract with user address
+- Should return deposited amount (1000000) if successful
