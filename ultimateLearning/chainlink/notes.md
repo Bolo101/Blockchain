@@ -796,3 +796,45 @@ The Chainlink Functions Playground is an online sandbox for developers to test c
 - Supports a simple workflow: enter code, arguments, and secrets, then run the code and inspect outputs and logs.
 - Ideal for experimenting with integrations or custom computation use cases leveraging Chainlink’s off-chain capabilities, lowering barriers to entry for smart contract developers.
 
+### Smart contract
+
+Dedicated code to this section is in functions/src/
+
+### Resume
+This section explains how to build a **Chainlink Functions Consumer Smart Contract** that fetches live weather data for a given city using an external API and Chainlink’s decentralized oracle network.  
+
+
+#### Contract Structure
+- **Imports**:  
+  - `FunctionsClient` (to connect with the Chainlink Router).  
+  - `FunctionsRequest` (library to build and encode requests).  
+  - Contract inherits from `FunctionsClient` with a router address as a constructor parameter.
+
+- **State Variables**:  
+  Track the last queried city, request details, received temperature, and responses.  
+  - `s_lastCity`, `s_requestedCity`, `s_lastTemperature`  
+  - `s_lastRequestId`, `s_lastResponse`, `s_lastError`
+
+- **Constants**:  
+  - `ROUTER` and `DON_ID` (specific to Sepolia testnet).  
+  - `GAS_LIMIT` (callback execution limit).  
+  - `SOURCE`: JavaScript code for fetching weather data from `wttr.in`.
+
+- **Events and Errors**:  
+  - `Response`: emitted when data is returned.  
+  - `UnexpectedRequestID`: ensures only responses tied to the latest request are stored.
+
+#### Core Functions
+1. **getTemperature(city, subscriptionId)**  
+   - Creates a `FunctionsRequest.Request`.  
+   - Initializes it with the inline JavaScript `SOURCE`.  
+   - Sets arguments (city name for weather query).  
+   - Sends request to the DON using `_sendRequest`.  
+   - Stores `s_requestedCity` and `s_lastRequestId`.  
+   - Returns the request ID for tracking.
+
+2. **fulfillRequest(requestId, response, err)**  
+   - Called automatically by Chainlink once DON fulfills the request.  
+   - Verifies the request ID matches the latest sent.  
+   - Updates `s_lastResponse`, `s_lastError`, `s_lastTemperature`, and `s_lastCity`.  
+   - Emits a `Response` event logging the received temperature and metadata.
