@@ -781,3 +781,18 @@ The platform includes decentralized computation with DON-secured data integrity,
 ### Use Cases
 
 Chainlink Functions supports diverse applications including public data access for parametric insurance or dynamic NFTs, data transformation for sentiment analysis or price calculations, authenticated API access to protected data sources, decentralized storage integration with IPFS, Web2-Web3 hybrid applications, and cloud services connectivity with platforms like AWS S3 and Google Cloud Storage.
+
+## Chainlink Functions Playground
+
+The Chainlink Functions Playground is an online sandbox for developers to test custom JavaScript code and API calls that will eventually run via Chainlink Functions on decentralized oracle networks (DONs).
+
+### What It Does
+- Enables quick prototyping and debugging of off-chain compute logic written in JavaScript before deploying on-chain.
+- Allows simulation of data requests, including calls to third-party public APIs, and visualizes both the returned output and console logs in real-time.
+
+### How It Works
+- Users input JavaScript code, execution arguments, and any required secrets (like API keys).
+- The Playground executes code in-browser, providing results instantly; it does not require blockchain deployment or smart contract interaction for initial testing.
+- Supports a simple workflow: enter code, arguments, and secrets, then run the code and inspect outputs and logs.
+- Ideal for experimenting with integrations or custom computation use cases leveraging Chainlink’s off-chain capabilities, lowering barriers to entry for smart contract developers.
+
