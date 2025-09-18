@@ -852,3 +852,32 @@ Chainlink VRF counters this by generating random values along with cryptographic
 - **Subscription Method**: Fund a subscription account shared by multiple contracts. Efficient, cost-optimized, supports higher random output. Ideal for frequent or large-scale randomness needs like gaming or DeFi.  
 - **Direct Funding Method**: Each contract funds requests directly. Simpler, transparent per-contract costs, suitable for one-off randomness like contest draws or limited NFT mints.  
 
+
+### Contract
+
+This section demonstrates how to implement Chainlink VRF within a smart contract by building a "HousePicker" contract that assigns users to Hogwarts houses through a random dice roll. The goal is to show how VRF generates, proves, and returns randomness securely in decentralized applications.  
+
+### Contract Structure  
+- **Imports & Inheritance**: Uses `VRFConsumerBaseV2Plus` and `VRFV2PlusClient` to manage VRF requests and responses.  
+- **Variables**:  
+  - `ROLL_IN_PROGRESS`: Tracks pending rolls.  
+  - `s_subscriptionId`: VRF subscription ID.  
+  - `VRF_COORDINATOR` and `KEY_HASH`: Identify the VRF coordinator and gas lane.  
+  - Execution parameters: `callbackGasLimit`, `requestConfirmations`, and `numWords`.  
+  - Mappings: `s_rollers` (request IDs → users) and `s_results` (users → results).  
+- **Events**: `DiceRolled` (when randomness is requested) and `DiceLanded` (when fulfilled).  
+
+### Key Functions  
+- **Constructor**: Initializes the contract with a subscription ID.  
+- **rollDice()**: Ensures a user hasn’t already rolled, submits a randomness request to Chainlink VRF, maps the request to the user, and emits `DiceRolled`.  
+- **fulfillRandomWords()**: Called automatically once randomness is returned. It maps the random number to a dice roll (0–3), assigns the result, and emits `DiceLanded`.  
+- **house()**: Lets a user query their assigned Hogwarts house once randomness has been fulfilled.  
+- **_getHouseName()**: Translates ID values (0–3) into Gryffindor, Hufflepuff, Slytherin, or Ravenclaw.  
+
+### Deployment and Integration Steps  
+1. Compile the contract in Remix and deploy with your VRF subscription ID.  
+2. Copy the deployed contract address and add it as a *consumer* under your VRF subscription.  
+3. Fund the subscription with LINK if needed.  
+4. Call `rollDice()` to request a random number.  
+5. Once fulfilled, use the `house()` function to see the result.  
+
