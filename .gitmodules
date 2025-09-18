@@ -31,3 +31,6 @@
 [submodule "ultimateLearning/chainlink/functions/lib/forge-std"]
 	path = ultimateLearning/chainlink/functions/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "ultimateLearning/chainlink/VRF/lib/forge-std"]
+	path = ultimateLearning/chainlink/VRF/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
