@@ -879,5 +879,26 @@ This section demonstrates how to implement Chainlink VRF within a smart contract
 2. Copy the deployed contract address and add it as a *consumer* under your VRF subscription.  
 3. Fund the subscription with LINK if needed.  
 4. Call `rollDice()` to request a random number.  
-5. Once fulfilled, use the `house()` function to see the result.  
+5. Once fulfilled, use the `house()` function to see the result.
+
+## Chainlink Data Streams
+
+Chainlink Data Streams provide fast, reliable price data for blockchain applications, using decentralized oracles to deliver cryptographically verified reports with sub-second latency and robust fault tolerance.
+
+### Core Components
+- Chainlink Decentralized Oracle Network (DON): Aggregates data from providers, reaches consensus, and signs reports for frequent delivery to the Aggregation Network.
+- Data Streams Aggregation Network: Stores signed reports in a globally distributed, highly available infrastructure, making them accessible via Chainlink Automation (“Streams Trade”) or APIs (“Streams Direct”).
+- Chainlink Verifier Contract: Smart contract that validates data integrity and authenticity using DON signatures before data is used by dApps.
+
+### Supported Data and Access
+- Delivers asset price pairs (e.g., ETH/USD) on select blockchains, found at the Chainlink Data Streams section on data.chain.link.
+- Each asset pair page provides configuration details including feed ID, bid, and ask prices.
+
+### Use Cases
+- Perpetual Futures: Enables high-speed, secure, onchain trading with data comparable to centralized exchanges.
+- Options: Supports precise, timely execution and dynamic risk management for onchain options contracts.
+- Prediction Markets: Facilitates real-time trading and settlement based on rapid data updates, boosting confidence in outcome-based contracts.
+
+### Key Benefits
+Chainlink Data Streams power financial dApps with fast, secure data, supporting advanced strategies and real-time market responsiveness while maintaining transparency and decentralization.
 
