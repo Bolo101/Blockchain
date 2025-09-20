@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20; // currently, it is required you use a compiler version of 0.8.19
+pragma solidity 0.8.19; // currently, it is required you use a compiler version of 0.8.19
 
 import {Common} from "@chainlink/contracts@1.3.0/src/v0.8/llo-feeds/libraries/Common.sol";
 import {StreamsLookupCompatibleInterface} from "@chainlink/contracts@1.3.0/src/v0.8/automation/interfaces/StreamsLookupCompatibleInterface.sol";
