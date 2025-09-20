@@ -902,3 +902,24 @@ Chainlink Data Streams provide fast, reliable price data for blockchain applicat
 ### Key Benefits
 Chainlink Data Streams power financial dApps with fast, secure data, supporting advanced strategies and real-time market responsiveness while maintaining transparency and decentralization.
 
+
+### Core Workflow Overview
+
+Code available in /chainlink/dataStreams/src
+
+- **Event Trigger & Automation:** When a specific event is emitted from a smart contract (LogEmitter), Chainlink Automation listens for this event using a Log Trigger and calls the StreamsUpkeep contract to initiate data retrieval.
+- **StreamsUpkeep - Data Retrieval Flow:** 
+    - The checkLog function is called, which intentionally reverts with a custom StreamsLookup error (per EIP-3668), providing Chainlink nodes with information on which stream data to fetch and the relevant timestamp.
+    - Chainlink Automation uses this revert to fetch the required signed report from the Chainlink Data Streams Aggregation Network and sends it via callback.
+    - The performUpkeep function runs on-chain: it verifies the received data using the Chainlink Verifier contract, checks report schema (handles both v3 and v4), pays required LINK and stores the decoded price in lastDecodedPrice.
+- **Custom Logic & Interfaces:** Separate interfaces are implemented for external dependencies: FeeManager (to get verification costs) and VerifierProxy (to handle signature verification and obtain LINK usage info).
+- **EIP-3668 Standard:** The use of revert for StreamsLookup is based on EIP-3668, allowing contracts to communicate off-chain data requirements in a standardized, backward-compatible way .
+
+### Deployment Steps & Operation
+- **Smart Contracts:** Deploy LogEmitter (emits the event) and StreamsUpkeep (handles Automation).
+- **Funding:** Fund StreamsUpkeep with LINK to pay for on-chain report verification.
+- **Registration:** Register StreamsUpkeep as a Log Trigger Upkeep in Chainlink Automation UI, specifying LogEmitter as the log source.
+- **Operation:** When LogEmitter::emitLog is called, Automation recognizes the event, triggers StreamsUpkeep, which fetches, verifies, and stores price data from Data Streams. The updated price can be retrieved from lastDecodedPrice.
+
+### Key Takeaways
+Streams Trade combines onchain automation with secure, high-frequency off-chain data retrieval, letting decentralized apps get cryptographically verified price data exactly when user or system events occur—enabling reliable, real-time reactions for use cases like trading and derivatives.
