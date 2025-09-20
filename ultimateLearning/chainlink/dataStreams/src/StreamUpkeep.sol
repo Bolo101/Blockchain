@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19; // currently, it is required you use a compiler version of 0.8.19
 
+//Utilities for working with Chainlink Low Latency Oracle (LLO) feeds
 import {Common} from "@chainlink/contracts@1.3.0/src/v0.8/llo-feeds/libraries/Common.sol";
+//Interface for contracts that work with Streams Lookup
 import {StreamsLookupCompatibleInterface} from "@chainlink/contracts@1.3.0/src/v0.8/automation/interfaces/StreamsLookupCompatibleInterface.sol";
 import {ILogAutomation, Log} from "@chainlink/contracts@1.3.0/src/v0.8/automation/interfaces/ILogAutomation.sol";
+//Interface for managing rewards in the Chainlink ecosystem
 import {IRewardManager} from "@chainlink/contracts@1.3.0/src/v0.8/llo-feeds/v0.3.0/interfaces/IRewardManager.sol";
 import {IERC20} from "@chainlink/contracts@1.3.0/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/interfaces/IERC20.sol";
+
 
 import {IFeeManager} from "./interfaces/IFeeManager.sol";
 import {IVerifierProxy} from "./interfaces/IVerifierProxy.sol";

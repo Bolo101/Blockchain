@@ -907,19 +907,63 @@ Chainlink Data Streams power financial dApps with fast, secure data, supporting 
 
 Code available in /chainlink/dataStreams/src
 
-- **Event Trigger & Automation:** When a specific event is emitted from a smart contract (LogEmitter), Chainlink Automation listens for this event using a Log Trigger and calls the StreamsUpkeep contract to initiate data retrieval.
-- **StreamsUpkeep - Data Retrieval Flow:** 
-    - The checkLog function is called, which intentionally reverts with a custom StreamsLookup error (per EIP-3668), providing Chainlink nodes with information on which stream data to fetch and the relevant timestamp.
-    - Chainlink Automation uses this revert to fetch the required signed report from the Chainlink Data Streams Aggregation Network and sends it via callback.
-    - The performUpkeep function runs on-chain: it verifies the received data using the Chainlink Verifier contract, checks report schema (handles both v3 and v4), pays required LINK and stores the decoded price in lastDecodedPrice.
-- **Custom Logic & Interfaces:** Separate interfaces are implemented for external dependencies: FeeManager (to get verification costs) and VerifierProxy (to handle signature verification and obtain LINK usage info).
-- **EIP-3668 Standard:** The use of revert for StreamsLookup is based on EIP-3668, allowing contracts to communicate off-chain data requirements in a standardized, backward-compatible way .
+Streams Trade is a specialized implementation of Chainlink Data Streams that uses Chainlink Automation and log-triggered upkeeps to automate the retrieval and onchain verification of market price data, particularly for complex financial dApps requiring high-frequency, low-latency data and secure settlement.
 
-### Deployment Steps & Operation
-- **Smart Contracts:** Deploy LogEmitter (emits the event) and StreamsUpkeep (handles Automation).
-- **Funding:** Fund StreamsUpkeep with LINK to pay for on-chain report verification.
-- **Registration:** Register StreamsUpkeep as a Log Trigger Upkeep in Chainlink Automation UI, specifying LogEmitter as the log source.
-- **Operation:** When LogEmitter::emitLog is called, Automation recognizes the event, triggers StreamsUpkeep, which fetches, verifies, and stores price data from Data Streams. The updated price can be retrieved from lastDecodedPrice.
+### How Streams Trade Works
 
-### Key Takeaways
-Streams Trade combines onchain automation with secure, high-frequency off-chain data retrieval, letting decentralized apps get cryptographically verified price data exactly when user or system events occur—enabling reliable, real-time reactions for use cases like trading and derivatives.
+- **Event-Driven Data Fetching:**  
+  A simple smart contract (LogEmitter) emits an event whenever a user or dApp action (live trading, minting, or staking) occurs.
+  
+- **Chainlink Automation with Log Trigger:**  
+  Chainlink Automation listens for these emitted events using Log Triggers. When detected, it calls the StreamsUpkeep contract to begin the data flow.
+
+- **EIP-3668 and StreamsLookup:**  
+  The crucial checkLog function in StreamsUpkeep intentionally reverts with a custom StreamsLookup error, specifying the stream/price feed to retrieve and providing time context. This mechanism, described by EIP-3668, allows smart contracts to signal that off-chain data is required without breaking existing function APIs. Chainlink nodes recognize and process this revert to fetch the necessary data from the Data Streams Aggregation Network.
+
+- **Automation and Data Verification Flow:**  
+  1. Chainlink Automation retrieves the signed report from the aggregation network and passes it back via a callback (checkCallback).
+  2. The performUpkeep function decodes, verifies, and processes the signed report. It uses interfaces (VerifierProxy, FeeManager) to manage LINK payments for verification and then calls the verifier to ensure the data is not tampered with.
+  3. Data is parsed into the proper struct (ReportV3 for crypto, ReportV4 for RWA), and relevant values (like ETH/USD price) are stored in a state variable such as lastDecodedPrice.
+
+- **Security and Transparency:**  
+  - Every returned report includes a DON signature and is only verified if all protocol checks pass, ensuring data authenticity and resistance to manipulation.
+  - LINK is paid for every onchain verification, so the contract must be funded ahead of time using a wallet like MetaMask.
+
+### Deployment and Registration Steps
+
+- Deploy both LogEmitter and StreamsUpkeep contracts using a platform like Remix or Hardhat, and ensure they implement the necessary Chainlink-specific interfaces (StreamsLookupCompatibleInterface, VerifierProxy, FeeManager).
+- Register your StreamsUpkeep contract for automation in the Chainlink Automation UI (selecting Log Trigger as the type) and provide both contract addresses and ABIs.
+- Fund StreamsUpkeep with LINK to pay for report verification operations.
+- Emit a log through LogEmitter (call emitLog, which triggers the workflow), and upon confirmation, query lastDecodedPrice to view the most recent price fetched from Data Streams.
+
+### Example Structs and Report Formats
+
+Chainlink Data Streams uses two report formats for different asset types:
+- **ReportV3:** Designed for crypto assets and includes stream ID, timestamps, base LINK/native fees, price, bid, and ask values.
+- **ReportV4:** For real-world assets (RWAs), also includes market status codes indicating open/closed/unknown markets.
+
+### Architecture Summary
+
+| Component                | Description                                                                          |
+|--------------------------|--------------------------------------------------------------------------------------|
+| LogEmitter Contract      | Emits events (logs) to trigger data retrieval                                       |
+| StreamsUpkeep Contract   | Handles automation, error processing, data verification, and price storage          |
+| Chainlink Automation     | Listens for contract logs and coordinates the pull/fetch data workflow               |
+| Data Streams Aggregation | Network storing signed, consensus reports from the DON                              |
+| VerifierProxy Interface  | Ensures authenticity and validity of each retrieved report                          |
+| FeeManager Interface     | Estimates and manages LINK/token fees for verification                              |
+
+### Use cases
+
+- **Perpetual Futures:** Compete with CEXs by supporting fast and secure perpetual contract settlement.
+- **Options Protocols:** Enable dynamic risk management and real-time settlement for options trading.
+- **Prediction Markets:** Respond to real-time events using secure, quick updates for accurate outcome-based contracts.
+- **DeFi Integration:** Automate key operations like market-making or liquidation based on instant data feeds.
+
+### Advanced Benefits
+
+- Pull-based architecture: Efficient and flexible; data is only fetched when needed by the dApp, not periodically pushed, minimizing gas and complexity.
+- Commit-and-reveal anti-frontrunning: Critical for fairness and competitive execution in hostile MEV environments.
+- EIP-3668 compatibility: Modernizes off-chain lookup signaling and client side interoperability; ensures broad compatibility without breaking contract ABIs.
+
+Chainlink Streams Trade fuses automation, cryptographic verification, and decentralized infrastructure to deliver secure, real-time price data for advanced financial dApps—unlocking trustless operation, granular risk control, and robust market responsiveness.
