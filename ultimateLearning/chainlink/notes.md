@@ -967,3 +967,58 @@ Chainlink Data Streams uses two report formats for different asset types:
 - EIP-3668 compatibility: Modernizes off-chain lookup signaling and client side interoperability; ensures broad compatibility without breaking contract ABIs.
 
 Chainlink Streams Trade fuses automation, cryptographic verification, and decentralized infrastructure to deliver secure, real-time price data for advanced financial dApps—unlocking trustless operation, granular risk control, and robust market responsiveness.
+
+## Chainlink Proof of Reserve
+
+Chainlink Proof of Reserve (PoR) is an automated, real-time service that verifies the collateral backing of tokenized assets such as stablecoins, wrapped tokens, and tokenized commodities by connecting on-chain smart contracts with both on-chain and off-chain reserve data through a decentralized oracle network (DON).
+
+### Understanding Collateralization
+Collateralization means securing a loan or financial obligation by locking valuable assets. In DeFi, this typically involves locking digital assets in smart contracts to back loans or tokenized assets. Chainlink PoR verifies that these assets are fully backed by reserves, whether on-chain (wallets, smart contracts) or off-chain (custodial accounts, real-world assets).
+
+### What Chainlink Proof of Reserve Does
+Chainlink PoR moves beyond traditional manual audits by offering a decentralized, cryptographically secure, and automated verification of reserve assets. It monitors multiple reserve sources, aggregates and validates data via consensus, generates tamper-proof cryptographic proofs, and publishes verified reserve data on-chain for use by smart contracts and dApps.
+
+### How It Works
+1. **Monitors Reserve Addresses:** Chainlink nodes check balances of designated wallets or contracts holding reserves.
+2. **Verifies Off-Chain Reserves:** Connects to APIs and custodial systems for real-world asset data.
+3. **Processes and Aggregates Data:** Uses decentralized consensus to verify aggregate reserve data.
+4. **Creates Cryptographic Proofs:** Generates signed, verifiable reports proving reserve status.
+5. **On-Chain Delivery:** Posts verified data to the blockchain for smart contracts access.
+6. **Enables Automated Actions:** Protocols can trigger automatic behaviors (e.g., pause minting) based on reserve status.
+
+### Secure Mint Feature
+A core security enhancement is Secure Mint, which cryptographically ensures tokens are only minted when reserves fully cover them, preventing infinite mint attacks and increasing trust in stablecoins and tokenized assets.
+
+### Use Cases
+- **Stablecoins:** Ensuring each token is backed 1:1 with reserves, increasing trust and preventing de-pegging events.
+- **Wrapped Assets:** Verifying that wrapped tokens (e.g., WBTC) correspond exactly to locked original assets.
+- **Tokenized Commodities:** Validating digital tokens representing physical assets like gold or silver are fully backed.
+- **Cross-Chain Bridges:** Monitoring collateralization for wrapped or bridged assets to secure interoperability and asset safety.
+- **DeFi Protocols:** Allowing lending and synthetic asset platforms to automate risk controls and react promptly to under-collateralization.
+
+### Key Benefits
+- **Enhanced Transparency:** Provides continuous, public audit data on collateralization.
+- **Reduced Counterparty Risk:** Detects and prevents exposure to under-collateralized assets.
+- **Improved Security:** Decentralized oracle validation prevents manipulation by any single party.
+- **Automated Verification:** Replaces slow, manual audits with real-time, algorithmic verification.
+- **Market Stability:** Mitigates sudden market failures due to hidden insolvency.
+- **Multi-Chain Scalability:** Supports different blockchains and complex reserve structures.
+
+### Available PoR Data Feeds Examples
+- Fiat-backed stablecoins like Wenia COPW reserves (Colombian pesos)
+- Treasury-backed stablecoins like STBT’s US Treasury Bills reserves
+- Fixed income shares such as iShares USD Treasury Bond ETF reserves
+- Commodities like ION Digital gold vault reserves
+
+### Technical Implementation Details
+- Built with the infrastructure of Chainlink Price Feeds, PoR utilizes decentralized oracle networks to collect, validate, and deliver data frequently.
+- Supports update triggers based on deviation thresholds or time intervals.
+- Implements layered security including consensus, cryptographic proofs, and on-chain verification.
+- Interfaces are standardized for easy integration by smart contracts, enabling them to act automatically on reserve state changes.
+
+### Industry Adoption and Importance
+Chainlink PoR significantly enhances trust by making reserve backing verifiable in a trust-minimized way, critical for maturing digital finance ecosystems. It is increasingly adopted by stablecoin issuers, wrapped token bridges, DeFi protocols, and tokenization projects as a security and transparency standard.
+
+***
+
+Chainlink Proof of Reserve is a cornerstone for secure, transparent digital asset ecosystems, automating continuous collateral validation to protect users and maintain market integrity across multiple asset classes and blockchain networks.
