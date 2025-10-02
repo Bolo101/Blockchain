@@ -474,3 +474,85 @@ yarn safe submit-proposal <SAFE_TX_HASH>
 * Suitable for both **individual users** and **organizations** managing significant crypto assets.
 
 ---
+
+Here’s the **section to add** to your previous notes — you can slot it in as a new major section after your existing wallet overviews (e.g., after "Enhancing Your Hot Wallet Security" and before "Understanding Safe").
+
+---
+
+## 7. Mastering Metamask Installation and Key Security
+
+### Secure Installation and Key Management
+
+* Install the **official MetaMask extension** only from [metamask.io](https://metamask.io).
+* During setup, you’ll be given:
+
+  * **Seed Phrase / Secret Recovery Phrase (SRP)** → a human-readable backup for your entire wallet.
+  * **Private Keys** → unique keys for individual accounts derived from the SRP.
+
+**Golden Rules for Key Security:**
+
+* **Never share** your seed phrase or private keys — possession = control of your funds.
+* **Backup securely** (offline copies, multiple locations, ideally with fire/waterproof storage).
+* **No recovery if lost** — losing the SRP means permanent loss of funds.
+
+> Example: If your only backup burns in a house fire, all assets tied to that seed phrase (even $100k) are gone forever.
+
+For course exercises, securely record your SRP/private keys, as you’ll use them in later drills.
+
+---
+
+### Performing a Metamask Disaster Recovery Drill
+
+**Why do this?**
+
+* Human memory fades.
+* Real-world risks: stolen computer, failed hardware wallet, lost phone.
+* Regular drills confirm your backups work and refresh your recovery skills.
+
+**Step-by-Step Recovery:**
+
+1. **Simulate loss** — imagine your MetaMask install is gone.
+2. **Retrieve backup** — access your SRP or private key copy.
+3. **Reinstall MetaMask** from the official site.
+4. **Choose restore method:**
+
+   * **Option A: Seed Recovery Phrase**
+
+     * Enter SRP exactly in order (12–24 words).
+     * Set a new password (local only).
+     * Wallet + accounts restored.
+   * **Option B: Private Key import**
+
+     * In MetaMask, go to "Add account → Import account → Private Key."
+     * Paste key → adds that one account (not the entire wallet).
+
+**Accessing SRP/Keys from existing MetaMask:**
+
+* Go to **Account Details → Show private key / Show SRP** (requires password).
+
+---
+
+### Core Concepts
+
+* **Seed Phrase / SRP / Mnemonic:** master backup → regenerates all keys & accounts.
+* **Private Key:** specific key for one blockchain account.
+* **Wallet Interoperability (BIP-39):** SRPs are portable across wallets (e.g., Ledger → MetaMask → Trezor).
+* **Self-Custody:** you alone control access — freedom + full responsibility.
+
+---
+
+### Security Best Practices
+
+* **Practice recovery regularly** → schedule drills every 6–12 months.
+* **Backup strategies:**
+
+  * Paper copies in secure, separate places.
+  * Metal plates for durability.
+  * Password managers = last resort (hack risk).
+* **Universal principle:** SRPs & private keys are the foundation across hot wallets (MetaMask, Rabby) and cold wallets (Ledger, Trezor).
+
+---
+
+✅ **Key takeaway:** By mastering installation, key secrecy, and disaster recovery, you prevent catastrophic mistakes and build confidence in self-custody.
+
+---
