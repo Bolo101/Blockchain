@@ -698,3 +698,156 @@ MetaMask gives a link like **“View on block explorer.”**
 5. **Don’t sign if you’re unsure. Cancel > Confirm.**
 
 ---
+
+
+## 9. Understanding and Verifying Web3 Signatures: A Practical Guide
+
+### Why Signature Verification Matters
+
+* Signing messages = providing a **digital signature** with your wallet.
+* Used for logins, transactions, and authorizations.
+* **Attack vector:** malicious actors can disguise requests (e.g., phishing / domain spoofing).
+
+**Training resource:** [wise-signer.cyfrin.io](https://wise-signer.cyfrin.io) → interactive simulator for practicing signature verification.
+
+---
+
+### Example Attack: Domain Spoofing in Action
+
+Scenario from Wise Signer training (Q3/15):
+
+* You want to sign into **OpenSea (opensea.io)**.
+* Pop-up looks normal → "Signature request from: opensea.io".
+* But the **Message** reveals:
+
+  ```
+  app.gnosispay.com wants you to sign in with your account:
+  0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  URI: https://app.gnosispay.com
+  Chain ID: 100
+  ...
+  ```
+
+**Red Flag:** Domain mismatch → message asks you to authenticate on **gnosispay.com**, not **opensea.io**.
+
+✅ **Correct action:** Reject the request.
+
+---
+
+### What a Legitimate Signature Looks Like
+
+For OpenSea, a proper request would be consistent:
+
+* Request from: **opensea.io**
+* URI: **[https://opensea.io](https://opensea.io)**
+* Message: “opensea.io wants you to sign in … accept Terms of Service …”
+
+All references align with **opensea.io**.
+
+---
+
+### Consequences of Incorrectly Signing
+
+* In simulation → message: *“Oops! You allowed this site to impersonate you on Gnosis Pay!”*
+* Real-world effect: attacker could impersonate you, authenticate, or even trigger transactions on another domain.
+
+---
+
+### Key Takeaways
+
+* **Always check the message content** (domain in URI + text), not just the pop-up header.
+* **Reject immediately** if domain mismatch appears.
+* Tools like Wise Signer help you train in a **safe environment**.
+* Make domain-checking before signing a **habit** — this is your first line of defense against Web3 phishing.
+
+---
+
+## 10. The Golden Rule of Web3 Transactions: Trust Your Wallet, Not the Website
+
+### Core Principle
+
+In Web3, **you are your own bank**. The most important rule is:
+👉 **Don’t trust the website. Only trust your wallet.**
+
+Websites can be hacked, bugged, or maliciously designed. Your **hardware wallet’s trusted display** is the only reliable source of truth for what you’re signing.
+
+---
+
+### Simulation Scenario: Sending ETH to a Friend
+
+* **Goal:** Send **0.5 ETH** to friend’s address:
+  `0x70997970C51812dc3A010C7d01b50e0d17dc79C8`
+* **Sender Wallet:** `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266` (first account, derivation path `m/44'/60'/0'/0/0`)
+* **Interface Used:** [portfolio.metamask.io/transfer](https://portfolio.metamask.io/transfer?tab=send)
+
+Website showed:
+
+* Recipient address: ✅ Correct
+* Amount: ❌ **5 ETH** instead of **0.5 ETH**
+
+---
+
+### Hardware Wallet Verification (Trezor)
+
+1. **Recipient Address**
+
+   * Trezor showed: `0x70997970C51812dc3A010C7d01b50e0d17dc79C8`
+   * Matches intended address → proceed.
+
+2. **Sender Account**
+
+   * Trezor showed: `Account ETH #1`
+   * Path: `m/44'/60'/0'/0/0`
+   * Matches → proceed.
+
+3. **Transaction Summary**
+
+   * Trezor showed:
+
+     ```
+     Amount: 0.5 ETH
+     Max Fee: 0.00198 ETH
+     ```
+   * ✅ Correct amount (not 5 ETH).
+
+4. **Final Confirmation**
+
+   * Trezor prompted: "Hold to Sign"
+   * Since all details aligned with intent, signing was safe.
+
+---
+
+### Key Security Lessons
+
+* **Trusted Display = Final Authority**
+  Hardware wallets isolate and display the true transaction request. This is what you verify, not the website UI.
+
+* **Websites Can Lie**
+  Even legit domains like `metamask.io` may show manipulated or buggy data.
+
+* **Critical Checks Before Signing**
+
+  * Recipient address (character by character)
+  * Amount and token type
+  * Sender account and derivation path
+  * Network (Mainnet vs. testnet)
+  * Transaction fee reasonableness
+
+* **URL is Just the First Step**
+  Always check you’re on the real domain — but remember, even correct domains can mislead you.
+
+---
+
+### Example Discrepancy Recap
+
+* **Intended:** Send **0.5 ETH** to friend’s address.
+* **Website UI:** Showed **5 ETH**.
+* **Trezor Hardware Wallet:** Correctly displayed **0.5 ETH**.
+
+✅ Outcome: Signing was correct, because the wallet’s trusted display matched the intended transaction.
+
+---
+
+📌 **Golden Rule Reinforced:**
+No matter what the website shows you → **only trust what your hardware wallet screen tells you.**
+
