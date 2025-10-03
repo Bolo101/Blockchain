@@ -851,3 +851,49 @@ Website showed:
 📌 **Golden Rule Reinforced:**
 No matter what the website shows you → **only trust what your hardware wallet screen tells you.**
 
+---
+
+## 11. Understanding Your Wallet: A Hierarchy of Security
+
+Not all wallets provide the same level of protection. As your engagement with Web3 deepens and your assets grow in value, the type of wallet you choose becomes a critical security decision.
+
+### 1. Browser Wallets (e.g., MetaMask)
+
+* **Pros:** Convenient, widely supported, easy for daily use.
+* **Cons:** Operate within your browser, making them more exposed to:
+
+  * Malicious browser updates.
+  * Phishing attacks that trick you into signing harmful transactions.
+  * Malware targeting your computer.
+* **Risk profile:** Higher — attackers can exploit vulnerabilities in browser-based environments more easily than in hardware solutions.
+
+> Many of the Wise Signer simulations focus on MetaMask because it’s the most common entry point, but also the most targeted.
+
+---
+
+### 2. Hardware Wallets (e.g., Trezor, Ledger, GridLattice)
+
+* **Security Upgrade:** Hardware wallets isolate your private keys from the internet-connected computer. Keys never leave the device.
+* **Protection Benefits:**
+
+  * Resistant to malware that infects browsers or desktops.
+  * The trusted display shows actual transaction details (not what a website claims).
+  * Firmware updates are a possible attack vector, but they are heavily scrutinized and far more secure than browser extensions.
+* **Risk profile:** Strong — significantly harder for hackers to compromise.
+
+> As the value of your assets increases, migrating from a browser wallet to a hardware wallet should become a top priority.
+
+---
+
+### 3. Multi-Signature Wallets ("Safe Wallets")
+
+* **Advanced Security Layer:** Transactions require **multiple approvals (signatures)** from different devices or parties before execution.
+* **Use Cases:**
+
+  * DAO treasuries.
+  * Teams or organizations with shared funds.
+  * Individuals managing large holdings who want to avoid single points of failure.
+* **Example:** Gnosis Safe (often just called "Safe").
+* **Risk profile:** Highest protection — mitigates risks from one compromised key.
+
+---
