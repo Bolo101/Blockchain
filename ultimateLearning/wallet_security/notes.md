@@ -554,9 +554,9 @@ For course exercises, securely record your SRP/private keys, as you’ll use the
 ---
 
 
-# 8. Securely Navigating Web3: How to Verify Transactions in MetaMask
+## 8. Securely Navigating Web3: How to Verify Transactions in MetaMask
 
-## Why This Matters
+### Why This Matters
 
 * In Web3, **you are your own bank**.
 * If you click **“Confirm”** on a bad transaction, your money can be gone forever — no refunds.
@@ -565,7 +565,7 @@ For course exercises, securely record your SRP/private keys, as you’ll use the
 
 ---
 
-## Example: Using Aave (a Lending App)
+### Example: Using Aave (a Lending App)
 
 We’ll use **Aave** as a real example. Aave is like a crypto bank:
 
@@ -575,7 +575,7 @@ We’ll use **Aave** as a real example. Aave is like a crypto bank:
 
 ---
 
-## Step 1: Connecting Your Wallet
+### Step 1: Connecting Your Wallet
 
 1. Go to **[app.aave.com](https://app.aave.com)**.
 2. Click **“Connect Wallet.”**
@@ -588,7 +588,7 @@ We’ll use **Aave** as a real example. Aave is like a crypto bank:
 
 ---
 
-## Step 2: Starting a Transaction
+### Step 2: Starting a Transaction
 
 Let’s say you want to **deposit 0.001 ETH (~$2)**.
 
@@ -605,9 +605,9 @@ Let’s say you want to **deposit 0.001 ETH (~$2)**.
 
 ---
 
-## Step 3: How to Verify the Transaction in MetaMask
+### Step 3: How to Verify the Transaction in MetaMask
 
-### 1. Check the Website Source
+#### 1. Check the Website Source
 
 * At the top of MetaMask you’ll see **which website asked for the transaction**.
 * ✅ It must say **app.aave.com**.
@@ -615,7 +615,7 @@ Let’s say you want to **deposit 0.001 ETH (~$2)**.
 
 ---
 
-### 2. Check the Contract Address (“Who You’re Talking To”)
+#### 2. Check the Contract Address (“Who You’re Talking To”)
 
 * MetaMask shows an address like:
 
@@ -635,7 +635,7 @@ Let’s say you want to **deposit 0.001 ETH (~$2)**.
 
 ---
 
-### 3. Check the Function Call (The Action Being Done)
+#### 3. Check the Function Call (The Action Being Done)
 
 * MetaMask shows the action name, e.g., **depositETH.**
 * ✅ If you’re depositing ETH → this makes sense.
@@ -643,7 +643,7 @@ Let’s say you want to **deposit 0.001 ETH (~$2)**.
 
 ---
 
-### 4. Check the Parameters (Who Benefits?)
+#### 4. Check the Parameters (Who Benefits?)
 
 * Click **Data tab** in MetaMask → look for decoded parameters.
 * Example for deposit:
@@ -659,7 +659,7 @@ Let’s say you want to **deposit 0.001 ETH (~$2)**.
 
 ---
 
-### 5. Check the Gas Fee
+#### 5. Check the Gas Fee
 
 * MetaMask shows a gas fee estimate (e.g., $1.40).
 * ✅ Small ETH deposit = smallish fee.
@@ -667,7 +667,7 @@ Let’s say you want to **deposit 0.001 ETH (~$2)**.
 
 ---
 
-## Step 4: Approve Only If Everything Matches
+### Step 4: Approve Only If Everything Matches
 
 * If all checks are ✅, click **Confirm.**
 * MetaMask will show “Transaction Submitted.”
@@ -675,7 +675,7 @@ Let’s say you want to **deposit 0.001 ETH (~$2)**.
 
 ---
 
-## Step 5: Double-Check on Etherscan
+### Step 5: Double-Check on Etherscan
 
 MetaMask gives a link like **“View on block explorer.”**
 
@@ -689,7 +689,7 @@ MetaMask gives a link like **“View on block explorer.”**
 
 ---
 
-## Key Safety Rules to Remember
+### Key Safety Rules to Remember
 
 1. **Always check the website name.**
 2. **Always check the contract address on Etherscan + official docs.**
