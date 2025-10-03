@@ -553,6 +553,148 @@ For course exercises, securely record your SRP/private keys, as you’ll use the
 
 ---
 
-✅ **Key takeaway:** By mastering installation, key secrecy, and disaster recovery, you prevent catastrophic mistakes and build confidence in self-custody.
+
+# 8. Securely Navigating Web3: How to Verify Transactions in MetaMask
+
+## Why This Matters
+
+* In Web3, **you are your own bank**.
+* If you click **“Confirm”** on a bad transaction, your money can be gone forever — no refunds.
+* Scammers often create fake websites that *look* real, hoping you won’t notice before approving.
+* Learning to check carefully is the #1 skill that keeps you safe.
+
+---
+
+## Example: Using Aave (a Lending App)
+
+We’ll use **Aave** as a real example. Aave is like a crypto bank:
+
+* You can **deposit ETH** to earn interest.
+* You can **borrow** by putting up crypto as collateral.
+* Most important: it’s **non-custodial** → you always keep control of your funds.
+
+---
+
+## Step 1: Connecting Your Wallet
+
+1. Go to **[app.aave.com](https://app.aave.com)**.
+2. Click **“Connect Wallet.”**
+3. Pick **MetaMask.**
+4. MetaMask will pop up and ask to connect your account.
+
+   * ✅ Check the site name: it should be **app.aave.com**.
+   * If it looks weird or different, stop — you might be on a fake site.
+5. Once connected, Aave will show your wallet name and balance.
+
+---
+
+## Step 2: Starting a Transaction
+
+Let’s say you want to **deposit 0.001 ETH (~$2)**.
+
+1. In Aave, click **“Supply ETH.”**
+2. Enter `0.001`.
+3. The popup shows:
+
+   * APY (interest rate, e.g., 1.8%).
+   * Gas fee estimate (e.g., $1.20).
+4. Click **“Supply ETH.”**
+5. MetaMask will now open with the real transaction request.
+
+   * ⚠️ This is the critical moment where you verify *everything*.
+
+---
+
+## Step 3: How to Verify the Transaction in MetaMask
+
+### 1. Check the Website Source
+
+* At the top of MetaMask you’ll see **which website asked for the transaction**.
+* ✅ It must say **app.aave.com**.
+* 🚩 If it shows a strange site → reject immediately.
+
+---
+
+### 2. Check the Contract Address (“Who You’re Talking To”)
+
+* MetaMask shows an address like:
+
+  ```
+  Interacting with: 0xd01607c3c5eCABA394D8be377a08590149325722
+  ```
+* This is the **smart contract** your ETH is going to.
+* How to verify:
+
+  1. Copy the address.
+  2. Go to **etherscan.io**.
+  3. Paste the address.
+  4. Look for a name tag like **“Aave: WrappedTokenGatewayV3.”**
+  5. Cross-check with Aave’s official docs at [docs.aave.com](https://docs.aave.com).
+* ✅ If they match → safe.
+* 🚩 If not → cancel immediately.
+
+---
+
+### 3. Check the Function Call (The Action Being Done)
+
+* MetaMask shows the action name, e.g., **depositETH.**
+* ✅ If you’re depositing ETH → this makes sense.
+* 🚩 If you see something unrelated (like **transferAllTokens**) → scam!
+
+---
+
+### 4. Check the Parameters (Who Benefits?)
+
+* Click **Data tab** in MetaMask → look for decoded parameters.
+* Example for deposit:
+
+  ```
+  Function: depositETH  
+  pool: 0x87870...fa4e2   (Aave pool address)  
+  onBehalfOf: 0xYourWalletAddress  
+  referralCode: 0  
+  ```
+* ✅ Make sure `onBehalfOf` is **your wallet address**.
+* 🚩 If it’s someone else’s → they will get your deposit, not you.
+
+---
+
+### 5. Check the Gas Fee
+
+* MetaMask shows a gas fee estimate (e.g., $1.40).
+* ✅ Small ETH deposit = smallish fee.
+* 🚩 If gas looks crazy high ($100+) → something’s wrong.
+
+---
+
+## Step 4: Approve Only If Everything Matches
+
+* If all checks are ✅, click **Confirm.**
+* MetaMask will show “Transaction Submitted.”
+* Once confirmed, Aave will update to show your supplied ETH.
+
+---
+
+## Step 5: Double-Check on Etherscan
+
+MetaMask gives a link like **“View on block explorer.”**
+
+* Click it → opens Etherscan.
+* Check:
+
+  * From: Your wallet.
+  * To: The Aave contract you verified earlier.
+  * Function: `depositETH`.
+  * Tokens transferred: `0.001 ETH in, 0.001 aWETH out`.
+
+---
+
+## Key Safety Rules to Remember
+
+1. **Always check the website name.**
+2. **Always check the contract address on Etherscan + official docs.**
+3. **Make sure the function matches what you want (deposit, not transfer!).**
+4. **Check “onBehalfOf” = your wallet.**
+5. **Don’t sign if you’re unsure. Cancel > Confirm.**
 
 ---
