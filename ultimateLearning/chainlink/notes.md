@@ -1,292 +1,820 @@
-# Solidity
+# Solidity & Chainlink: A Comprehensive Beginner's Guide
 
+---
 
-## Value type
+## Part 1: Solidity Fundamentals
 
-Value types store their data directly when you assign a value type to another variable, you get a copy of the value.
-This happens because value types (like integers, booleans, addresses, etc.) store their actual data directly in the variable. Each variable has its own separate copy of the data.
+### 1.1 Understanding Data Types in Solidity
 
+Solidity, like many programming languages, categorizes data into two main types: **Value Types** and **Reference Types**. Understanding this distinction is crucial for writing efficient and secure smart contracts.
 
-## Reference type
+---
 
-In Solidity, reference types (arrays, structs, strings, and mappings) are stored as pointers. When you pass these types around, Solidity doesn't copy all the data; it just references where the data is stored.
+#### Value Types
 
-- storage: Permanent storage on the blockchain (expensive)
+**Definition:** Value types store their data directly in the variable. When you assign a value type to another variable, you create a **copy** of the value.
 
-Used for state variables.
+**How it works:**
+- Each variable holds its own independent copy of the data
+- Modifying one variable does not affect the other
+- This is similar to how primitive types work in languages like JavaScript or Python
 
-Data persists between function calls and transactions.
+**Common Value Types:**
+| Type | Description | Example |
+|------|-------------|---------|
+| `uint` | Unsigned integer (non-negative) | `uint256 amount = 100;` |
+| `int` | Signed integer (can be negative) | `int256 temperature = -5;` |
+| `bool` | Boolean (true/false) | `bool isActive = true;` |
+| `address` | Ethereum address (20 bytes) | `address owner = 0x123...;` |
+| `bytes` | Fixed-size byte array | `bytes32 hash = 0xabc...;` |
 
-Most expensive in terms of gas costs.
-
-- memory: Temporary storage during function execution (cheaper)
-
-Only exists during function execution.
-
-Cheaper than storage.
-
-Used for function parameters, return values, and local variables.
-
-- calldata: Read-only temporary storage for function parameters (most efficient)
-
-Similar to memory but read-only.
-
-Can't be modified.
-
-Most gas-efficient.
-
-Used primarily for external function parameters.
-
-## Data box
-
-- Be careful with loops in Solidity because each operation costs gas, and loops with too many iterations can exceed block gas limits. This is known as a denial of service (DoS).
-
-- msg.value: The amount of ETH (in wei) sent with the function call. Only available if the function is marked as payable
-
-- Events in Solidity are like announcements that your contract makes when something important happens. Events should be emitted when the contract state is updated
-
-- The _ in the modifier represents where the function code will be executed. For example, if the _ is before the modifier logic, the function will be executed before the modifier logic.
-
-- ABI : The ABI is like a smart contract's instruction manual that tells applications exactly how to talk to your contract on the blockchain.
-
-It describes, using structured data, exactly what functions and data types are available for use in the contract and how to “call” or use them.
-## Naming convention
-
-- Contracts: PascalCase (like SimpleToken)
-
-- Functions/variables: camelCase (like balanceOf)
-
-- Private/internal state variables: prefix with _ (like _owner)
-
-## Libraries and Inheritance
-
-- Library : Libraries are reusable pieces of code that you can share across multiple contracts. Think of them as toolboxes containing helpful functions that your contracts can use.
-
-1. Embedded Libraries: Use internal functions that get copied into your contract's code
-
-2. Linked Libraries: Use external and public functions. These functions don't get copied into your contract's bytecode - instead, your contract makes calls to the deployed library
-
-- Inheritance : Inheritance lets one contract build upon another. Think of it like building with blocks—you start with a foundation and add more features.
-
-In Inheritance we can override functions or extend them using **super**
-
+**Example:**
 ```solidity
+uint256 a = 10;
+uint256 b = a;  // b is a COPY of a
+a = 20;         // a changes, but b remains 10
+```
+
+---
+
+#### Reference Types
+
+**Definition:** Reference types store a **reference** (pointer) to where the data is stored, rather than the data itself. When you assign a reference type to another variable, both variables point to the **same data location**.
+
+**How it works:**
+- Variables point to the same underlying data
+- Modifying one variable affects all variables referencing that data
+- This is more memory-efficient for large data structures
+
+**Common Reference Types:**
+| Type | Description | Example |
+|------|-------------|---------|
+| `array` | Dynamic or fixed-size list | `uint256[] numbers;` |
+| `struct` | Custom data structure | `struct User { string name; }` |
+| `string` | Dynamic string | `string message = "Hello";` |
+| `mapping` | Key-value pairs (hash table) | `mapping(address => uint256) balances;` |
+
+**Example:**
+```solidity
+uint256[] memory arr1 = new uint256[](3);
+arr1[0] = 10;
+
+uint256[] memory arr2 = arr1;  // arr2 points to SAME data as arr1
+arr2[0] = 20;                  // Both arr1[0] and arr2[0] are now 20!
+```
+
+---
+
+### 1.2 Data Locations: Storage, Memory, and Calldata
+
+In Solidity, reference types must specify where their data is stored. This is critical for gas optimization and security.
+
+---
+
+#### Storage
+
+**Definition:** Permanent storage on the blockchain.
+
+**Characteristics:**
+- Data persists between function calls and transactions
+- Used for **state variables** (variables declared outside functions)
+- **Most expensive** in terms of gas costs
+- Changes require writing to the blockchain
+
+**When to use:**
+- State variables that need to persist
+- Data that will be accessed across multiple transactions
+
+**Example:**
+```solidity
+contract Example {
+    uint256[] public myArray;  // Storage (state variable)
+    
+    function addToStorage(uint256 value) public {
+        myArray.push(value);  // Writes to storage (expensive)
+    }
+}
+```
+
+---
+
+#### Memory
+
+**Definition:** Temporary storage during function execution.
+
+**Characteristics:**
+- Data exists **only during function execution**
+- Cleared after function completes
+- **Cheaper than storage**
+- Used for function parameters, return values, and local variables
+
+**When to use:**
+- Temporary calculations
+- Function parameters and return values
+- Data that doesn't need to persist
+
+**Example:**
+```solidity
+function sumArray(uint256[] memory arr) public pure returns (uint256) {
+    uint256 total = 0;  // Memory variable
+    for (uint256 i = 0; i < arr.length; i++) {
+        total += arr[i];
+    }
+    return total;
+}
+```
+
+---
+
+#### Calldata
+
+**Definition:** Read-only temporary storage for function parameters.
+
+**Characteristics:**
+- Similar to memory but **read-only**
+- Cannot be modified
+- **Most gas-efficient** for external function parameters
+- Data is not copied, just referenced
+
+**When to use:**
+- External function parameters (especially arrays and strings)
+- When you don't need to modify the input data
+
+**Example:**
+```solidity
+function processString(string calldata input) public pure returns (string memory) {
+    // input is read-only - cannot be modified
+    return string.concat("Processed: ", input);
+}
+```
+
+---
+
+#### Data Location Comparison
+
+| Location | Persistence | Modifiable | Gas Cost | Primary Use |
+|----------|-------------|------------|----------|-------------|
+| **Storage** | Permanent | Yes | High | State variables |
+| **Memory** | Temporary | Yes | Medium | Function locals, params |
+| **Calldata** | Temporary | No | Low | External function params |
+
+---
+
+### 1.3 Important Solidity Concepts
+
+#### Loops and Gas Optimization
+
+**Warning:** Be careful with loops in Solidity!
+
+**Why?**
+- Each operation in a loop costs gas
+- Loops with too many iterations can exceed block gas limits
+- This can cause transactions to fail (Denial of Service vulnerability)
+
+**Best Practices:**
+```solidity
+// ❌ BAD: Unbounded loop
+function badLoop(uint256 n) public {
+    for (uint256 i = 0; i < n; i++) {
+        // If n is too large, this will fail
+    }
+}
+
+// ✅ GOOD: Bounded loop
+function goodLoop() public {
+    for (uint256 i = 0; i < 100; i++) {
+        // Fixed maximum iterations
+    }
+}
+```
+
+---
+
+#### msg.value
+
+**Definition:** The amount of ETH (in wei) sent with a function call.
+
+**Requirements:**
+- Only available if the function is marked as `payable`
+- 1 ETH = 10^18 wei
+
+**Example:**
+```solidity
+function deposit() public payable {
+    uint256 amount = msg.value;  // Amount of ETH sent
+    // Do something with the ETH...
+}
+```
+
+---
+
+#### Events
+
+**Definition:** Events are like announcements that your contract makes when something important happens.
+
+**Purpose:**
+- Log important state changes
+- Provide a way for external applications to monitor contract activity
+- Events are stored in transaction logs (cheaper than storage)
+
+**Best Practice:** Emit events when contract state is updated.
+
+**Example:**
+```solidity
+event Transfer(address indexed from, address indexed to, uint256 amount);
+
+function transfer(address to, uint256 amount) public {
+    // Update state...
+    emit Transfer(msg.sender, to, amount);  // Announce the transfer
+}
+```
+
+---
+
+#### Modifiers
+
+**Definition:** Modifiers are reusable code that can modify function behavior.
+
+**The Underscore (`_`):** Represents where the function code will be executed.
+
+**Example:**
+```solidity
+modifier onlyOwner() {
+    require(msg.sender == owner, "Not owner");
+    _;  // Function code executes HERE
+}
+
+function sensitiveFunction() public onlyOwner {
+    // This code runs after the modifier's require check
+}
+```
+
+**Modifier Execution Order:**
+```solidity
+modifier before() {
+    // Runs BEFORE function
+    _;
+}
+
+modifier after() {
+    _;
+    // Runs AFTER function
+}
+
+function example() public before after {
+    // Function code
+}
+```
+
+---
+
+#### ABI (Application Binary Interface)
+
+**Definition:** The ABI is like a smart contract's instruction manual.
+
+**What it does:**
+- Tells applications exactly how to talk to your contract
+- Describes available functions and data types
+- Specifies how to encode/decode data for contract interaction
+
+**Why it's important:**
+- Enables external applications (web3.js, ethers.js) to interact with your contract
+- Standardizes how data is formatted for blockchain communication
+
+---
+
+### 1.4 Naming Conventions
+
+Following consistent naming conventions makes code more readable and maintainable.
+
+| Element | Convention | Example |
+|---------|------------|---------|
+| **Contracts** | PascalCase | `SimpleToken`, `VaultManager` |
+| **Functions** | camelCase | `balanceOf`, `transferTokens` |
+| **Variables** | camelCase | `totalSupply`, `userBalance` |
+| **Constants** | UPPER_SNAKE_CASE | `MAX_SUPPLY`, `DECIMALS` |
+| **Private/Internal** | Prefix with `_` | `_owner`, `_mint` |
+
+**Example:**
+```solidity
+contract SimpleToken {
+    uint256 private _totalSupply;  // Private state variable
+    uint256 public constant MAX_SUPPLY = 1000000;  // Constant
+    
+    function balanceOf(address account) public view returns (uint256) {
+        return _balances[account];
+    }
+}
+```
+
+---
+
+### 1.5 Libraries and Inheritance
+
+#### Libraries
+
+**Definition:** Libraries are reusable pieces of code that you can share across multiple contracts.
+
+**Think of them as:** Toolboxes containing helpful functions.
+
+---
+
+**Types of Libraries:**
+
+1. **Embedded Libraries**
+   - Use `internal` functions
+   - Code is copied into your contract's bytecode
+   - No deployment needed
+
+2. **Linked Libraries**
+   - Use `external` and `public` functions
+   - Deployed separately as a contract
+   - Your contract makes calls to the deployed library
+   - More gas-efficient for large libraries
+
+**Example:**
+```solidity
+library Math {
+    function min(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a < b ? a : b;
+    }
+}
+
+contract Example {
+    using Math for uint256;
+    
+    function getMin(uint256 a, uint256 b) public pure returns (uint256) {
+        return a.min(b);  // Uses library function
+    }
+}
+```
+
+---
+
+#### Inheritance
+
+**Definition:** Inheritance lets one contract build upon another.
+
+**Think of it as:** Building with blocks—you start with a foundation and add more features.
+
+---
+
+**Key Concepts:**
+
+1. **Overriding Functions**
+   - Child contracts can override parent functions
+   - Must use `override` keyword
+   - Use `super` to call parent function
+
+2. **Multiple Inheritance**
+   - A contract can inherit from multiple parents
+   - Order matters for `super` calls
+
+**Example:**
+```solidity
+contract BaseToken {
+    function getTokenName() public pure virtual returns (string memory) {
+        return "BaseToken";
+    }
+}
+
 contract ExtendedToken is BaseToken {
-    function getTokenName() public override pure returns (string memory) {
-        // Call the parent function and add to it using the super keyword
+    function getTokenName() public pure override returns (string memory) {
+        // Call parent function and add to it
         return string.concat(super.getTokenName(), " Plus");
         // Returns "BaseToken Plus"
     }
 }
 ```
 
-When using inheritance parent contracts import order is important. If two contracts contain a function with the same name and child contract uses of super with the function name, then it will use function from first inherited contract
+**Multiple Inheritance Order:**
+```solidity
+contract A {
+    function foo() public pure virtual returns (string memory) {
+        return "A";
+    }
+}
 
-## Introduction to Oracles
+contract B {
+    function foo() public pure virtual returns (string memory) {
+        return "B";
+    }
+}
 
-Blockchains are deterministic system, meaning that given the same input the system will produce the same output. Due blockchain isolated nature, blockchains cannot directly access off-chain data. Blockchains process transactions with higher latency than traditional computing systems due to their need for global consensus. Blockchains cannot fetch real-world data independently, limiting smart contracts functionalities => Oracle problem
+contract C is A, B {
+    function foo() public pure override(A, B) returns (string memory) {
+        return super.foo();  // Calls A.foo() (first inherited)
+    }
+}
+```
 
-A blockchain oracle is an infrastructure component that enables secure data exchange between blockchains and external systems. Decentralized oracles provide a trust-minimizing mechanism for bringing off-chain data onto the blockchain and allow smart contracts to be executed based on real-world events or off-chain computation.
+---
 
-### Types of Blockchain Oracles
-- Inbound Oracles: These oracles bring external data to the blockchain. For example, they deliver information such as weather conditions, sports scores, or stock prices into a smart contract.
+## Part 2: Oracles and Chainlink
 
-- Outbound Oracles: These oracles send data from the blockchain to external systems. They enable smart contracts to communicate and interact with off-chain systems.
+### 2.1 The Oracle Problem
 
-- Consensus Oracles: These oracles aggregate data from multiple sources and provide a single source of truth to the smart contract. This is done to improve the reliability and accuracy of the data.
+#### Understanding Blockchains
 
-- Cross-Chain Oracles: These oracles facilitate communication and data exchange between different blockchain networks (each of which is like an isolated “island”). Cross-chain oracles are essential for interoperability between different blockchains.
+**Key Characteristics:**
+1. **Deterministic:** Given the same input, the system produces the same output
+2. **Isolated:** Cannot directly access off-chain data
+3. **High Latency:** Slower than traditional computing due to global consensus
 
-## Chainlink
+**The Problem:**
+Blockchains cannot fetch real-world data independently, limiting smart contract functionality.
 
-Chainlink is a decentralized oracle network (DON) that provides smart contracts with off-chain and cross-chain data and computations in a reliable, secure, and decentralized manner.
+**Examples of Needed Data:**
+- Weather conditions
+- Stock prices
+- Sports scores
+- Flight information
+- API responses
 
-### Chainlink services
+---
 
-Here's a concise resume of Chainlink's key services:
+#### What is a Blockchain Oracle?
 
-**Chainlink Services Overview**
+**Definition:** An infrastructure component that enables secure data exchange between blockchains and external systems.
 
-Chainlink provides essential infrastructure services that connect blockchains to real-world data and enable advanced smart contract functionality:
+**Types of Oracles:**
 
-**Core Data Services**
-- **Price Feeds**: Deliver reliable cryptocurrency, commodity, and forex pricing data to DeFi platforms by aggregating information from multiple exchanges
-- **Data Streams**: Provide high-frequency, low-latency market data on-demand for time-sensitive applications like prediction markets
+| Type | Direction | Example |
+|------|-----------|---------|
+| **Inbound Oracle** | External → Blockchain | Weather data, stock prices |
+| **Outbound Oracle** | Blockchain → External | Triggering bank transfers |
+| **Consensus Oracle** | Multiple sources → Single truth | Aggregating price data |
+| **Cross-Chain Oracle** | Blockchain ↔ Blockchain | Transferring tokens between chains |
 
-**Automation & Computation**
-- **Automation**: Automatically triggers smart contract functions when predefined conditions are met, such as liquidating under-collateralized loans
-- **Chainlink Functions**: Executes custom off-chain computations and delivers verified results to smart contracts, handling calculations too expensive for on-chain processing
+**Decentralized Oracles:**
+- Provide trust-minimized data delivery
+- Aggregate data from multiple sources
+- Use consensus to ensure accuracy
+- Enable smart contracts to execute based on real-world events
 
-**Cross-Chain & Security**
-- **CCIP (Cross-Chain Interoperability Protocol)**: Enables secure communication and token transfers between different blockchains
-- **VRF (Verifiable Random Function)**: Generates provably fair random numbers for applications like NFT trait distribution and fair giveaways
-- **Proof of Reserve**: Verifies that tokenized assets like stablecoins are backed by actual reserves
+---
 
-These services collectively solve the "oracle problem" by providing secure, decentralized ways for smart contracts to access external data, automate processes, and interact across different blockchain networks.
+### 2.2 Chainlink Overview
 
-#### Chainlink Data Feeds
+**Definition:** Chainlink is a decentralized oracle network (DON) that provides smart contracts with off-chain and cross-chain data and computations.
 
-Chainlink Data Feeds enable smart contracts to access real-world data like asset prices, reserve balances, and Layer 2 sequencer health status.
+**Core Value Proposition:**
+- **Reliable:** Decentralized network prevents single points of failure
+- **Secure:** Cryptographic proofs ensure data integrity
+- **Decentralized:** No central authority controls the data
 
-**Types of Data Available:**
-- **Price Feeds**: Aggregated cryptocurrency asset prices
-- **SmartData Feeds**: Onchain data for tokenized real-world assets (RWAs)
-- **Rate and Volatility Feeds**: Interest rates, rate curves, and asset volatility data
-- **L2 Sequencer Uptime Feeds**: Layer 2 sequencer availability status
+---
+
+#### Chainlink Services Overview
+
+| Service | Purpose | Use Case |
+|---------|---------|----------|
+| **Price Feeds** | Deliver reliable pricing data | DeFi platforms, trading |
+| **Data Streams** | High-frequency, low-latency data | Prediction markets, derivatives |
+| **Automation** | Trigger functions automatically | Liquidations, scheduled tasks |
+| **Functions** | Custom off-chain computations | API calls, data transformation |
+| **CCIP** | Cross-chain messaging | Token transfers, multi-chain dApps |
+| **VRF** | Verifiable randomness | NFT traits, fair giveaways |
+| **Proof of Reserve** | Verify asset backing | Stablecoins, wrapped tokens |
+
+---
+
+### 2.3 Chainlink Data Feeds
+
+#### What are Data Feeds?
+
+**Definition:** Data Feeds enable smart contracts to access real-world data like asset prices, reserve balances, and Layer 2 sequencer health status.
+
+---
+
+#### Types of Data Available
+
+| Feed Type | Description | Example |
+|-----------|-------------|---------|
+| **Price Feeds** | Cryptocurrency asset prices | ETH/USD, BTC/USD |
+| **SmartData Feeds** | Tokenized real-world assets | Gold price, real estate values |
+| **Rate & Volatility Feeds** | Interest rates, volatility | LIBOR, option volatility |
+| **L2 Sequencer Uptime** | Layer 2 availability | Arbitrum, Optimism status |
+
+---
+
+#### Key Components
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    CHAINLINK DATA FEED                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  1. CONSUMER (Your Contract)                                │
+│     ↓                                                       │
+│     Uses AggregatorV3Interface to retrieve data             │
+│                                                             │
+│  2. PROXY CONTRACT                                          │
+│     ↓                                                       │
+│     Points to correct aggregator (enables upgrades)         │
+│                                                             │
+│  3. AGGREGATOR CONTRACT                                     │
+│     ↓                                                       │
+│     Receives updates from DON, stores data on-chain         │
+│                                                             │
+│  4. DECENTRALIZED ORACLE NETWORK (DON)                     │
+│     ↓                                                       │
+│     Aggregates data from multiple sources                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Component Descriptions:**
+
+1. **Consumer:** Your smart contract that uses Chainlink services
+2. **Proxy Contract:** Acts as a pointer to the correct aggregator, enabling seamless upgrades
+3. **Aggregator Contract:** Chainlink-managed contract that receives periodic updates and stores aggregated data
+
+---
+
+### 2.4 Token Shop Tutorial: Using Price Feeds
+
+#### Overview
+
+Build a **TokenShop** smart contract that allows users to purchase custom ERC-20 tokens using ETH, with pricing calculated via Chainlink's ETH/USD price feeds.
+
+---
+
+#### Core Functionality
+
+- Users send ETH directly to the contract
+- Contract automatically receives tokens
+- Uses Chainlink Data Feeds for real-time ETH/USD exchange rates
+- Calculates token amounts based on fixed USD price ($2 per token)
+- Mints tokens directly to buyer's wallet
+
+---
+
+#### Technical Implementation
+
+**Imports:**
+```solidity
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./MyERC20.sol";
+```
 
 **Key Components:**
-1. **Consumer**: Your smart contract that uses Chainlink services via the AggregatorV3Interface to retrieve data from Data Feeds
+- **Access Control:** Uses OpenZeppelin's `Ownable`
+- **Price Integration:** Sepolia ETH/USD price feed at `0x694AA1769357215DE4FAC081bf1f309aDC325306`
+- **Automatic Processing:** Uses `receive()` function for direct ETH transfers
 
-2. **Proxy Contract**: Acts as a pointer to the correct aggregator contract, enabling seamless upgrades without disrupting consuming contracts (example: EACAggregatorProxy.sol)
+---
 
-3. **Aggregator Contract**: Chainlink-managed smart contract that receives periodic updates from the decentralized oracle network, stores aggregated data onchain, and makes it publicly accessible and verifiable
+#### Deployment Process
 
-The system is designed to provide reliable, transparent access to external data while maintaining upgradeability and uninterrupted service for applications that depend on this information.
+1. **Deploy TokenShop** with MyERC20 contract address
+2. **Grant Permissions** by giving TokenShop the `MINTER_ROLE` on ERC-20 token
+3. **Verify Setup** using `hasRole()` function
 
-Price feeds are a specific type of data feeds. They only relay price data for assets such as cryptocurrencies, commodities and so on.
+---
 
-## Token Shop / Price Feeds
+#### Price Calculation Flow
 
-This tutorial walks through building a **TokenShop smart contract** that allows users to purchase custom ERC-20 tokens using ETH, with pricing calculated via Chainlink's ETH/USD price feeds.
-
-### Key Components
-
-**Core Functionality:**
-- Users send ETH directly to the contract and automatically receive tokens
-- Uses Chainlink Data Feeds to get real-time ETH/USD exchange rates
-- Calculates token amounts based on a fixed USD price ($2 per token)
-- Mints tokens directly to the buyer's wallet
-
-**Technical Implementation:**
-- **Imports**: Chainlink's `AggregatorV3Interface`, OpenZeppelin's `Ownable`, and custom `MyERC20` contract
-- **Access Control**: Uses OpenZeppelin's `Ownable` for contract ownership and role-based permissions
-- **Price Integration**: Connects to Sepolia's ETH/USD price feed at address `0x694AA1769357215DE4FAC081bf1f309aDC325306`
-- **Automatic Processing**: Uses a `receive()` function to handle direct ETH transfers
-
-### Deployment Process
-
-1. **Deploy TokenShop** with your MyERC20 contract address as constructor parameter
-2. **Grant Permissions** by giving the TokenShop contract the `MINTER_ROLE` on your ERC-20 token
-3. **Verify Setup** using the `hasRole()` function to confirm permissions
-
-### Price Calculation Flow
-
-1. User sends ETH → Contract receives it via `receive()` function
-2. `amountToMint()` calls `getChainlinkDataFeedLatestAnswer()` for current ETH/USD price
-3. Converts ETH amount to USD value using the price feed (8 decimal precision)
-4. Calculates tokens to mint based on $2 USD token price
-5. Mints and transfers tokens to buyer
-
-The contract also includes an owner-only `withdraw()` function to extract accumulated ETH. This creates a simple, automated token sale system with real-world price integration.
-
-## Automation
-
-### What is Chainlink Automation?
-Chainlink Automation is a decentralized service that automatically executes smart contract functions based on predefined conditions or scheduled intervals, operating continuously without manual intervention.
-
-### The Core Problem
-Smart contracts have a fundamental limitation: they cannot trigger their own functions and require external stimuli to execute. Manual monitoring and triggering is inefficient, unreliable, and cannot provide 24/7 coverage.
-
-### The Solution
-Chainlink Automation acts as a "vigilant operator" that continuously monitors smart contracts and automatically executes designated functions when specified conditions are met, providing reliable and precise automation that operates around the clock.
-
-### Key Concept: Upkeeps
-An "upkeep" is a registered job that tells the Automation network to monitor specific conditions (called "triggers") and execute a particular contract function when those conditions occur.
-
-### Three Types of Automation Triggers
-
-**Time-based triggers** execute functions on a schedule using cron expressions (e.g., daily at midnight or weekly). [Automation APP](https://automation.chain.link/)
-
-**Custom logic triggers** use developer-defined logic through the `AutomationCompatibleInterface`, where contracts implement a `checkUpkeep` function to determine when execution should occur. In our example code with use external interface to ensure automation compatibility. When verifying contrat on Etherscan we need to provide a flattened contract include those external libraries [Hardhat flatten](https://hardhat.org/hardhat-runner/docs/advanced/flattening#flattening-your-contracts). You can also directly flatten contract from RemixIDE
-
-For *checkUpkeep*: insert 0x00 on Etherscan
-
-**Log triggers** monitor blockchain events and execute functions when specified events are emitted by smart contracts, enabling event-driven automation.
-
-Log trigger automation in Chainlink allows smart contracts to automatically execute functions in response to on-chain events. This creates an event-driven automation system where emitted logs serve as triggers for automated contract interactions.
-
-1. **EventEmitter Contract**: Emits a `WantsToCount` event when `emitCountLog()` is called
-2. **LogTrigger Contract**: Contains an automated counter that increments when triggered by the event
-
-**Interface Implementation**
-The LogTrigger contract must inherit `ILogAutomation` interface, implementing two critical functions:
-
-- **`checkLog()`**: A view function that Chainlink nodes simulate off-chain to determine if automation should execute. It receives log data and returns `performData` containing information needed for execution.
-
-- **`performUpkeep()`**: The actual function executed on-chain by Chainlink Automation. It receives the `performData` from `checkLog()` and performs the desired automation logic.
-
-**Event Detection Process**
 ```
-Event Emission → Chainlink Nodes Detect → checkLog() Simulation → performUpkeep() Execution
+User sends ETH
+    ↓
+Contract receives via receive()
+    ↓
+Call getChainlinkDataFeedLatestAnswer()
+    ↓
+Convert ETH to USD (8 decimal precision)
+    ↓
+Calculate tokens based on $2 USD price
+    ↓
+Mint and transfer tokens to buyer
 ```
 
-**Automation Flow**
-- EventEmitter emits `WantsToCount` event
-- Chainlink nodes detect the specific log/event
-- Nodes simulate `checkLog()` to validate automation should occur
-- If validation passes, nodes call `performUpkeep()` on-chain
-- Counter increments and confirmation event is emitted
+**Additional Features:**
+- Owner-only `withdraw()` function to extract accumulated ETH
 
+---
 
-### Network Architecture
-The system consists of specialized Automation nodes coordinated by the Automation Registry smart contract, which manages upkeep registrations and node compensation. The network operates using Chainlink's OCR3 protocol in a peer-to-peer system where nodes continuously scan for eligible upkeeps, reach consensus, generate cryptographically signed reports, and have those reports validated before execution.
+### 2.5 Chainlink Automation
 
-### Key Benefits
-The architecture provides cryptographic execution guarantees, built-in redundancy across multiple nodes, resistance to network congestion through sophisticated gas management, and reliable performance during gas price spikes or blockchain reorganizations. Internal monitoring and alerting mechanisms ensure high network reliability and performance.
+#### What is Chainlink Automation?
 
-## CCIP (Chainlink Cross-Chain Interoperability Protocol)
+**Definition:** A decentralized service that automatically executes smart contract functions based on predefined conditions or scheduled intervals.
 
-### Overview
-CCIP is a cross-chain messaging solution that enables developers to build secure cross-chain applications capable of transferring tokens, sending arbitrary messages (data), or executing programmable token transfers between different blockchains. It implements a defense-in-depth security approach powered by Chainlink's decentralized oracle networks (DONs), which have securely facilitated over $15 trillion in transaction value.
+**Key Characteristic:** Operates continuously without manual intervention (24/7).
 
-### Core Capabilities
+---
+
+#### The Core Problem
+
+Smart contracts have a fundamental limitation: **they cannot trigger their own functions**.
+
+**Why this matters:**
+- Contracts require external stimuli to execute
+- Manual monitoring is inefficient and unreliable
+- Cannot provide 24/7 coverage
+
+---
+
+#### The Solution
+
+Chainlink Automation acts as a **"vigilant operator"** that:
+- Continuously monitors smart contracts
+- Automatically executes designated functions when conditions are met
+- Provides reliable, precise automation around the clock
+
+---
+
+#### Key Concept: Upkeeps
+
+**Definition:** An "upkeep" is a registered job that tells the Automation network to:
+1. Monitor specific conditions (called "triggers")
+2. Execute a particular contract function when those conditions occur
+
+---
+
+#### Three Types of Automation Triggers
+
+| Trigger Type | Description | Example |
+|--------------|-------------|---------|
+| **Time-based** | Execute on schedule using cron expressions | Daily at midnight, weekly |
+| **Custom Logic** | Developer-defined logic via `checkUpkeep` | Check if loan needs liquidation |
+| **Log Trigger** | Monitor blockchain events | Execute when specific event emitted |
+
+---
+
+#### Log Trigger Automation
+
+**Concept:** Smart contracts automatically execute functions in response to on-chain events.
+
+**Architecture:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    LOG TRIGGER FLOW                          │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  1. EVENT EMITTER CONTRACT                                  │
+│     ↓                                                       │
+│     Emits WantsToCount event                                │
+│                                                             │
+│  2. CHAINLINK NODES DETECT                                  │
+│     ↓                                                       │
+│     Nodes detect the specific log/event                     │
+│                                                             │
+│  3. checkLog() SIMULATION                                   │
+│     ↓                                                       │
+│     Nodes simulate checkLog() to validate                   │
+│                                                             │
+│  4. performUpkeep() EXECUTION                               │
+│     ↓                                                       │
+│     Nodes call performUpkeep() on-chain                     │
+│                                                             │
+│  5. CONFIRMATION                                            │
+│     ↓                                                       │
+│     Counter increments, event emitted                       │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Required Interface:**
+```solidity
+interface ILogAutomation {
+    function checkLog(
+        bytes calldata log,
+        bytes memory context
+    ) external returns (bool upkeepNeeded, bytes memory performData);
+    
+    function performUpkeep(bytes calldata performData) external;
+}
+```
+
+**Key Functions:**
+- **`checkLog()`**: View function that determines if automation should execute
+- **`performUpkeep()`**: Actual function executed on-chain
+
+---
+
+#### Network Architecture
+
+**Components:**
+- **Automation Nodes:** Specialized nodes that monitor contracts
+- **Automation Registry:** Smart contract managing upkeep registrations
+- **OCR3 Protocol:** Peer-to-peer consensus mechanism
+
+**Process:**
+1. Nodes continuously scan for eligible upkeeps
+2. Reach consensus on which upkeeps to execute
+3. Generate cryptographically signed reports
+4. Reports validated before execution
+
+**Key Benefits:**
+- Cryptographic execution guarantees
+- Built-in redundancy across multiple nodes
+- Resistance to network congestion
+- Reliable performance during gas spikes
+
+---
+
+### 2.6 CCIP (Cross-Chain Interoperability Protocol)
+
+#### Overview
+
+**Definition:** CCIP is a cross-chain messaging solution that enables developers to build secure cross-chain applications.
+
+**Core Capabilities:**
+1. **Arbitrary Messaging:** Send any data to smart contracts on different blockchains
+2. **Token Transfers:** Move tokens securely across blockchain networks
+3. **Programmable Token Transfers:** Combine token transfers with execution instructions
+
+**Security Track Record:** Over $15 trillion in secured transaction value.
+
+---
+
+#### Core Capabilities Explained
 
 **1. Arbitrary Messaging**
-- Send any data to smart contracts on different blockchains
-- Encode custom instructions or parameters as needed
-- Trigger specific actions on receiving contracts (rebalancing indices, minting NFTs, etc.)
-- Bundle multiple instructions within a single message to orchestrate complex multi-chain tasks
+- Send custom instructions or parameters
+- Trigger specific actions on receiving contracts
+- Bundle multiple instructions in single message
+- Use cases: Rebalancing indices, minting NFTs
 
 **2. Token Transfers**
-- Move tokens securely across blockchain networks
-- Transfer to smart contracts or directly to user wallets (EOAs)
-- Benefit from configurable rate-limiting for enhanced risk management
-- Improve token composability with dApps and bridges using CCIP's standardized interface
+- Transfer to smart contracts or user wallets (EOAs)
+- Configurable rate-limiting for risk management
+- Improved token composability
 
 **3. Programmable Token Transfers**
-- Combine token transfers with execution instructions in a single transaction
-- Send tokens with specific instructions on how they should be used
-- Create cross-chain DeFi interactions (lending, swapping, staking)
-- Execute complex financial operations in a unified transaction
+- Send tokens with specific instructions
+- Create cross-chain DeFi interactions
+- Execute complex financial operations in unified transaction
 
-### Core Security Features
-- Multiple independent nodes run by independent key holders
-- Three decentralized oracle networks (DONs) commit, execute, and verify cross-chain transactions
-- Separation of responsibilities via distinct Chainlink node operators (nodes not shared between transactional DONs and Risk Management Network)
-- Increased decentralization with two separate codebases in different languages for software client diversity
-- Novel risk management system with level-5 security that adapts to emergent risks or attacks
+---
 
-### CCIP Architecture Components
+#### Core Security Features
 
-**Router**
-- Primary user-facing smart contract deployed on each blockchain
-- Initiates cross-chain interactions
-- Manages token approvals for transfers
-- Routes instructions to appropriate destination-specific OnRamp
-- Delivers tokens to user accounts or messages to receiver contracts
+| Feature | Description |
+|---------|-------------|
+| **Multiple Independent Nodes** | Run by independent key holders |
+| **Three DONs** | Commit, execute, and verify transactions |
+| **Separation of Responsibilities** | Distinct node operators for each DON |
+| **Software Diversity** | Two separate codebases in different languages |
+| **Risk Management Network** | Level-5 security adapting to emergent risks |
 
-**Sender**
-- EOA (externally owned account) or smart contract that initiates CCIP transaction
-- Can send tokens, messages, or both
+---
 
-**Receiver**
-- EOA or smart contract that receives the cross-chain transaction
-- May differ from sender depending on use case
-- Only smart contracts can receive data
+#### CCIP Architecture Components
 
-### Fee Structure
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    CCIP ARCHITECTURE                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  SENDER (EOA or Contract)                                   │
+│     ↓                                                       │
+│     Initiates CCIP transaction                              │
+│                                                             │
+│  ROUTER (Source Chain)                                      │
+│     ↓                                                       │
+│     - Initiates cross-chain interactions                    │
+│     - Manages token approvals                               │
+│     - Routes to destination OnRamp                          │
+│                                                             │
+│  COMMITTING DON                                             │
+│     ↓                                                       │
+│     - Observes finalized transaction                        │
+│     - Aggregates transactions into batch                    │
+│     - Computes Merkle root                                  │
+│                                                             │
+│  RISK MANAGEMENT NETWORK                                    │
+│     ↓                                                       │
+│     - Reviews committed Merkle root                         │
+│     - "Blesses" upon verification                          │
+│                                                             │
+│  EXECUTING DON                                              │
+│     ↓                                                       │
+│     - Initiates execution on destination                    │
+│     - Delivers message to receiver                          │
+│     - Handles token minting/unlocking                       │
+│                                                             │
+│  RECEIVER (EOA or Contract)                                 │
+│     ↓                                                       │
+│     Receives cross-chain transaction                        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
 
-CCIP uses a single fee on the source chain and handles destination chain execution automatically.
+**Component Descriptions:**
+
+| Component | Role |
+|-----------|------|
+| **Router** | Primary user-facing contract on each blockchain |
+| **Sender** | Initiates CCIP transaction (EOA or contract) |
+| **Receiver** | Receives transaction (EOA or contract) |
+
+---
+
+#### Fee Structure
 
 **Total Fee Formula:**
 ```
@@ -301,156 +829,121 @@ execution cost = gas price × gas usage × gas multiplier
 
 **Gas Usage Calculation:**
 ```
-gas usage = gas limit + destination gas overhead + destination gas per payload + gas for token transfers
+gas usage = gas limit + destination gas overhead + 
+            destination gas per payload + gas for token transfers
 ```
 
 **Key Fee Notes:**
-- Fee token can be blockchain's native token (including wrapped versions) or LINK
-- Unspent gas from user-set limit is NOT refunded
-- Gas multiplier ensures reliable execution during gas spikes (Smart Execution)
+- Fee token can be native token or LINK
+- Unspent gas from user-set limit is **NOT** refunded
+- Gas multiplier ensures reliable execution during spikes
 - Data availability cost applies to L2 rollups
 
-### CCIP Transaction Lifecycle
+---
 
-1. **Message Initiation**: Sender initiates CCIP message on source blockchain (can include data, tokens, or both)
+#### Token Bridging Mechanisms
 
-2. **Source Chain Finality**: Transaction must achieve finality on source blockchain (varies by blockchain - some have deterministic finality, others require block confirmations)
+| Mechanism | Source | Destination | Best For |
+|-----------|--------|-------------|----------|
+| **Lock and Mint** | Lock tokens | Mint wrapped tokens | Existing tokens |
+| **Burn and Mint** | Burn tokens | Mint new tokens | Native tokens |
+| **Lock and Unlock** | Lock tokens | Release from pool | High liquidity |
+| **Burn and Unlock** | Burn tokens | Unlock from reserve | Finality + liquidity |
 
-3. **Committing DON Actions**: DON observes finalized transaction, aggregates multiple transactions into batch, computes Merkle root, records it on CommitStore contract
+---
 
-4. **Risk Management Network Blessing**: RMN reviews committed Merkle root, "blesses" it upon verification to signal authentication
+#### Importance of Finality
 
-5. **Execution on Destination Chain**: Executing DON initiates transaction execution, delivers message to receiver, handles token minting/unlocking
+**Definition:** Finality determines when a transaction is irreversible and permanently recorded.
 
-6. **Smart Execution and Gas Management**: Monitors network conditions, adjusts gas prices, ensures delivery within ~8 hours (manual execution may be required for extreme congestion)
-
-### Token Pool Contracts
-- Each token on each chain has its own associated Token Pool contract
-- Responsible for managing token supply across source and destination chains
-- Controls token transfer regardless of bridging mechanism (mint/burn or lock/unlock)
-- Acts as vault for locked tokens or manages custody for bridging
-
-### Blockchain Interoperability Overview
-
-**Token Bridging Mechanisms:**
-
-1. **Lock and Mint**
-   - Source: Lock tokens in smart contract
-   - Destination: Mint wrapped tokens (1:1 backed representations)
-   - Return: Burn wrapped tokens, unlock originals
-
-2. **Burn and Mint**
-   - Source: Permanently destroy tokens
-   - Destination: Mint equivalent new tokens
-   - Ideal for native tokens with minting authority
-
-3. **Lock and Unlock**
-   - Source: Lock tokens in smart contract
-   - Destination: Release from existing liquidity pool
-   - Requires sufficient liquidity and incentivized providers
-
-4. **Burn and Unlock**
-   - Source: Permanently burn tokens
-   - Destination: Unlock from reserve pool
-   - Combines finality with pre-existing liquidity requirements
-
-### Cross-chain Messaging
-- Enables complex interactions beyond token transfers
-- Functions: State synchronization, function triggering, governance decisions
-- Handles message verification, delivery confirmation, and execution
-
-### Security Considerations
-Cross-chain systems face unique security challenges requiring tradeoffs between:
-- **Security**: Resistance to attacks
-- **Trust assumptions**: Reliance on external validators/oracles
-- **Configuration flexibility**: Adaptability to different blockchain architectures
-
-Cross-chain applications require more rigorous security design than single-chain systems.
-
-### Importance of Finality
-Finality determines when a transaction is irreversible and permanently recorded. Different blockchains have varying finality concepts:
+**Why it matters:**
+- Different blockchains have varying finality concepts
 - Some achieve deterministic finality quickly
 - Others require multiple block confirmations
-- CCIP waits for appropriate finality on source blockchain before proceeding
-- Ensures integrity and reliability of the protocol
+- CCIP waits for appropriate finality before proceeding
 
-## Transporter (Cross-Chain Bridging with CCIP)
+---
 
-### What is Transporter?
-Transporter is an application built on **Chainlink’s Cross-Chain Interoperability Protocol (CCIP)** that allows users to bridge tokens and messages across different blockchains.  
-It was developed with support from the Chainlink Foundation and Chainlink Labs to simplify access to the cross-chain economy.
+### 2.7 Transporter: Cross-Chain Bridging with CCIP
+
+#### What is Transporter?
+
+**Definition:** An application built on Chainlink's CCIP that allows users to bridge tokens and messages across different blockchains.
 
 **Key Features:**
 - Intuitive interface for bridging assets
-- Powered by CCIP for highest-level cross-chain security  
-- 24/7 global support  
-- [Visual tracker](https://ccip.chain.link/) to monitor progress of asset transfers across every step
+- Powered by CCIP for highest-level security
+- 24/7 global support
+- Visual tracker to monitor transfer progress
 
-CCIP secures Transporter by leveraging:
-- Chainlink’s decentralized oracle networks (over $15 trillion secured in transaction value)
-- A separate **Risk Management Network (RMN)**
-- A *defense-in-depth security model*, mitigating risks in cross-chain transfers
+**Security:**
+- Leverages Chainlink's DONs ($15+ trillion secured)
+- Separate Risk Management Network (RMN)
+- Defense-in-depth security model
 
-When bridging **USDC**, Transporter uses CCIP in combination with **Circle’s Cross-chain Transfer Protocol (CCTP)** under the hood, giving an extra layer of reliability for stablecoin bridging.
+**USDC Special Handling:**
+- Uses CCIP + Circle's CCTP for USDC
+- Extra layer of reliability for stablecoin bridging
 
 ---
 
-### Using Transporter to Bridge USDC from Sepolia → Base Sepolia
+#### Bridging Process: Sepolia → Base Sepolia
 
 **Prerequisites:**
-- Have LINK funds on Sepolia for CCIP fees  
-- Add LINK and USDC tokens to your MetaMask wallet (both on Sepolia & Base Sepolia)  
-- Acquire test USDC on Sepolia via the [Circle USDC faucet](https://faucet.circle.com/)  
+- LINK funds on Sepolia for CCIP fees
+- LINK and USDC tokens in MetaMask (both chains)
+- Test USDC from Circle faucet
 
----
+**Step-by-Step Process:**
 
-### Bridging Process
-
-1. **Connect Wallet**  
-   - Open Transporter testnet app and click **Connect Wallet**  
-   - Accept Terms of Service → choose wallet (e.g. MetaMask) → approve connection  
+1. **Connect Wallet**
+   - Open Transporter testnet app
+   - Click "Connect Wallet"
+   - Accept Terms of Service
+   - Choose wallet (e.g., MetaMask)
 
 2. **Configure Source & Destination**
-   - **From:** Ethereum Sepolia  
-   - **To:** Base Sepolia  
-   - **Token:** USDC  
-   - **Amount:** e.g. 1 USDC
+   - From: Ethereum Sepolia
+   - To: Base Sepolia
+   - Token: USDC
+   - Amount: e.g., 1 USDC
 
 3. **Approve USDC**
-   - Click **Approve USDC** and select **Approve one-time only**  
-   - In MetaMask, confirm the spending cap as `1`  
-   - Confirm transaction → wait until mined  
+   - Click "Approve USDC"
+   - Select "Approve one-time only"
+   - Confirm spending cap as `1`
+   - Wait for transaction to mine
 
 4. **Send Bridging Transaction**
-   - Click **Send** in Transporter  
-   - Sign transaction in MetaMask → this burns USDC on Sepolia  
-   - CCIP + CCTP submit cross-chain message  
-   - Once Ethereum Sepolia reaches finality (~20 minutes), USDC is minted on Base Sepolia  
+   - Click "Send" in Transporter
+   - Sign transaction in MetaMask
+   - This burns USDC on Sepolia
+   - CCIP + CCTP submit cross-chain message
+   - Once finality reached (~20 min), USDC minted on Base Sepolia
 
 5. **Track Transfer**
-   - Click **View transaction** to open **CCIP Explorer**  
+   - Click "View transaction" to open CCIP Explorer
    - Check:
-     - Status of message (Pending → Success)  
-     - Source & destination transaction hashes  
-     - Amount, fees, sender/receiver addresses  
+     - Status (Pending → Success)
+     - Source & destination transaction hashes
+     - Amount, fees, sender/receiver addresses
 
 6. **Verify**
-   - Once status = **Success**, confirm your USDC balance on Base Sepolia → balance should increase by transferred amount (e.g. +1 USDC)  
+   - Confirm USDC balance on Base Sepolia
+   - Balance should increase by transferred amount
 
 ---
 
-### Summary
-Transporter provides a **secure, user-friendly way** to bridge tokens cross-chain using Chainlinkâ€™s CCIP + Circleâ€™s CCTP (for USDC).  
-It abstracts away contract complexity and lets developers and end-users perform cross-chain operations safely with visual tracking and finality guarantees.
+### 2.8 CCIP Smart Contract Implementation
 
-## CCIPTokenSender Smart Contract Implementation
+#### CCIPTokenSender Contract
 
-### Overview
-The `CCIPTokenSender` contract enables cross-chain USDC transfers from Sepolia to Base Sepolia using Chainlink CCIP. It demonstrates how to implement programmatic cross-chain token bridging in a smart contract.
+**Overview:** Enables cross-chain USDC transfers from Sepolia to Base Sepolia using Chainlink CCIP.
 
-### Contract Structure
+---
 
-**1. Contract Declaration and Dependencies**
+**Contract Structure:**
+
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
@@ -463,29 +956,30 @@ import { Ownable } from "@openzeppelin/contracts@4.6.0/access/Ownable.sol";
 contract CCIPTokenSender is Ownable {
     using SafeERC20 for IERC20;
     
+    // Sepolia CCIP Router
+    IRouterClient private constant CCIP_ROUTER = 
+        IRouterClient(0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59);
+    
+    // Sepolia LINK token for fees
+    IERC20 private constant LINK_TOKEN = 
+        IERC20(0x779877A7B0D9E8603169DdbD7836e478b4624789);
+    
+    // Sepolia USDC token to transfer
+    IERC20 private constant USDC_TOKEN = 
+        IERC20(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238);
+    
+    // Base Sepolia chain selector
+    uint64 private constant DESTINATION_CHAIN_SELECTOR = 
+        10344971235874465080;
+    
     constructor() Ownable(msg.sender) {}
 }
 ```
 
-**Key Dependencies:**
-- `IRouterClient`: Interface for CCIP Router handling cross-chain messaging
-- `IERC20`: Standard interface for ERC20 token interactions
-- `SafeERC20`: Enhanced functions for safer ERC20 token handling
-- `Ownable`: Access control for contract ownership
+---
 
-**2. State Variables (Hard-coded Constants)**
-```solidity
-// Sepolia CCIP Router
-IRouterClient private constant CCIP_ROUTER = IRouterClient(0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59);
-// Sepolia LINK token for fees
-IERC20 private constant LINK_TOKEN = IERC20(0x779877A7B0D9E8603169DdbD7836e478b4624789);
-// Sepolia USDC token to transfer
-IERC20 private constant USDC_TOKEN = IERC20(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238);
-// Base Sepolia chain selector
-uint64 private constant DESTINATION_CHAIN_SELECTOR = 10344971235874465080;
-```
+**Main Transfer Function:**
 
-**3. Main Transfer Function**
 ```solidity
 function transferTokens(
     address _receiver,
@@ -494,7 +988,11 @@ function transferTokens(
     
     // 1. Balance verification
     if (_amount > USDC_TOKEN.balanceOf(msg.sender)) {
-        revert CCIPTokenSender__InsufficientBalance(USDC_TOKEN, USDC_TOKEN.balanceOf(msg.sender), _amount);
+        revert CCIPTokenSender__InsufficientBalance(
+            USDC_TOKEN, 
+            USDC_TOKEN.balanceOf(msg.sender), 
+            _amount
+        );
     }
     
     // 2. Prepare token information
@@ -520,7 +1018,11 @@ function transferTokens(
     uint256 ccipFee = CCIP_ROUTER.getFee(DESTINATION_CHAIN_SELECTOR, message);
     
     if (ccipFee > LINK_TOKEN.balanceOf(address(this))) {
-        revert CCIPTokenSender__InsufficientBalance(LINK_TOKEN, LINK_TOKEN.balanceOf(address(this)), ccipFee);
+        revert CCIPTokenSender__InsufficientBalance(
+            LINK_TOKEN, 
+            LINK_TOKEN.balanceOf(address(this)), 
+            ccipFee
+        );
     }
     
     LINK_TOKEN.approve(address(CCIP_ROUTER), ccipFee);
@@ -536,489 +1038,566 @@ function transferTokens(
 }
 ```
 
-**4. Withdrawal Function**
-```solidity
-function withdrawToken(address _beneficiary) public onlyOwner {
-    uint256 amount = IERC20(USDC_TOKEN).balanceOf(address(this));
-    if (amount == 0) revert CCIPTokenSender__NothingToWithdraw();
-    IERC20(USDC_TOKEN).transfer(_beneficiary, amount);
-}
-```
+---
 
-### Transaction Workflow
-
-1. **Deploy Contract**: CCIPTokenSender deployed on source chain (Sepolia)
-2. **Fund Contract**: Contract funded with LINK tokens for CCIP fees
-3. **User Approval**: User approves CCIPTokenSender to spend their USDC
-4. **Execute Transfer**: User calls `transferTokens()` function which:
-   - Verifies user's USDC balance
-   - Transfers USDC from user to contract
-   - Approves Router to spend USDC and LINK
-   - Calculates and pays CCIP fees
-   - Sends cross-chain message via Router
-
-### Key Concepts
+**Key Concepts:**
 
 **EVM2AnyMessage Struct:**
-- `receiver`: ABI-encoded destination address
-- `data`: Additional cross-chain data (empty for token-only transfers)
-- `tokenAmounts`: Array of tokens and amounts to transfer
-- `extraArgs`: Gas settings (0 for EOA transfers)
-- `feeToken`: Token used to pay CCIP fees
+| Field | Description |
+|-------|-------------|
+| `receiver` | ABI-encoded destination address |
+| `data` | Additional cross-chain data |
+| `tokenAmounts` | Array of tokens and amounts |
+| `extraArgs` | Gas settings (0 for EOA) |
+| `feeToken` | Token used to pay CCIP fees |
 
 **Gas Limit Settings:**
-- Set to `0` for EOA (externally owned account) transfers
-- Only needed when receiver is a contract requiring execution
-- Contract execution on receiving end requires positive gas limit
-
-### Security Features
-- Balance checks before transfers
-- SafeERC20 for secure token operations
-- Owner-only withdrawal function
-- Fee validation before message sending
-- Approval-based token spending model
-
-
-## CCIP v1.5 and the CCT Standard
-
-### Overview
-
-**Chainlink's CCIP v1.5** introduces the **Cross-Chain Token (CCT) standard**, allowing developers to autonomously enable and manage their own tokens for CCIP cross-chain transfers, without requiring manual intervention by Chainlink. This unlocks greater composability, autonomy, and speed for multi-chain token projects.
-
-### Motivations
-
-- **Liquidity Fragmentation:** Enables unified liquidity across chains, reducing siloing of assets and eliminating hard choices about which network to prioritize.
-- **Developer Autonomy:** Empowers token creators with a self-service process, so tokens can be enabled for cross-chain use within minutes and governed directly by their owners.
-
-### Core Benefits
-
-- **Self-service Enablement:** Token creators can quickly enable new or existing ERC-20 tokens for CCIP bridging.
-- **Developer Control:** Full autonomy over token contracts, pools, rate limiting, and implementation logic.
-- **Enhanced Security:** Employs Chainlink’s oracle networks and adds measures like a Risk Management Network and configurable rate limits.
-- **Programmable Transfers:** Supports atomic cross-chain token and message transfers in single transactions.
-- **Audited Token Pools:** Provides pre-audited, easy-to-deploy contracts for secure mint/burn or lock/unlock bridging, ensuring zero-slippage where exactly the sent amount is received.
-- **Integrates ERC20s:** Existing ERC-20 tokens can be upgraded for CCIP compatibility, sidestepping complex bridge code.
-
-### Key Concepts
-
-- **Token Owner & CCIP Admin:** Tokens must designate either a contract owner or a CCIP admin (often via an `owner` or `getCCIPAdmin` function); these roles govern upgrades and admin assignment.
-- **Token Administrator:** Entity responsible for mapping tokens to token pools in the TokenAdminRegistry; can be owner, admin, or a delegate.
-- **Token Pools:** Smart contracts that orchestrate cross-chain minting, burning, locking, or unlocking for each token+chain pair—acting as coordinators, not liquidity pools.
-
-### Supported Bridging Mechanisms
-
-- **Mint and burn**
-- **Mint and unlock**
-- **Burn and unlock**
-- **Lock and unlock**  
-  All bridging types use a TokenPool contract on each participating chain.
-
-### Implementation Steps
-
-1. **Deploy or Upgrade Tokens:** Ensure tokens implement `owner()` or `getCCIPAdmin()` on each chain to identify the admin.
-2. **Deploy Token Pools:** Use Chainlink’s audited pools or custom implementations on each chain where the token is enabled.
-3. **Configure Pools:** Set rate limits and governance parameters as needed.
-4. **Register Tokens:** Link admin accounts and register token–pool associations in the registry modules.
-
-For in-depth guidance and sample contracts, see the [official Chainlink docs](https://docs.chain.link/ccip/concepts/cross-chain-tokens).
+- Set to `0` for EOA transfers
+- Positive value required for contract execution
+- Only needed when receiver is a contract
 
 ---
 
-The notes.md file has been updated with a concise summary of **Chainlink Local** and its development/testing modes, directly reflecting how developers can use this tool for local Chainlink service simulation and cross-chain contract testing.
+### 2.9 CCIP v1.5 and the CCT Standard
 
-## Chainlink Local: Local Development and Testing
+#### Overview
 
-Dedicated code to this section is in CCIP/src/chainlink-local
+**CCIP v1.5** introduces the **Cross-Chain Token (CCT) standard**, allowing developers to autonomously enable and manage their own tokens for CCIP cross-chain transfers.
 
-### What is Chainlink Local?
-**Chainlink Local** is a development tool that enables running **Chainlink services**—such as CCIP messaging—directly on a local machine, with integration for major environments like **Foundry**, **Hardhat**, and **Remix**. It offers a fast, flexible way to iterate and test Chainlink-based smart contracts before deploying to testnets or mainnet.
+---
 
-### Key Features
-- **Local Simulation** of Chainlink functionality on local EVM nodes.
-- **Forked Network Testing** to interact with real deployed Chainlink contracts in live-like conditions.
-- **Development Integration** supporting major frameworks for seamless workflow.
-- **Testnet-Ready** code, ensuring that logic works unchanged before public deployment.
+#### Motivations
 
-### Development Modes
-- **Local Testing Without Forking**: Use mocks on a clean local node for rapid prototyping and validation.
-- **Local Testing With Forking**: Fork existing blockchains to test against real Chainlink contracts (supported in Hardhat and Foundry, not Remix).
+| Challenge | Solution |
+|-----------|----------|
+| **Liquidity Fragmentation** | Unified liquidity across chains |
+| **Developer Autonomy** | Self-service token enablement |
 
-### Developer Benefits
-- Run, debug, and iterate on Chainlink smart contracts locally for faster development.
-- Simulate cross-chain operations (CCIP messages, token transfers) in a controlled environment.
-- Validate and verify contract behavior before progressing to live networks.
+---
 
+#### Core Benefits
 
-## Using Chainlink Local for CCIP Testing
+- **Self-service Enablement:** Enable tokens in minutes
+- **Developer Control:** Full autonomy over token contracts
+- **Enhanced Security:** Risk Management Network + rate limits
+- **Programmable Transfers:** Atomic token + message transfers
+- **Audited Token Pools:** Pre-audited, secure contracts
+- **ERC20 Integration:** Upgrade existing tokens
 
-**Chainlink Local** enables developers to simulate cross-chain messaging with CCIP entirely on a local EVM node, providing near-instant feedback and no network costs.
-In this context, two contracts are deployed and tested:
+---
 
-- **MessageSender**: Deploys on the source chain, dynamically receives the LINK token and router addresses from the local simulator, and sends a simple string message (e.g., "Hey there!") cross-chain using `sendMessage`. This uses a non-zero gas limit for receiver execution and encodes the string as the message payload.
-- **MessageReceiver**: Deploys on the destination chain, inherits from `CCIPReceiver`, and implements the required `_ccipReceive` function. Upon receiving a message, this contract stores the last received message's ID and string contents and emits an event. The stored message can be retrieved with a public getter.
+#### Key Concepts
 
-### Testing Flow
+| Concept | Description |
+|---------|-------------|
+| **Token Owner & CCIP Admin** | Govern upgrades and admin assignment |
+| **Token Administrator** | Maps tokens to token pools |
+| **Token Pools** | Orchestrate cross-chain operations |
 
-1. **Deploy `CCIPLocalSimulator`** contract in Remix using the "Remix VM (Cancun)" environment.
-2. **Retrieve configuration**: Use the configuration function on the simulator contract to get addresses for the LINK token, routers, and chain selectors.
-3. **Load and fund with LINK**: Attach the LinkToken instance at the provided address to fund contracts with LINK for local CCIP fees.
-4. **Deploy contracts**: Deploy `MessageSender` and `MessageReceiver` with addresses retrieved from the simulator config.
-5. **Send a CCIP message**: Call `sendMessage` on `MessageSender`, passing the destination chain selector, the receiver contract address, and a string message. Manually set the gas limit (e.g., 3000000) due to Remix gas estimation limitations.
-6. **Verify reception**: Check `getLastReceivedMessageDetails` on `MessageReceiver` to confirm receipt and decoding of the string message.
+---
 
+#### Supported Bridging Mechanisms
 
-## CCIP Cross-Chain Messages with Smart Contract Actions Resume
+- Mint and burn
+- Mint and unlock
+- Burn and unlock
+- Lock and unlock
 
-### Overview
-Send tokens to another blockchain AND automatically execute a function when they arrive. Example: send USDC from Ethereum to Base and automatically deposit it into a vault.
+All use TokenPool contracts on each participating chain.
 
-### Architecture
+---
 
-#### Three Contracts Required
+### 2.10 Chainlink Local: Local Development
 
-1. **Sender Contract** (Source Chain - Sepolia)
-   - Encodes function calls and sends cross-chain messages
-   - Handles token transfers and CCIP fee payments
+#### What is Chainlink Local?
 
-2. **Receiver Contract** (Destination Chain - Base Sepolia)
-   - Inherits from `CCIPReceiver`
-   - Receives CCIP messages and executes target contract functions
-   - Security: Only accepts messages from allowlisted sender and source chain
+**Definition:** A development tool that enables running Chainlink services directly on a local machine.
 
-3. **Vault Contract** (Destination Chain - Base Sepolia)
-   - Target contract that performs actions with received tokens
-   - Simple deposit/withdraw functionality
+**Supported Environments:**
+- Foundry
+- Hardhat
+- Remix
 
-### Key Contract Details
+---
 
-#### Sender Contract Constants
-```solidity
-IRouterClient private constant ROUTER = IRouterClient(0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59);
-IERC20 private constant LINK_TOKEN = IERC20(0x779877A7B0D9E8603169DdbD7836e478b4624789);
-IERC20 private constant USDC_TOKEN = IERC20(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238);
-uint64 private constant DESTINATION_CHAIN_SELECTOR = 10344971235874465080; // Base Sepolia
+#### Key Features
+
+- **Local Simulation:** Test Chainlink functionality locally
+- **Forked Network Testing:** Interact with real deployed contracts
+- **Development Integration:** Seamless workflow with major frameworks
+- **Testnet-Ready Code:** Logic works unchanged before deployment
+
+---
+
+#### Development Modes
+
+| Mode | Description | Supported In |
+|------|-------------|--------------|
+| **Without Forking** | Use mocks on clean local node | All frameworks |
+| **With Forking** | Fork existing blockchains | Hardhat, Foundry |
+
+---
+
+#### Testing Flow for CCIP
+
+1. **Deploy `CCIPLocalSimulator`** in Remix
+2. **Retrieve configuration** (LINK token, routers, chain selectors)
+3. **Load and fund with LINK**
+4. **Deploy contracts** (MessageSender, MessageReceiver)
+5. **Send CCIP message** with gas limit (e.g., 3000000)
+6. **Verify reception** using `getLastReceivedMessageDetails`
+
+---
+
+### 2.11 Chainlink Functions
+
+#### What is Chainlink Functions?
+
+**Definition:** A trust-minimized off-chain compute infrastructure that enables smart contracts to fetch external API data and perform custom computations.
+
+---
+
+#### Core Benefits
+
+| Benefit | Description |
+|---------|-------------|
+| **API Connectivity** | Access any public internet API |
+| **Custom Computation** | Run JavaScript code serverlessly |
+| **Decentralized Infrastructure** | DON-secured data integrity |
+| **Off-chain Computation** | Move expensive operations off-chain |
+
+---
+
+#### Technical Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    CHAINLINK FUNCTIONS                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  1. SMART CONTRACT INITIATES REQUEST                        │
+│     ↓                                                       │
+│     Contains JavaScript source code                         │
+│                                                             │
+│  2. DON DISTRIBUTES EXECUTION                               │
+│     ↓                                                       │
+│     Multiple nodes run code in secure environments          │
+│                                                             │
+│  3. RESULTS AGGREGATED                                      │
+│     ↓                                                       │
+│     Prevent manipulation by minority nodes                  │
+│                                                             │
+│  4. CONSENSUS RESULT RETURNED                               │
+│     ↓                                                       │
+│     Final result sent to requesting contract                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-#### Receiver Contract Router
-- Base Sepolia router: `0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93`
-- Source chain selector: `16015286601757825753` (Sepolia only)
-
-### Manual Approval Requirements
-
-🔴 Critical Manual Steps Required
-
-1. Fund Sender Contract with LINK
-- **Action**: Send 3 LINK tokens to Sender contract address on Sepolia
-- **Purpose**: Pay CCIP transaction fees
-- **Method**: Direct MetaMask transfer
-
-2. Approve Sender Contract for USDC (Sepolia)
-- **Contract**: USDC on Sepolia Etherscan
-- **Action**: Call `approve()` function via "Write as Proxy" tab
-- **Parameters**:
-  - `spender`: Sender contract address
-  - `value`: 1000000 (1 USDC)
-- **Purpose**: Allow Sender to transfer USDC from user wallet
-
-3. Approve Vault Contract for USDC (Base Sepolia)
-- **Contract**: USDC on Base Sepolia (Basescan)
-- **Action**: Call `approve()` function via "Write as Proxy" tab
-- **Parameters**:
-  - `spender`: Vault contract address
-  - `value`: 1000000 (1 USDC)
-- **Purpose**: Allow Vault to transfer USDC when calling deposit
-
-4. Set Sender Address in Receiver Contract
-- **Action**: Call `setSender()` function (owner-only)
-- **Parameter**: Sender contract address
-- **Purpose**: Security allowlist for incoming messages
-
-### Execution Flow
-
-1. **Deploy** Vault on Base Sepolia
-2. **Deploy** Sender on Sepolia
-3. **Deploy** Receiver on Base Sepolia
-4. **Manual**: Fund Sender with LINK tokens
-5. **Manual**: Approve Sender for USDC spending (Sepolia)
-6. **Manual**: Approve Vault for USDC spending (Base Sepolia)
-7. **Manual**: Set sender address in Receiver contract
-8. **Execute**: Call `transferTokens(receiverAddress, amount, vaultAddress)`
-9. **Automatic**: USDC transfers cross-chain and deposits into vault
-
-### Key Technical Points
-
-- **Gas Limit**: 200,000 for function execution
-- **Fee Token**: LINK tokens required for CCIP fees
-- **Security**: Receiver validates source chain and sender address
-- **Token Handling**: Uses SafeERC20 for secure transfers
-- **Error Handling**: Reverts if insufficient balance or function call fails
-
-### Verification Steps
-
-#### Check Transaction Status
-- Use **CCIP Explorer** with transaction hash to monitor cross-chain message status
-
-#### Verify Vault Deposit
-- Call `balances()` function on Vault contract with user address
-- Should return deposited amount (1000000) if successful
-
-## Chainlink functions
-
-Chainlink Functions is a trust-minimized off-chain compute infrastructure that enables smart contracts to fetch external API data and perform custom computations outside the blockchain environment. This service bridges the gap between blockchain applications and traditional internet-based data sources.
-
-### Core Benefits
-
-The service provides four primary advantages for developers. API connectivity allows smart contracts to access any public internet API, aggregate and transform data, then return processed values on-chain - solving the fundamental limitation where smart contracts cannot access external data. Custom computation enables developers to run JavaScript code in a serverless environment, moving expensive or slow blockchain operations off-chain for improved economy and efficiency. The decentralized infrastructure utilizes Chainlink's decentralized oracle networks (DONs) to reduce vulnerability to single points of failure. Off-chain computation leverages DONs where nodes execute JavaScript code independently, with results aggregated through Chainlink's Offchain Reporting Protocol for secure, consensus-driven outcomes.
-
-### Technical Architecture
-
-Chainlink Functions operates on a request-and-receive pattern. Smart contracts initiate requests containing JavaScript source code for computation or API calls. The DON then distributes execution across multiple nodes running the code in secure serverless environments. Results from all executions are aggregated to prevent manipulation by minority nodes, and the final consensus result returns to the requesting smart contract.
-
-### Key Features
-
-The platform includes decentralized computation with DON-secured data integrity, threshold encryption for protecting sensitive information like API keys through multi-party computation, and a subscription-based payment model using LINK tokens that bills only upon request fulfillment.
-
-### Use Cases
-
-Chainlink Functions supports diverse applications including public data access for parametric insurance or dynamic NFTs, data transformation for sentiment analysis or price calculations, authenticated API access to protected data sources, decentralized storage integration with IPFS, Web2-Web3 hybrid applications, and cloud services connectivity with platforms like AWS S3 and Google Cloud Storage.
-
-## Chainlink Functions Playground
-
-The Chainlink Functions Playground is an online sandbox for developers to test custom JavaScript code and API calls that will eventually run via Chainlink Functions on decentralized oracle networks (DONs).
-
-### What It Does
-- Enables quick prototyping and debugging of off-chain compute logic written in JavaScript before deploying on-chain.
-- Allows simulation of data requests, including calls to third-party public APIs, and visualizes both the returned output and console logs in real-time.
-
-### How It Works
-- Users input JavaScript code, execution arguments, and any required secrets (like API keys).
-- The Playground executes code in-browser, providing results instantly; it does not require blockchain deployment or smart contract interaction for initial testing.
-- Supports a simple workflow: enter code, arguments, and secrets, then run the code and inspect outputs and logs.
-- Ideal for experimenting with integrations or custom computation use cases leveraging Chainlink’s off-chain capabilities, lowering barriers to entry for smart contract developers.
-
-### Smart contract
-
-Dedicated code to this section is in functions/src/
-
-### Resume
-This section explains how to build a **Chainlink Functions Consumer Smart Contract** that fetches live weather data for a given city using an external API and Chainlink’s decentralized oracle network.  
-
-
-#### Contract Structure
-- **Imports**:  
-  - `FunctionsClient` (to connect with the Chainlink Router).  
-  - `FunctionsRequest` (library to build and encode requests).  
-  - Contract inherits from `FunctionsClient` with a router address as a constructor parameter.
-
-- **State Variables**:  
-  Track the last queried city, request details, received temperature, and responses.  
-  - `s_lastCity`, `s_requestedCity`, `s_lastTemperature`  
-  - `s_lastRequestId`, `s_lastResponse`, `s_lastError`
-
-- **Constants**:  
-  - `ROUTER` and `DON_ID` (specific to Sepolia testnet).  
-  - `GAS_LIMIT` (callback execution limit).  
-  - `SOURCE`: JavaScript code for fetching weather data from `wttr.in`.
-
-- **Events and Errors**:  
-  - `Response`: emitted when data is returned.  
-  - `UnexpectedRequestID`: ensures only responses tied to the latest request are stored.
-
-#### Core Functions
-1. **getTemperature(city, subscriptionId)**  
-   - Creates a `FunctionsRequest.Request`.  
-   - Initializes it with the inline JavaScript `SOURCE`.  
-   - Sets arguments (city name for weather query).  
-   - Sends request to the DON using `_sendRequest`.  
-   - Stores `s_requestedCity` and `s_lastRequestId`.  
-   - Returns the request ID for tracking.
-
-2. **fulfillRequest(requestId, response, err)**  
-   - Called automatically by Chainlink once DON fulfills the request.  
-   - Verifies the request ID matches the latest sent.  
-   - Updates `s_lastResponse`, `s_lastError`, `s_lastTemperature`, and `s_lastCity`.  
-   - Emits a `Response` event logging the received temperature and metadata.
-
-## Chainlink VRF
-
-**Deeper use of VRF in ultimateLearning/foundryFundamentals/foundryLottery
-
-Chainlink VRF (Verifiable Random Function) solves the challenge of generating secure randomness in deterministic blockchain environments. Since blockchains always produce the same output for a given input, randomness can be predictable or manipulated, creating vulnerabilities like exploitation of smart contracts or biased outcomes in decentralized applications.  
-
-Chainlink VRF counters this by generating random values along with cryptographic proofs that are published and verified on-chain before use. This ensures fairness and tamper-proof randomness, immune to manipulation by operators, miners, users, or developers.  
- 
-
-### Implementation Methods
-- **Subscription Method**: Fund a subscription account shared by multiple contracts. Efficient, cost-optimized, supports higher random output. Ideal for frequent or large-scale randomness needs like gaming or DeFi.  
-- **Direct Funding Method**: Each contract funds requests directly. Simpler, transparent per-contract costs, suitable for one-off randomness like contest draws or limited NFT mints.  
-
-
-### Contract
-
-This section demonstrates how to implement Chainlink VRF within a smart contract by building a "HousePicker" contract that assigns users to Hogwarts houses through a random dice roll. The goal is to show how VRF generates, proves, and returns randomness securely in decentralized applications.  
-
-### Contract Structure  
-- **Imports & Inheritance**: Uses `VRFConsumerBaseV2Plus` and `VRFV2PlusClient` to manage VRF requests and responses.  
-- **Variables**:  
-  - `ROLL_IN_PROGRESS`: Tracks pending rolls.  
-  - `s_subscriptionId`: VRF subscription ID.  
-  - `VRF_COORDINATOR` and `KEY_HASH`: Identify the VRF coordinator and gas lane.  
-  - Execution parameters: `callbackGasLimit`, `requestConfirmations`, and `numWords`.  
-  - Mappings: `s_rollers` (request IDs → users) and `s_results` (users → results).  
-- **Events**: `DiceRolled` (when randomness is requested) and `DiceLanded` (when fulfilled).  
-
-### Key Functions  
-- **Constructor**: Initializes the contract with a subscription ID.  
-- **rollDice()**: Ensures a user hasn’t already rolled, submits a randomness request to Chainlink VRF, maps the request to the user, and emits `DiceRolled`.  
-- **fulfillRandomWords()**: Called automatically once randomness is returned. It maps the random number to a dice roll (0–3), assigns the result, and emits `DiceLanded`.  
-- **house()**: Lets a user query their assigned Hogwarts house once randomness has been fulfilled.  
-- **_getHouseName()**: Translates ID values (0–3) into Gryffindor, Hufflepuff, Slytherin, or Ravenclaw.  
-
-### Deployment and Integration Steps  
-1. Compile the contract in Remix and deploy with your VRF subscription ID.  
-2. Copy the deployed contract address and add it as a *consumer* under your VRF subscription.  
-3. Fund the subscription with LINK if needed.  
-4. Call `rollDice()` to request a random number.  
-5. Once fulfilled, use the `house()` function to see the result.
-
-## Chainlink Data Streams
-
-Chainlink Data Streams provide fast, reliable price data for blockchain applications, using decentralized oracles to deliver cryptographically verified reports with sub-second latency and robust fault tolerance.
-
-### Core Components
-- Chainlink Decentralized Oracle Network (DON): Aggregates data from providers, reaches consensus, and signs reports for frequent delivery to the Aggregation Network.
-- Data Streams Aggregation Network: Stores signed reports in a globally distributed, highly available infrastructure, making them accessible via Chainlink Automation (“Streams Trade”) or APIs (“Streams Direct”).
-- Chainlink Verifier Contract: Smart contract that validates data integrity and authenticity using DON signatures before data is used by dApps.
-
-### Supported Data and Access
-- Delivers asset price pairs (e.g., ETH/USD) on select blockchains, found at the Chainlink Data Streams section on data.chain.link.
-- Each asset pair page provides configuration details including feed ID, bid, and ask prices.
-
-### Use Cases
-- Perpetual Futures: Enables high-speed, secure, onchain trading with data comparable to centralized exchanges.
-- Options: Supports precise, timely execution and dynamic risk management for onchain options contracts.
-- Prediction Markets: Facilitates real-time trading and settlement based on rapid data updates, boosting confidence in outcome-based contracts.
-
-### Key Benefits
-Chainlink Data Streams power financial dApps with fast, secure data, supporting advanced strategies and real-time market responsiveness while maintaining transparency and decentralization.
-
-
-### Core Workflow Overview
-
-Code available in /chainlink/dataStreams/src
-
-Streams Trade is a specialized implementation of Chainlink Data Streams that uses Chainlink Automation and log-triggered upkeeps to automate the retrieval and onchain verification of market price data, particularly for complex financial dApps requiring high-frequency, low-latency data and secure settlement.
-
-### How Streams Trade Works
-
-- **Event-Driven Data Fetching:**  
-  A simple smart contract (LogEmitter) emits an event whenever a user or dApp action (live trading, minting, or staking) occurs.
-  
-- **Chainlink Automation with Log Trigger:**  
-  Chainlink Automation listens for these emitted events using Log Triggers. When detected, it calls the StreamsUpkeep contract to begin the data flow.
-
-- **EIP-3668 and StreamsLookup:**  
-  The crucial checkLog function in StreamsUpkeep intentionally reverts with a custom StreamsLookup error, specifying the stream/price feed to retrieve and providing time context. This mechanism, described by EIP-3668, allows smart contracts to signal that off-chain data is required without breaking existing function APIs. Chainlink nodes recognize and process this revert to fetch the necessary data from the Data Streams Aggregation Network.
-
-- **Automation and Data Verification Flow:**  
-  1. Chainlink Automation retrieves the signed report from the aggregation network and passes it back via a callback (checkCallback).
-  2. The performUpkeep function decodes, verifies, and processes the signed report. It uses interfaces (VerifierProxy, FeeManager) to manage LINK payments for verification and then calls the verifier to ensure the data is not tampered with.
-  3. Data is parsed into the proper struct (ReportV3 for crypto, ReportV4 for RWA), and relevant values (like ETH/USD price) are stored in a state variable such as lastDecodedPrice.
-
-- **Security and Transparency:**  
-  - Every returned report includes a DON signature and is only verified if all protocol checks pass, ensuring data authenticity and resistance to manipulation.
-  - LINK is paid for every onchain verification, so the contract must be funded ahead of time using a wallet like MetaMask.
-
-### Deployment and Registration Steps
-
-- Deploy both LogEmitter and StreamsUpkeep contracts using a platform like Remix or Hardhat, and ensure they implement the necessary Chainlink-specific interfaces (StreamsLookupCompatibleInterface, VerifierProxy, FeeManager).
-- Register your StreamsUpkeep contract for automation in the Chainlink Automation UI (selecting Log Trigger as the type) and provide both contract addresses and ABIs.
-- Fund StreamsUpkeep with LINK to pay for report verification operations.
-- Emit a log through LogEmitter (call emitLog, which triggers the workflow), and upon confirmation, query lastDecodedPrice to view the most recent price fetched from Data Streams.
-
-### Example Structs and Report Formats
-
-Chainlink Data Streams uses two report formats for different asset types:
-- **ReportV3:** Designed for crypto assets and includes stream ID, timestamps, base LINK/native fees, price, bid, and ask values.
-- **ReportV4:** For real-world assets (RWAs), also includes market status codes indicating open/closed/unknown markets.
-
-### Architecture Summary
-
-| Component                | Description                                                                          |
-|--------------------------|--------------------------------------------------------------------------------------|
-| LogEmitter Contract      | Emits events (logs) to trigger data retrieval                                       |
-| StreamsUpkeep Contract   | Handles automation, error processing, data verification, and price storage          |
-| Chainlink Automation     | Listens for contract logs and coordinates the pull/fetch data workflow               |
-| Data Streams Aggregation | Network storing signed, consensus reports from the DON                              |
-| VerifierProxy Interface  | Ensures authenticity and validity of each retrieved report                          |
-| FeeManager Interface     | Estimates and manages LINK/token fees for verification                              |
-
-### Use cases
-
-- **Perpetual Futures:** Compete with CEXs by supporting fast and secure perpetual contract settlement.
-- **Options Protocols:** Enable dynamic risk management and real-time settlement for options trading.
-- **Prediction Markets:** Respond to real-time events using secure, quick updates for accurate outcome-based contracts.
-- **DeFi Integration:** Automate key operations like market-making or liquidation based on instant data feeds.
-
-### Advanced Benefits
-
-- Pull-based architecture: Efficient and flexible; data is only fetched when needed by the dApp, not periodically pushed, minimizing gas and complexity.
-- Commit-and-reveal anti-frontrunning: Critical for fairness and competitive execution in hostile MEV environments.
-- EIP-3668 compatibility: Modernizes off-chain lookup signaling and client side interoperability; ensures broad compatibility without breaking contract ABIs.
-
-Chainlink Streams Trade fuses automation, cryptographic verification, and decentralized infrastructure to deliver secure, real-time price data for advanced financial dApps—unlocking trustless operation, granular risk control, and robust market responsiveness.
-
-## Chainlink Proof of Reserve
-
-Chainlink Proof of Reserve (PoR) is an automated, real-time service that verifies the collateral backing of tokenized assets such as stablecoins, wrapped tokens, and tokenized commodities by connecting on-chain smart contracts with both on-chain and off-chain reserve data through a decentralized oracle network (DON).
-
-### Understanding Collateralization
-Collateralization means securing a loan or financial obligation by locking valuable assets. In DeFi, this typically involves locking digital assets in smart contracts to back loans or tokenized assets. Chainlink PoR verifies that these assets are fully backed by reserves, whether on-chain (wallets, smart contracts) or off-chain (custodial accounts, real-world assets).
-
-### What Chainlink Proof of Reserve Does
-Chainlink PoR moves beyond traditional manual audits by offering a decentralized, cryptographically secure, and automated verification of reserve assets. It monitors multiple reserve sources, aggregates and validates data via consensus, generates tamper-proof cryptographic proofs, and publishes verified reserve data on-chain for use by smart contracts and dApps.
-
-### How It Works
-1. **Monitors Reserve Addresses:** Chainlink nodes check balances of designated wallets or contracts holding reserves.
-2. **Verifies Off-Chain Reserves:** Connects to APIs and custodial systems for real-world asset data.
-3. **Processes and Aggregates Data:** Uses decentralized consensus to verify aggregate reserve data.
-4. **Creates Cryptographic Proofs:** Generates signed, verifiable reports proving reserve status.
-5. **On-Chain Delivery:** Posts verified data to the blockchain for smart contracts access.
-6. **Enables Automated Actions:** Protocols can trigger automatic behaviors (e.g., pause minting) based on reserve status.
-
-### Secure Mint Feature
-A core security enhancement is Secure Mint, which cryptographically ensures tokens are only minted when reserves fully cover them, preventing infinite mint attacks and increasing trust in stablecoins and tokenized assets.
-
-### Use Cases
-- **Stablecoins:** Ensuring each token is backed 1:1 with reserves, increasing trust and preventing de-pegging events.
-- **Wrapped Assets:** Verifying that wrapped tokens (e.g., WBTC) correspond exactly to locked original assets.
-- **Tokenized Commodities:** Validating digital tokens representing physical assets like gold or silver are fully backed.
-- **Cross-Chain Bridges:** Monitoring collateralization for wrapped or bridged assets to secure interoperability and asset safety.
-- **DeFi Protocols:** Allowing lending and synthetic asset platforms to automate risk controls and react promptly to under-collateralization.
-
-### Key Benefits
-- **Enhanced Transparency:** Provides continuous, public audit data on collateralization.
-- **Reduced Counterparty Risk:** Detects and prevents exposure to under-collateralized assets.
-- **Improved Security:** Decentralized oracle validation prevents manipulation by any single party.
-- **Automated Verification:** Replaces slow, manual audits with real-time, algorithmic verification.
-- **Market Stability:** Mitigates sudden market failures due to hidden insolvency.
-- **Multi-Chain Scalability:** Supports different blockchains and complex reserve structures.
-
-### Available PoR Data Feeds Examples
-- Fiat-backed stablecoins like Wenia COPW reserves (Colombian pesos)
-- Treasury-backed stablecoins like STBT’s US Treasury Bills reserves
-- Fixed income shares such as iShares USD Treasury Bond ETF reserves
-- Commodities like ION Digital gold vault reserves
-
-### Technical Implementation Details
-- Built with the infrastructure of Chainlink Price Feeds, PoR utilizes decentralized oracle networks to collect, validate, and deliver data frequently.
-- Supports update triggers based on deviation thresholds or time intervals.
-- Implements layered security including consensus, cryptographic proofs, and on-chain verification.
-- Interfaces are standardized for easy integration by smart contracts, enabling them to act automatically on reserve state changes.
-
-### Industry Adoption and Importance
-Chainlink PoR significantly enhances trust by making reserve backing verifiable in a trust-minimized way, critical for maturing digital finance ecosystems. It is increasingly adopted by stablecoin issuers, wrapped token bridges, DeFi protocols, and tokenization projects as a security and transparency standard.
-
-***
-
-Chainlink Proof of Reserve is a cornerstone for secure, transparent digital asset ecosystems, automating continuous collateral validation to protect users and maintain market integrity across multiple asset classes and blockchain networks.
+---
+
+#### Chainlink Functions Playground
+
+**What it does:**
+- Online sandbox for testing JavaScript code
+- Simulates data requests and API calls
+- Visualizes output and console logs in real-time
+
+**How it works:**
+1. Input JavaScript code, arguments, and secrets
+2. Execute code in-browser
+3. Inspect outputs and logs instantly
+4. No blockchain deployment needed for initial testing
+
+---
+
+#### Weather Data Consumer Contract
+
+**Contract Structure:**
+
+```solidity
+import { FunctionsClient } from "@chainlink/contracts/src/v0.8/functions/v1/FunctionsClient.sol";
+import { FunctionsRequest } from "@chainlink/contracts/src/v0.8/functions/v1/libraries/FunctionsRequest.sol";
+
+contract WeatherConsumer is FunctionsClient {
+    // State variables
+    string public s_lastCity;
+    int256 public s_lastTemperature;
+    bytes public s_lastResponse;
+    string public s_lastError;
+    
+    // Constants
+    address private constant ROUTER = 0x...; // Sepolia router
+    bytes32 private constant DON_ID = 0x...; // Sepolia DON ID
+    uint32 private constant GAS_LIMIT = 300000;
+    
+    // JavaScript code for fetching weather
+    string private constant SOURCE = "
+        const city = args[0];
+        const url = `https://wttr.in/${city}?format=j1`;
+        const response = await Functions.makeHttpRequest({url});
+        if (response.error) throw Error('Request failed');
+        const temp = response.data.current_condition[0].temp_C;
+        return Functions.encodeUint256(parseInt(temp));
+    ";
+    
+    function getTemperature(string memory city, uint64 subscriptionId) 
+        public 
+        returns (bytes32 requestId) 
+    {
+        FunctionsRequest.Request memory req;
+        req.initializeRequestForInlineJavaScript(SOURCE);
+        req.addArgs(city);
+        requestId = _sendRequest(req.encodeCBOR(), subscriptionId, GAS_LIMIT);
+        s_requestedCity = city;
+        s_lastRequestId = requestId;
+    }
+    
+    function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) 
+        internal 
+        override 
+    {
+        if (requestId != s_lastRequestId) {
+            revert UnexpectedRequestID(requestId);
+        }
+        s_lastResponse = response;
+        s_lastError = err;
+        s_lastTemperature = int256(bytesToUint256(response));
+        s_lastCity = s_requestedCity;
+        emit Response(s_lastCity, s_lastTemperature);
+    }
+}
+```
+
+---
+
+### 2.12 Chainlink VRF (Verifiable Random Function)
+
+#### The Problem
+
+Blockchains are **deterministic**—given the same input, they always produce the same output. This makes randomness:
+- Predictable
+- Manipulatable
+- Vulnerable to exploitation
+
+**Examples of vulnerabilities:**
+- Exploiting smart contracts
+- Biased outcomes in dApps
+- Unfair NFT trait distribution
+
+---
+
+#### The Solution
+
+Chainlink VRF generates random values along with **cryptographic proofs** that are:
+- Published on-chain
+- Verified before use
+- Tamper-proof
+
+**Result:** Fair, unpredictable randomness immune to manipulation by operators, miners, users, or developers.
+
+---
+
+#### Implementation Methods
+
+| Method | Description | Best For |
+|--------|-------------|----------|
+| **Subscription** | Fund shared subscription account | Frequent/large-scale needs |
+| **Direct Funding** | Each contract funds directly | One-off randomness |
+
+---
+
+#### HousePicker Contract Example
+
+**Overview:** Assigns users to Hogwarts houses through random dice roll.
+
+**Contract Structure:**
+
+```solidity
+import { VRFConsumerBaseV2Plus } from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import { VRFV2PlusClient } from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
+
+contract HousePicker is VRFConsumerBaseV2Plus {
+    uint256 private constant ROLL_IN_PROGRESS = 1;
+    uint256 private immutable i_subscriptionId;
+    address private immutable i_vrfCoordinator;
+    bytes32 private immutable i_keyHash;
+    
+    mapping(bytes32 => address) private s_rollers;
+    mapping(address => uint256) private s_results;
+    
+    event DiceRolled(address indexed roller, bytes32 requestId);
+    event DiceLanded(address indexed roller, uint256 result);
+    
+    constructor(uint256 subscriptionId) 
+        VRFConsumerBaseV2Plus(vrfCoordinator) 
+    {
+        i_subscriptionId = subscriptionId;
+        i_vrfCoordinator = vrfCoordinator;
+        i_keyHash = keyHash;
+    }
+    
+    function rollDice() external returns (bytes32 requestId) {
+        require(s_results[msg.sender] == 0, "Already rolled");
+        
+        uint256 requestConfirmations = 3;
+        uint32 callbackGasLimit = 100000;
+        uint32 numWords = 1;
+        
+        requestId = _requestRandomWords(
+            i_keyHash,
+            i_subscriptionId,
+            requestConfirmations,
+            callbackGasLimit,
+            numWords
+        );
+        
+        s_rollers[requestId] = msg.sender;
+        emit DiceRolled(msg.sender, requestId);
+    }
+    
+    function fulfillRandomWords(
+        uint256, /* requestId */
+        uint256[] memory randomWords
+    ) internal override {
+        address roller = s_rollers[requestId];
+        uint256 diceRoll = randomWords[0] % 4; // 0-3
+        s_results[roller] = diceRoll;
+        emit DiceLanded(roller, diceRoll);
+    }
+    
+    function house() external view returns (string memory) {
+        require(s_results[msg.sender] != 0, "Not rolled yet");
+        return _getHouseName(s_results[msg.sender]);
+    }
+    
+    function _getHouseName(uint256 id) private pure returns (string memory) {
+        if (id == 0) return "Gryffindor";
+        if (id == 1) return "Hufflepuff";
+        if (id == 2) return "Slytherin";
+        return "Ravenclaw";
+    }
+}
+```
+
+---
+
+#### Deployment Steps
+
+1. Compile contract in Remix
+2. Deploy with VRF subscription ID
+3. Add contract as consumer under VRF subscription
+4. Fund subscription with LINK if needed
+5. Call `rollDice()` to request random number
+6. Use `house()` function to see result
+
+---
+
+### 2.13 Chainlink Data Streams
+
+#### What are Data Streams?
+
+**Definition:** Provide fast, reliable price data for blockchain applications with sub-second latency.
+
+---
+
+#### Core Components
+
+| Component | Role |
+|-----------|------|
+| **DON** | Aggregates data, reaches consensus, signs reports |
+| **Aggregation Network** | Stores signed reports globally |
+| **Verifier Contract** | Validates data integrity and authenticity |
+
+---
+
+#### Use Cases
+
+- **Perpetual Futures:** High-speed, secure onchain trading
+- **Options:** Precise execution and dynamic risk management
+- **Prediction Markets:** Real-time trading and settlement
+
+---
+
+#### Streams Trade Workflow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    STREAMS TRADE FLOW                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  1. EVENT EMITTER                                           │
+│     ↓                                                       │
+│     Emits event when user action occurs                     │
+│                                                             │
+│  2. CHAINLINK AUTOMATION (LOG TRIGGER)                      │
+│     ↓                                                       │
+│     Listens for emitted events                              │
+│                                                             │
+│  3. EIP-3668 STREAMSLOOKUP                                  │
+│     ↓                                                       │
+│     checkLog() reverts with StreamsLookup error             │
+│     Signals off-chain data needed                           │
+│                                                             │
+│  4. DATA RETRIEVAL                                          │
+│     ↓                                                       │
+│     Chainlink fetches signed report from Aggregation Network│
+│                                                             │
+│  5. VERIFICATION                                            │
+│     ↓                                                       │
+│     performUpkeep() decodes and verifies report             │
+│     Uses VerifierProxy and FeeManager interfaces            │
+│                                                             │
+│  6. DATA STORAGE                                            │
+│     ↓                                                       │
+│     Parse into struct (ReportV3 or ReportV4)                │
+│     Store in state variable (e.g., lastDecodedPrice)        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### Report Formats
+
+| Format | Use Case | Includes |
+|--------|----------|----------|
+| **ReportV3** | Crypto assets | Stream ID, timestamps, price, bid, ask |
+| **ReportV4** | Real-world assets | Plus market status codes |
+
+---
+
+#### Advanced Benefits
+
+- **Pull-based architecture:** Data fetched only when needed
+- **Commit-and-reveal:** Anti-frontrunning for MEV environments
+- **EIP-3668 compatibility:** Modern off-chain lookup signaling
+
+---
+
+### 2.14 Chainlink Proof of Reserve
+
+#### What is Proof of Reserve?
+
+**Definition:** An automated, real-time service that verifies the collateral backing of tokenized assets.
+
+---
+
+#### Understanding Collateralization
+
+**Definition:** Securing a loan or financial obligation by locking valuable assets.
+
+**In DeFi:**
+- Locking digital assets in smart contracts
+- Backing loans or tokenized assets
+- Ensuring assets are fully backed by reserves
+
+---
+
+#### What Chainlink PoR Does
+
+Moves beyond traditional manual audits by providing:
+- Decentralized verification
+- Cryptographic security
+- Automated, real-time monitoring
+
+---
+
+#### How It Works
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    PROOF OF RESERVE FLOW                     │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  1. MONITOR RESERVE ADDRESSES                               │
+│     ↓                                                       │
+│     Check balances of wallets/contracts                     │
+│                                                             │
+│  2. VERIFY OFF-CHAIN RESERVES                               │
+│     ↓                                                       │
+│     Connect to APIs and custodial systems                   │
+│                                                             │
+│  3. PROCESS AND AGGREGATE DATA                              │
+│     ↓                                                       │
+│     Use decentralized consensus                             │
+│                                                             │
+│  4. CREATE CRYPTOGRAPHIC PROOFS                             │
+│     ↓                                                       │
+│     Generate signed, verifiable reports                     │
+│                                                             │
+│  5. ON-CHAIN DELIVERY                                       │
+│     ↓                                                       │
+│     Post verified data to blockchain                        │
+│                                                             │
+│  6. ENABLE AUTOMATED ACTIONS                                │
+│     ↓                                                       │
+│     Protocols can trigger behaviors (e.g., pause minting)   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### Secure Mint Feature
+
+**Definition:** Cryptographically ensures tokens are only minted when reserves fully cover them.
+
+**Benefits:**
+- Prevents infinite mint attacks
+- Increases trust in stablecoins and tokenized assets
+
+---
+
+#### Use Cases
+
+| Use Case | Description |
+|----------|-------------|
+| **Stablecoins** | Ensure 1:1 backing with reserves |
+| **Wrapped Assets** | Verify wrapped tokens match locked originals |
+| **Tokenized Commodities** | Validate physical asset backing |
+| **Cross-Chain Bridges** | Monitor collateralization for bridged assets |
+| **DeFi Protocols** | Automate risk controls |
+
+---
+
+#### Key Benefits
+
+- **Enhanced Transparency:** Continuous public audit data
+- **Reduced Counterparty Risk:** Detect under-collateralization
+- **Improved Security:** Decentralized oracle validation
+- **Automated Verification:** Real-time algorithmic verification
+- **Market Stability:** Mitigate sudden market failures
+- **Multi-Chain Scalability:** Support different blockchains
+
+---
+
+#### Available PoR Data Feeds
+
+- Fiat-backed stablecoins (e.g., Wenia COPW)
+- Treasury-backed stablecoins (e.g., STBT)
+- Fixed income shares (e.g., iShares ETFs)
+- Commodities (e.g., ION Digital gold)
+
+---
+
+## Summary
+
+This comprehensive guide covers:
+
+### Solidity Fundamentals
+- **Value vs Reference Types:** Understanding data storage and copying
+- **Data Locations:** Storage, memory, and calldata for gas optimization
+- **Key Concepts:** Loops, msg.value, events, modifiers, ABI
+- **Naming Conventions:** Best practices for readability
+- **Libraries & Inheritance:** Code reuse and contract composition
+
+### Chainlink Services
+- **Oracles:** Solving the oracle problem with decentralized data
+- **Data Feeds:** Real-time price and market data
+- **Automation:** Triggering functions automatically
+- **CCIP:** Cross-chain messaging and token transfers
+- **Functions:** Custom off-chain computations
+- **VRF:** Verifiable randomness
+- **Data Streams:** High-frequency price data
+- **Proof of Reserve:** Verifying asset backing
