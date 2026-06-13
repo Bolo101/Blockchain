@@ -1,0 +1,10 @@
+/home/bolo/Documents/GitHub/Blockchain/ultimateLearning/solana/course/apps/hello/native/exercise/target/sbpf-solana-solana/release/deps/getrandom-6ca9225237e5d186.d: /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/lib.rs /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/error.rs /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/util.rs /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/custom.rs
+
+/home/bolo/Documents/GitHub/Blockchain/ultimateLearning/solana/course/apps/hello/native/exercise/target/sbpf-solana-solana/release/deps/libgetrandom-6ca9225237e5d186.rlib: /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/lib.rs /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/error.rs /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/util.rs /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/custom.rs
+
+/home/bolo/Documents/GitHub/Blockchain/ultimateLearning/solana/course/apps/hello/native/exercise/target/sbpf-solana-solana/release/deps/libgetrandom-6ca9225237e5d186.rmeta: /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/lib.rs /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/error.rs /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/util.rs /home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/custom.rs
+
+/home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/lib.rs:
+/home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/error.rs:
+/home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/util.rs:
+/home/bolo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17/src/custom.rs:

@@ -1,0 +1,1 @@
+/home/bolo/Documents/GitHub/Blockchain/ultimateLearning/solana/course/apps/hello/native/exercise/target/sbpf-solana-solana/release/libhello.rlib: /home/bolo/Documents/GitHub/Blockchain/ultimateLearning/solana/course/apps/hello/native/exercise/src/lib.rs
