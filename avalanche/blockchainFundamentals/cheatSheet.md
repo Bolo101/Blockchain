@@ -37,3 +37,47 @@ Question 2 of 2
 According to the content, when should you NOT use blockchain for your application?
 
 The decision to use blockchain should be driven by specific requirements, not hype. Blockchain is powerful but comes with trade-offs - it's slower and more complex than traditional databases. If your application needs real-time processing (like high-frequency trading), maximum throughput, or simple implementation, and if the problem doesn't involve trust between multiple parties or need for immutable records, then a traditional centralized system is more appropriate. As the content emphasizes: 'blockchain is a powerful tool for the right situations, but its use should be carefully considered against the specific needs of your application.' Just because blockchain provides security doesn't mean every secure application needs it - centralized databases can also be secure and are often more efficient.
+
+Payments Use Case
+Explore how blockchain technology can revolutionize payments by building decentralized systems. This chapter delves into account balances, transactions, and user interactions, highlighting the benefits of blockchain for security, transparency, and decentralization. Discover how these concepts apply to various use cases beyond payments, including decentralized finance, voting systems, and supply chain management.
+
+In this chapter we will dive deeper in the payments use case. We will explore how blockchain technology can be used to build a decentralized payment system. We will look at the different components of a payment system, such as account balances, transactions, and user interactions. We will also discuss the benefits of using blockchain technology for payments, such as security, transparency, and decentralization.
+
+Use Case	Data Structures	User Interactions
+Payments	Account Balances	Transfer Funds
+Decentralized Finance	Loans, ...	Borrow, Repay, ..
+Voting Systems	Votes	Vote
+Supply Chain	Shipments	Hand Over, Deliver
+Identity Management	Certificates	Issue, Proof
+Many of the concepts we will discuss in this chapter are applicable to other use cases as well. For example, the idea of account balances and transactions is not unique to payments but can be found in other applications like decentralized finance (DeFi) or supply chain management. Similarly, user interactions such as transferring funds or voting can be applied to various use cases, each with its unique requirements and challenges.
+
+So while we are discussing this specific use case, try to think about how these concepts could be adapted to other scenarios. This will help you understand the broader implications of blockchain technology and how it can be used to solve a wide range of problems across different industries and domains.
+
+Account Balances & Transfers
+Learn about account balances, which reflect the current amount of money or assets in an account after credits and debits. Discover how transfers work by moving funds between accounts, ensuring balance integrity across financial systems.
+
+Account Balances
+Account Balances refer to the current amount of money or assets held in a specific account at a given time. This number reflects the total value after all credits (additions) and debits (subtractions) have been accounted for, indicating how much the account holder has available to use or withdraw. For example, in a bank account, the balance represents the amount of money that the account holder can access, whether for spending, saving, or transferring.
+
+
+
+Transfers
+A Transfer is the process of moving money or assets from one account to another. During a transfer, the balance of the sending account is reduced by the amount being transferred, while the balance of the receiving account is increased by the same amount. This operation ensures that the total value across all accounts remains constant, maintaining the integrity of the overall financial system.
+
+
+
+Invalid Transfers
+An invalid transfer occurs when a transaction request exceeds the available balance in the sending account. In such cases, the transfer cannot be executed, and the system will reject the transaction to prevent overdrafts. As a result, both the sending and receiving account balances remain unchanged, preserving the integrity of the financial records. This safeguard ensures that accounts do not inadvertently fall into negative balances and maintains accurate and reliable financial tracking.
+
+Ledger
+Understand the high-level structure of this chapter.
+
+A ledger is a comprehensive record-keeping system that documents all transactions. It maintains a detailed and chronological list of transactions, capturing every transfers across accounts. This ensures that every action is accurately tracked and traceable, providing a clear and complete view of the system's activity.
+
+
+
+Immutability
+An immutable ledger means that once a transaction is recorded, it cannot be altered or deleted. This immutability ensures that the historical record of all transactions remains intact and unchangeable, which is crucial for maintaining transparency and trust. Even if errors are made or transactions are invalid, the ledger preserves the original data, preventing tampering or unauthorized modifications.
+
+Append-Only
+An append-only ledger operates by adding new transactions to the end of the record without altering any previous entries. This means that while the ledger grows with each new transaction, past transactions remain unchanged and preserved. Invalid transactions, which fail to execute due to issues like insufficient funds, are still recorded in the ledger to maintain a complete history. To reverse the effects of a transaction, a new transaction must be appended that counteracts the previous one, ensuring the integrity and consistency of the ledger's overall state.
