@@ -130,7 +130,7 @@ solana program deploy ./target/deploy/hello.so
 
 PROGRAM_ID=your_program_id
 RPC=http://localhost:8899
-KEYPAIR=path_to_your_keypair
+KEYPAIR=path_to_your_keypair #KEYPAIR=~/.config/solana/id.json //Your wallet
 
 cargo run --example demo $KEYPAIR $RPC $PROGRAM_ID
 ```
