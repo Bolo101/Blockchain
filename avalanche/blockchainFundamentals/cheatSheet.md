@@ -1,3 +1,25 @@
+# Decentralized Computer
+
+We interact with various types of computers every day, each designed to serve specific functions based on its unique characteristics. Smartphones, for example, are portable and convenient, offering powerful computing capabilities in a compact form. They are ideal for tasks that require mobility, such as communication, navigation, and media consumption. However, their small screen size and limited processing power compared to larger computers make them less suitable for tasks that require intensive computing power or extensive multitasking. PCs, on the other hand, provide more robust processing power and versatility. They are well-suited for tasks like video editing, gaming, or software development, where performance and the ability to use larger screens and peripherals like a mouse and keyboard are crucial. Yet, they lack the portability of smartphones and often require more space and power to operate.
+
+
+
+Web servers represent another type of computer, designed to handle large volumes of data and manage multiple simultaneous requests from users across the internet. They are optimized for reliability, speed, and the ability to run continuously without interruption, making them crucial for hosting websites, online services, and cloud computing platforms. While web servers excel at handling complex backend processes and large-scale operations, they are not intended for direct user interaction or tasks requiring a graphical user interface, which is where PCs and smartphones come in. Each type of computer has its strengths and weaknesses, and they often work together within the broader digital ecosystem, each performing tasks that suit their design and capabilities best.
+
+The internet, as we know it today, is built on a centralized architecture, where data and services are controlled and maintained by a few large entities like data centers and internet service providers. However, the advent of blockchain technologies has opened up new possibilities for a more decentralized internet, often referred to as Web 3.0 or the decentralized web.
+
+Blockchains are Decentralized Computers
+Blockchain can be thought of as a new kind of computer. The key advantage of this new kind of computer is decentralization, meaning that no single entity has control over the entire system. Instead, control is distributed across many participants, which enhances security and transparency, as all transactions are verified by consensus and recorded on an immutable ledger.
+
+
+
+However, this decentralization comes with trade-offs. Blockchains are inherently less efficient than traditional centralized systems. The complexity of managing and maintaining a decentralized network, along with slower transaction speeds, can be significant downsides compared to more traditional, centralized computing models.
+
+This makes blockchain ideal for certain use cases, like secure financial transactions or decentralized applications, but less suitable for tasks requiring high speed and efficiency.
+
+# Decentralized Applications
+
+
 Programs and apps are software applications designed to run on different types of computers, such as smartphones, PCs, and web servers. On smartphones, apps are typically designed for specific tasks like messaging, gaming, or social media, optimized for touch interfaces and mobile connectivity. PCs run more complex programs, such as word processors, video editors, or development tools, which take advantage of larger screens, more powerful hardware, and the ability to handle multitasking. Web servers, on the other hand, run server-side applications that power websites, process data, and handle multiple user requests simultaneously. These programs often provide the backend services that apps on smartphones and PCs rely on to function.
 
 
@@ -7,6 +29,9 @@ Similarly, smart contracts or decentralized applications (dApps) are programs th
 
 
 Different types of applications can interoperate across these platforms, enabling a seamless user experience. For instance, a mobile app can interact with a backend running on a web server to fetch or update data. Similarly, the same app could also interact with a smart contract on a blockchain to verify transactions or access decentralized services. This interoperability allows users to benefit from the strengths of each platform, combining the user-friendliness of mobile apps, the processing power of web servers, and the security and transparency of blockchain technology.
+
+# Decentralized Applications
+
 
 Explore the unique advantages and challenges of blockchain technology in finance, supply chain management, and voting systems. Learn how blockchain enhances security, transparency, and decentralization, while also considering its limitations in efficiency and complexity.
 
@@ -38,6 +63,9 @@ According to the content, when should you NOT use blockchain for your applicatio
 
 The decision to use blockchain should be driven by specific requirements, not hype. Blockchain is powerful but comes with trade-offs - it's slower and more complex than traditional databases. If your application needs real-time processing (like high-frequency trading), maximum throughput, or simple implementation, and if the problem doesn't involve trust between multiple parties or need for immutable records, then a traditional centralized system is more appropriate. As the content emphasizes: 'blockchain is a powerful tool for the right situations, but its use should be carefully considered against the specific needs of your application.' Just because blockchain provides security doesn't mean every secure application needs it - centralized databases can also be secure and are often more efficient.
 
+# Payments Use Case
+
+
 Payments Use Case
 Explore how blockchain technology can revolutionize payments by building decentralized systems. This chapter delves into account balances, transactions, and user interactions, highlighting the benefits of blockchain for security, transparency, and decentralization. Discover how these concepts apply to various use cases beyond payments, including decentralized finance, voting systems, and supply chain management.
 
@@ -53,7 +81,9 @@ Many of the concepts we will discuss in this chapter are applicable to other use
 
 So while we are discussing this specific use case, try to think about how these concepts could be adapted to other scenarios. This will help you understand the broader implications of blockchain technology and how it can be used to solve a wide range of problems across different industries and domains.
 
-Account Balances & Transfers
+# Payments Use Case
+
+
 Learn about account balances, which reflect the current amount of money or assets in an account after credits and debits. Discover how transfers work by moving funds between accounts, ensuring balance integrity across financial systems.
 
 Account Balances
@@ -69,7 +99,9 @@ A Transfer is the process of moving money or assets from one account to another.
 Invalid Transfers
 An invalid transfer occurs when a transaction request exceeds the available balance in the sending account. In such cases, the transfer cannot be executed, and the system will reject the transaction to prevent overdrafts. As a result, both the sending and receiving account balances remain unchanged, preserving the integrity of the financial records. This safeguard ensures that accounts do not inadvertently fall into negative balances and maintains accurate and reliable financial tracking.
 
-Ledger
+# Payments Use Case
+
+
 Understand the high-level structure of this chapter.
 
 A ledger is a comprehensive record-keeping system that documents all transactions. It maintains a detailed and chronological list of transactions, capturing every transfers across accounts. This ensures that every action is accurately tracked and traceable, providing a clear and complete view of the system's activity.
@@ -82,7 +114,9 @@ An immutable ledger means that once a transaction is recorded, it cannot be alte
 Append-Only
 An append-only ledger operates by adding new transactions to the end of the record without altering any previous entries. This means that while the ledger grows with each new transaction, past transactions remain unchanged and preserved. Invalid transactions, which fail to execute due to issues like insufficient funds, are still recorded in the ledger to maintain a complete history. To reverse the effects of a transaction, a new transaction must be appended that counteracts the previous one, ensuring the integrity and consistency of the ledger's overall state.
 
-Signatures
+# Signatures
+
+
 Learn how digital signatures ensure transaction authenticity and security in blockchain systems through public-key cryptography. Understand the role of private and public keys in creating verifiable, tamper-proof transactions that maintain trust in decentralized networks.
 
 Digital signatures are a fundamental component of blockchain technology, providing the cryptographic foundation for secure, authentic, and tamper-proof transactions.
@@ -156,3 +190,6 @@ Use secure storage: Store private keys in hardware wallets or secure software wa
 Backup carefully: Lose your private key, and you lose access to your assets forever
 Beware of phishing: Never enter your private key on untrusted websites or applications
 Digital signatures are the cornerstone of blockchain security, enabling trustless, verifiable transactions in a decentralized environment. Understanding how they work is essential to grasping how blockchains maintain security without central authorities.
+
+# Transaction Ordering through Consensus 
+
